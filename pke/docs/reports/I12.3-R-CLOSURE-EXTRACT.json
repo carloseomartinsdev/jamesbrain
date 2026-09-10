@@ -1,0 +1,1933 @@
+{
+  "unsafe_ledger": [
+    {
+      "case": "EV12",
+      "family": "event",
+      "utterance": "mandeia mensagem pro Carlos",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_INTENT",
+      "severity_mix": {
+        "S1": 2,
+        "S3": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "event",
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "WRONG_INTENT",
+          "severity": "S3",
+          "observed_intent": "query",
+          "observed_primitive": "query",
+          "notes": [
+            "ASSERTION_QUERY_CONFUSION"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "RL14",
+      "family": "relation",
+      "utterance": "acho que joão ainda trabalha lá",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_INTENT",
+      "severity_mix": {
+        "S1": 2,
+        "S3": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "relation",
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "WRONG_INTENT",
+          "severity": "S3",
+          "observed_intent": "query",
+          "observed_primitive": "relation",
+          "notes": [
+            "ASSERTION_QUERY_CONFUSION"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "AT04",
+      "family": "attribute",
+      "utterance": "o notebook pesa 1.5 kg",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "attribute",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=attribute observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=attribute observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=attribute observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "AT09",
+      "family": "attribute",
+      "utterance": "capacidade de 64 GB",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S1": 1,
+        "S2": 1,
+        "S3": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "attribute",
+      "fail_runs": [
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=attribute observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MS17",
+      "family": "multi_primitive",
+      "utterance": "medi a temperatura e deu 95°C",
+      "runs": 5,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S1": 4,
+        "S3": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MS18",
+      "family": "multi_primitive",
+      "utterance": "olhei o tanque e ele estava com 20 litros",
+      "runs": 5,
+      "unsafe_runs": 5,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 5
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 4,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MS19",
+      "family": "multi_primitive",
+      "utterance": "pesei a caixa: 10 kg",
+      "runs": 5,
+      "unsafe_runs": 4,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 4,
+        "S1": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "REPEATED",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MS20",
+      "family": "multi_primitive",
+      "utterance": "consultei o saldo e tinha R$2500",
+      "runs": 5,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3,
+        "S1": 2
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "REPEATED",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "QY30",
+      "family": "query",
+      "utterance": "corrigi isso?",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "failure": "UNSAFE",
+      "severity_mix": {
+        "S4": 2,
+        "S2": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "REPEATED",
+      "expected_intent": "query",
+      "expected_primitive": null,
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        },
+        {
+          "run": 3,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "CR06",
+      "family": "correction",
+      "utterance": "na verdade ele é preto",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "UNSAFE",
+      "severity_mix": {
+        "S0": 1,
+        "S4": 1,
+        "S2": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "attribute",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "CR16",
+      "family": "correction",
+      "utterance": "desculpa olhei errado; está fechada",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "failure": "UNSAFE",
+      "severity_mix": {
+        "S4": 2,
+        "S2": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "REPEATED",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        },
+        {
+          "run": 2,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "CR21",
+      "family": "correction",
+      "utterance": "isso estava errado",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "failure": "UNSAFE",
+      "severity_mix": {
+        "S4": 2,
+        "S2": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "REPEATED",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        },
+        {
+          "run": 3,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "TM22",
+      "family": "temporal",
+      "utterance": "troquei ontem a embreagem",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "TM23",
+      "family": "temporal",
+      "utterance": "a porta tava aberta ontem",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 1,
+        "S2": 2
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX01",
+      "family": "multi_primitive",
+      "utterance": "troquei a embreagem e o odômetro estava em 125000 km",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S0": 2,
+        "S3": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "expected=multi observed=event"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX02",
+      "family": "multi_primitive",
+      "utterance": "revisei o carro e medi a temperatura: 90°C",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX03",
+      "family": "multi_primitive",
+      "utterance": "paguei a conta e o saldo ficou 100",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX04",
+      "family": "multi_primitive",
+      "utterance": "encheu o tanque: 40 litros",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX05",
+      "family": "multi_primitive",
+      "utterance": "verifiquei a bateria: 55%",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 2,
+        "S1": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "REPEATED",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX06",
+      "family": "multi_primitive",
+      "utterance": "pesquei e a balança marcou 2 kg",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX07",
+      "family": "multi_primitive",
+      "utterance": "consultei o app: R$300",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX08",
+      "family": "multi_primitive",
+      "utterance": "olhei o painel e a velocidade era 80",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "MPX11",
+      "family": "multi_primitive",
+      "utterance": "o termômetro mostrou 38 e eu anotei",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "multi",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "expected=multi observed=measurement"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "AM01",
+      "family": "ambiguity",
+      "utterance": "ele é preto",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": null,
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "AM02",
+      "family": "ambiguity",
+      "utterance": "corrigindo: ele é preto",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S0": 1,
+        "S3": 2
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "REPEATED",
+      "expected_intent": null,
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "correct",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "correct",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "AM10",
+      "family": "ambiguity",
+      "utterance": "tá aberto",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": null,
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "AM12",
+      "family": "ambiguity",
+      "utterance": "é azul",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 1,
+        "S2": 1,
+        "S0": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": null,
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "AM17",
+      "family": "ambiguity",
+      "utterance": "sim o preto",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S2": 2,
+        "S3": 1
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": null,
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "attribute",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "UK01",
+      "family": "unknown_concept",
+      "utterance": "o flibberish quebrou",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "UK05",
+      "family": "unknown_concept",
+      "utterance": "medi o quantonium: 3 qx",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 1,
+        "S0": 2
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "measurement",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "UK06",
+      "family": "unknown_concept",
+      "utterance": "trabalha na zxcorp",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S0": 1,
+        "S3": 2
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "REPEATED",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "relation",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "relation",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "UK07",
+      "family": "unknown_concept",
+      "utterance": "instalei o snorfle",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "UK08",
+      "family": "unknown_concept",
+      "utterance": "o snorfle está aberto",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "state",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "UK22",
+      "family": "unknown_concept",
+      "utterance": "troquei o flangulator",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "failure": "WRONG_PRIMITIVE",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root": "B_PRIMITIVE_ROUTING",
+      "repeatability": "ALL_RUNS",
+      "expected_intent": "assert",
+      "expected_primitive": "unknown",
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_intent": "assert",
+          "observed_primitive": "event",
+          "notes": [
+            "forced primitive where abstention preferred"
+          ],
+          "primary_root": "B_PRIMITIVE_ROUTING"
+        }
+      ]
+    },
+    {
+      "case": "NG06",
+      "family": "negative",
+      "utterance": "não foi em 2024",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "UNSAFE",
+      "severity_mix": {
+        "S2": 2,
+        "S4": 1
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "fail_runs": [
+        {
+          "run": 2,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    },
+    {
+      "case": "NG10",
+      "family": "negative",
+      "utterance": "ao contrário: está fechada",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "failure": "UNSAFE",
+      "severity_mix": {
+        "S4": 1,
+        "S1": 2
+      },
+      "primary_root": "A_INTENT",
+      "repeatability": "SPORADIC",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "fail_runs": [
+        {
+          "run": 1,
+          "verdict": "UNSAFE",
+          "severity": "S4",
+          "observed_intent": "correct",
+          "observed_primitive": "correct",
+          "notes": [
+            "FALSE_CORRECTION_ROUTING"
+          ],
+          "primary_root": "A_INTENT"
+        }
+      ]
+    }
+  ],
+  "s4_ledger": [
+    {
+      "case": "QY30",
+      "run": 1,
+      "input": "corrigi isso?",
+      "category": "query",
+      "expected_intent": "query",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "QY30",
+      "run": 3,
+      "input": "corrigi isso?",
+      "category": "query",
+      "expected_intent": "query",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "CR06",
+      "run": 2,
+      "input": "na verdade ele é preto",
+      "category": "correction",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "attribute",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "CR16",
+      "run": 1,
+      "input": "desculpa olhei errado; está fechada",
+      "category": "correction",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "CR16",
+      "run": 2,
+      "input": "desculpa olhei errado; está fechada",
+      "category": "correction",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "CR21",
+      "run": 1,
+      "input": "isso estava errado",
+      "category": "correction",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "CR21",
+      "run": 3,
+      "input": "isso estava errado",
+      "category": "correction",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "NG06",
+      "run": 2,
+      "input": "não foi em 2024",
+      "category": "negative",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    },
+    {
+      "case": "NG10",
+      "run": 1,
+      "input": "ao contrário: está fechada",
+      "category": "negative",
+      "expected_intent": "assert",
+      "expected_primitive": null,
+      "observed_intent": "correct",
+      "observed_primitive": "correct",
+      "verdict": "UNSAFE",
+      "notes": [
+        "FALSE_CORRECTION_ROUTING"
+      ],
+      "primary_root": "A_INTENT",
+      "canonicalization": "WRONG_CANONICAL",
+      "why_s4": "FALSE_CORRECTION_ROUTING",
+      "propose_only": true,
+      "commit_path_class": "POTENTIALLY_COMMITTABLE"
+    }
+  ],
+  "mp_detail": {
+    "MS03": {
+      "utterance": "o sensor mediu 38°C",
+      "expected_primitive": "measurement",
+      "notes": "MP5 measurement-only",
+      "runs": [
+        {
+          "run": 1,
+          "verdict": "CORRECT",
+          "severity": "S0",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 2,
+          "verdict": "CORRECT",
+          "severity": "S0",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 3,
+          "verdict": "CORRECT",
+          "severity": "S0",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 4,
+          "verdict": "CORRECT",
+          "severity": "S0",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 5,
+          "verdict": "CORRECT",
+          "severity": "S0",
+          "observed_primitive": "measurement"
+        }
+      ],
+      "correct": 5,
+      "safe_miss": 0,
+      "wrong_primitive": 0,
+      "severities": {
+        "S0": 5
+      }
+    },
+    "MS17": {
+      "utterance": "medi a temperatura e deu 95°C",
+      "expected_primitive": "multi",
+      "notes": "MP1",
+      "runs": [
+        {
+          "run": 1,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 2,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 3,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 4,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        }
+      ],
+      "correct": 0,
+      "safe_miss": 4,
+      "wrong_primitive": 1,
+      "severities": {
+        "S1": 4,
+        "S3": 1
+      }
+    },
+    "MS18": {
+      "utterance": "olhei o tanque e ele estava com 20 litros",
+      "expected_primitive": "multi",
+      "notes": "MP2",
+      "runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 4,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        }
+      ],
+      "correct": 0,
+      "safe_miss": 0,
+      "wrong_primitive": 5,
+      "severities": {
+        "S3": 5
+      }
+    },
+    "MS19": {
+      "utterance": "pesei a caixa: 10 kg",
+      "expected_primitive": "multi",
+      "notes": "MP3",
+      "runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 2,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 4,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        }
+      ],
+      "correct": 0,
+      "safe_miss": 1,
+      "wrong_primitive": 4,
+      "severities": {
+        "S3": 4,
+        "S1": 1
+      }
+    },
+    "MS20": {
+      "utterance": "consultei o saldo e tinha R$2500",
+      "expected_primitive": "multi",
+      "notes": "MP4",
+      "runs": [
+        {
+          "run": 1,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 2,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 3,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        },
+        {
+          "run": 4,
+          "verdict": "COVERAGE_MISS",
+          "severity": "S1",
+          "observed_primitive": null
+        },
+        {
+          "run": 5,
+          "verdict": "WRONG_PRIMITIVE",
+          "severity": "S3",
+          "observed_primitive": "measurement"
+        }
+      ],
+      "correct": 0,
+      "safe_miss": 2,
+      "wrong_primitive": 3,
+      "severities": {
+        "S3": 3,
+        "S1": 2
+      }
+    }
+  },
+  "repeat_stats": {
+    "all_runs_unsafe": 16,
+    "repeated": 8,
+    "sporadic": 12
+  },
+  "s3_verdicts": {
+    "WRONG_INTENT/S3": 2,
+    "WRONG_PRIMITIVE/S3": 70,
+    "UNSAFE/S4": 9
+  }
+}

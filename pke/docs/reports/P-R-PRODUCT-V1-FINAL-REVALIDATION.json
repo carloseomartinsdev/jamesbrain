@@ -1,0 +1,97 @@
+{
+  "increment": "P-R",
+  "title": "Product v1 Final Revalidation & PKE v1 Completion Gate",
+  "status": "CLOSED",
+  "phase": "PRODUCT V1 FINAL REVALIDATION / FULL PKE V1 COMPLETION GATE",
+  "recommendation": "PRODUCT_V1_FREEZE_PKE_V1_COMPLETE",
+  "hold_tokens": [],
+  "central": {
+    "IS_PRODUCT_V1_END_TO_END_SAFE_RELIABLE_AND_USABLE_WITHIN_DECLARED_BOUNDARY": "YES",
+    "CAN_PRODUCT_V1_BE_FROZEN": "YES",
+    "CAN_PKE_V1_BE_DECLARED_COMPLETE": "YES"
+  },
+  "executive": {
+    "IS_PRODUCT_V1_FINAL_REVALIDATION_COMPLETE": "YES",
+    "IS_PRODUCT_V1_END_TO_END_SAFE": "YES",
+    "IS_PRODUCT_V1_RELIABLE_WITHIN_ITS_DECLARED_CAPABILITY_BOUNDARY": "YES",
+    "IS_PRODUCT_V1_USABLE_AS_A_CONVERSATION_FIRST_PKE": "YES",
+    "IS_PUBLIC_API_V1_A_STABLE_MULTIPLATFORM_BOUNDARY": "YES",
+    "IS_PRODUCT_IDENTITY_SAFE_AND_SERVER_AUTHORITATIVE": "YES",
+    "IS_CONVERSATION_STATE_DURABLE_AND_RECOVERABLE": "YES",
+    "IS_PRODUCT_RETRY_END_TO_END_IDEMPOTENT": "YES",
+    "IS_PRODUCT_RECOVERY_NON_SEMANTIC_AND_SAFE": "YES",
+    "IS_PRODUCT_UX_EPISTEMICALLY_TRUTHFUL": "YES",
+    "DO_ANY_OPEN_DEBTS_REMAIN_PRODUCT_V1_SAFETY_BLOCKERS": "NO",
+    "DID_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": "YES",
+    "DID_ENGINE_V1_REMAIN_FROZEN": "YES",
+    "CAN_PRODUCT_V1_BE_FROZEN": "YES",
+    "CAN_PKE_V1_BE_DECLARED_COMPLETE": "YES"
+  },
+  "authorities": {
+    "PRODUCT_API_AUTHORITY": "FastAPI /api/v1 + DTOs",
+    "PRODUCT_IDENTITY_AUTHORITY": "ProductAuthService",
+    "PRODUCT_SESSION_AUTHORITY": "ProductAuthService + sessions",
+    "PRODUCT_RESOURCE_OWNERSHIP_AUTHORITY": "ConversationOrchestrator + scoped store",
+    "CONVERSATION_LIFECYCLE_AUTHORITY": "ConversationOrchestrator",
+    "MESSAGE_LIFECYCLE_AUTHORITY": "ConversationOrchestrator",
+    "PENDING_CLARIFICATION_AUTHORITY": "ConversationOrchestrator",
+    "PRODUCT_IDEMPOTENCY_AUTHORITY": "ProductStore + ProductRecoveryService",
+    "PRODUCT_RECOVERY_AUTHORITY": "ProductRecoveryService",
+    "PUBLIC_OUTCOME_RENDERING_AUTHORITY": "web/assets/js/renderers/index.js",
+    "ENGINE_INVOCATION_AUTHORITY": "ConversationOrchestrator → EngineGateway",
+    "INTERPRETER_AUTHORITY": "Interpreter",
+    "EXECUTION_READINESS_AUTHORITY": "ExecutionReadiness",
+    "CAPABILITY_STRATEGY_AUTHORITY": "CapabilityStrategy",
+    "CLARIFICATION_RECOVERY_AUTHORITY": "ClarificationRecoveryService",
+    "CORRECTION_ACCEPTANCE_AUTHORITY": "Correction Acceptance Guard",
+    "CORRECTION_TARGET_AUTHORITY": "CorrectionTargetResolver",
+    "ASSERTION_EFFECTIVENESS_AUTHORITY": "AssertionEffectivenessResolver",
+    "ENTITY_RESOLUTION_AUTHORITY": "EntityResolver",
+    "TEMPORAL_WRITE_AUTHORITY": "TemporalResolver",
+    "TEMPORAL_QUERY_AUTHORITY": "QueryTemporalResolver",
+    "STATE_EPISTEMIC_AUTHORITY": "StateResolver",
+    "RELATION_EPISTEMIC_AUTHORITY": "Relation authorities",
+    "ATTRIBUTE_EPISTEMIC_AUTHORITY": "AttributeResolver",
+    "MEASUREMENT_QUERY_AUTHORITY": "Measurement query authority",
+    "KNOWLEDGE_COMMIT_AUTHORITY": "IngestService / UoW",
+    "FINAL_AUTHORITY_CONFLICT_COUNT": 0
+  },
+  "critical_counters_all_zero": true,
+  "freeze_suite": {
+    "path": "tests/product_v1_freeze/",
+    "corpus_cases": 320,
+    "anchors": "P01-P50",
+    "result": "341 passed, 0 failed"
+  },
+  "regression": {
+    "command": "pytest tests/ -m \"not live\"",
+    "passed": 5097,
+    "failed": 0,
+    "live_deselected": 8,
+    "prior_baseline_passed": 4756
+  },
+  "live_smoke": {
+    "status": "SKIPPED",
+    "reason": "Deterministic Product freeze suite + full non-live regression satisfy P-R; no broad Interpreter live benchmark required",
+    "holdout": "UNTOUCHED"
+  },
+  "final_state": {
+    "Knowledge Core v1": "FROZEN",
+    "Engine v1": "FROZEN",
+    "Product v1": "FROZEN",
+    "PKE v1": "COMPLETE",
+    "Knowledge schema": "v10",
+    "CORE": 65,
+    "Engine prompt": "v4",
+    "provider baseline": "deepseek-chat",
+    "Product schema": "1.4",
+    "holdout": "UNTOUCHED"
+  },
+  "artifacts": {
+    "product_freeze": "docs/PRODUCT-V1-FREEZE.md",
+    "pke_v1": "docs/PKE-V1.md",
+    "adr": "docs/decisions/0075-product-v1-final-revalidation-and-pke-v1-completion.md",
+    "report": "docs/reports/P-R-PRODUCT-V1-FINAL-REVALIDATION.md"
+  },
+  "debt_v1_blockers": false
+}

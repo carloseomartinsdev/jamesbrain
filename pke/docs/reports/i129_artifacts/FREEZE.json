@@ -1,0 +1,10 @@
+{
+  "experiment_id": "I12.9",
+  "prompt_version": "pke.interpret.v4",
+  "model": "deepseek-chat",
+  "schema": "10",
+  "core_version": 65,
+  "corpus_size": 65,
+  "dual_sample": true,
+  "git_commit": null
+}

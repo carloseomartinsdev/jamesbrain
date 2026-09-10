@@ -1,0 +1,78 @@
+{
+  "experiment_id": "WEB-01",
+  "title": "PKE Web Client & API Contract — Engine Freeze Handoff",
+  "recommendation": "WEB_V1_SHELL_CLOSE_PROCEED_TO_PRODUCT_APPLICATION_INTEGRATION",
+  "entry_checkpoint": {
+    "Knowledge_Core_v1": "FROZEN",
+    "Engine_v1": "FROZEN",
+    "schema": "v10",
+    "CORE": 65,
+    "prompt": "v4",
+    "provider_baseline": "deepseek-chat",
+    "engine_tests_passed": 4715,
+    "holdout": "UNTOUCHED"
+  },
+  "executive": {
+    "IS_WEB_CLIENT_NOW_DECOUPLED_FROM_PKE_INTERNAL_IR": true,
+    "IS_PKE_API_V1_NOW_A_STABLE_MULTIPLATFORM_BOUNDARY": true,
+    "CAN_WEB_SEND_AND_RECEIVE_REAL_PKE_INTERACTIONS": true,
+    "ARE_CLARIFICATION_AND_SAFE_ABSTAIN_FIRST_CLASS_PRODUCT_OUTCOMES": true,
+    "IS_CONVERSATION_STORAGE_SEPARATE_FROM_KNOWLEDGE_STORAGE": true,
+    "IS_CLIENT_RETRY_IDEMPOTENT": true,
+    "IS_CLIENT_RETRY_IDEMPOTENT_DETAIL": "YES",
+    "DID_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": true,
+    "DID_ENGINE_V1_REMAIN_FROZEN": true
+  },
+  "authority": {
+    "PRODUCT_ENGINE_AUTHORITY_CONFLICT_COUNT": 0
+  },
+  "baseline": {
+    "frontend": "vanilla JS + CSS (web/)",
+    "backend": "FastAPI pke.product.api.v1 + ConversationOrchestrator",
+    "public_api_prefix": "/api/v1",
+    "routes": [
+      "GET /api/v1/health",
+      "GET /api/v1/me",
+      "GET /api/v1/conversations",
+      "POST /api/v1/conversations",
+      "GET /api/v1/conversations/{id}",
+      "GET /api/v1/conversations/{id}/messages",
+      "POST /api/v1/messages",
+      "POST /api/v1/clarifications/{id}/answer"
+    ],
+    "conversation_persistence": "product SQLite schema 1.1",
+    "knowledge_persistence": "Knowledge SQLite schema v10",
+    "auth": "DEV_AUTH",
+    "idempotency": "client_request_id cached per user",
+    "real_engine_integration": true,
+    "engine_path": "EngineGateway → Interpreter → IngestService|AskService|ClarificationRecoveryService",
+    "mock_between_api_and_engine": false,
+    "clarification_ux": "first_class",
+    "safe_abstain_ux": "mapped_to_unsupported_outcome",
+    "tests": ["tests/api", "tests/web", "tests/product"]
+  },
+  "regression_product_suite": {
+    "command": "pytest tests/api tests/web tests/product",
+    "passed": 25,
+    "failed": 0
+  },
+  "mapping": {
+    "EXECUTE_write": "acknowledgement + committed",
+    "EXECUTE_query": "answer + answered",
+    "CLARIFY": "clarification + needs_clarification",
+    "SAFE_ABSTAIN": "unsupported + unsupported",
+    "provider_failure": "error + failed"
+  },
+  "stop_tokens": {
+    "WEB_API_REQUIRES_CORE_REOPEN": false,
+    "WEB_API_REQUIRES_ENGINE_REOPEN": false,
+    "WEB_API_INTERNAL_IR_LEAK": false,
+    "WEB_CLIENT_SEMANTIC_AUTHORITY_VIOLATION": false
+  },
+  "artifacts": {
+    "report": "docs/reports/WEB-01-PKE-WEB-CLIENT-API-CONTRACT.md",
+    "adr": "docs/decisions/0070-pke-product-api-and-client-boundary.md",
+    "prior_adr": "docs/decisions/0052-multiplatform-api-web-client-boundary.md",
+    "engine_freeze": "docs/ENGINE-V1-FREEZE.md"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "freeze": {
+    "experiment_id": "I12.6",
+    "date_utc": "2026-09-03T13:15:11.059145+00:00",
+    "stage": "A",
+    "prompt_version": "pke.interpret.v4",
+    "semantic_proposal": "unchanged",
+    "wire": "unchanged",
+    "correction_guard": "unchanged",
+    "multi_primitive_preservation": "unchanged",
+    "retry_max_attempts": 2,
+    "retry_rate_limit_policy": "RETRY_ONCE_BOUNDED",
+    "schema_version": "10",
+    "core_concept_count": 65,
+    "knowledge_core": "FROZEN",
+    "holdout": "untouched",
+    "runs_per_case": 3,
+    "runs_per_mp_anchor": 5,
+    "corpus_target_min": 80,
+    "corpus_target_max": 120,
+    "sdk_max_retries": 0,
+    "http_client_retries": 0,
+    "effective_max_provider_calls": 2,
+    "temperature_policy": "provider default (unset by PKE) \u2014 identical for all candidates",
+    "top_p_policy": "provider default (unset by PKE)",
+    "max_tokens_policy": "provider default (unset by PKE)",
+    "structured_output_mode": "json_object",
+    "note": "Only model/provider varies. No prompt/guard/router/Core changes during experiment. No silent production switch."
+  },
+  "thresholds": {
+    "post_engine_s4": 0,
+    "post_engine_unsafe_variance_max": 0.01,
+    "post_engine_systematic_s3_family_allowed": false,
+    "critical_correction_safety": 1.0,
+    "mp_anchors_post_engine_safety": 1.0,
+    "explicit_assertion_preservation": 1.0,
+    "intent_stable_correctness_min": 0.97,
+    "primitive_stable_correctness_min": 0.95,
+    "temporal_evidence_preservation_min": 0.97,
+    "preferred_stable_correct_delta_min": 0.1
+  }
+}

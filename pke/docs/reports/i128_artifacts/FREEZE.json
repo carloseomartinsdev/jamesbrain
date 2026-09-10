@@ -1,0 +1,21 @@
+{
+  "experiment_id": "I12.8",
+  "started_at": "2026-09-03T17:01:21.787393+00:00",
+  "git_commit": null,
+  "control_prompt": "pke.interpret.v4",
+  "candidate_prompt": "pke.interpret.v5-event",
+  "prompt_variants": [
+    "v4",
+    "v5-event"
+  ],
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "retry_policy": "Interpreter RetryPolicy unchanged (I12.2)",
+  "semantic_proposal": "unchanged",
+  "wire": "unchanged",
+  "schema": "10",
+  "core_version": 65,
+  "corpus_fingerprint": "475c08a0189af724",
+  "corpus_size": 75,
+  "logical_requests": 470
+}

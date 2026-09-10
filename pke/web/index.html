@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PKE</title>
+    <meta name="color-scheme" content="dark light" />
+    <link rel="stylesheet" href="/assets/css/app.css" />
+    <script>
+      window.__PKE_CONFIG__ = {
+        apiBaseUrl: "__PKE_API_BASE_URL__",
+        debugUi: __PKE_DEBUG_UI__,
+      };
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#composer-input">Ir para a mensagem</a>
+    <div id="app" class="app-shell" data-testid="app-shell">
+      <div id="auth-gate" class="auth-gate" hidden data-testid="auth-gate">
+        <form id="auth-form" class="auth-card">
+          <h2 id="auth-title">Entrar no PKE</h2>
+          <p id="auth-error" class="auth-error" hidden></p>
+          <label class="auth-label">Usuário
+            <input id="auth-username" name="username" autocomplete="username" required minlength="3" />
+          </label>
+          <label class="auth-label">Senha
+            <input id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8" />
+          </label>
+          <label class="auth-label" id="auth-display-wrap" hidden>Nome
+            <input id="auth-display" name="display_name" autocomplete="nickname" />
+          </label>
+          <button type="submit" id="auth-submit">Entrar</button>
+          <button type="button" id="auth-toggle" class="text-btn">Criar conta</button>
+        </form>
+      </div>
+      <div id="sidebar-backdrop" class="sidebar-backdrop" hidden></div>
+      <aside id="sidebar" class="sidebar" aria-label="Conversas">
+        <div class="sidebar-brand">
+          <span class="logo-mark" aria-hidden="true">P</span>
+          <span class="logo-name">PKE</span>
+        </div>
+        <button type="button" id="new-conversation" class="btn-new">
+          Nova conversa
+        </button>
+        <nav id="conversation-list" class="conversation-list" aria-label="Histórico de conversas"></nav>
+        <div class="sidebar-footer">
+          <a href="/settings" id="open-settings" class="sidebar-link">Configurações</a>
+          <button type="button" id="logout-button" class="text-btn">Sair</button>
+          <p id="user-chip" class="user-chip" aria-live="polite"></p>
+        </div>
+      </aside>
+      <div class="main">
+        <header class="conversation-header">
+          <button type="button" id="toggle-sidebar" class="icon-btn" aria-label="Abrir conversas" aria-controls="sidebar" aria-expanded="false">
+            Menu
+          </button>
+          <h1 id="conversation-title" class="conversation-title">PKE</h1>
+          <p id="connection-status" class="connection-status" data-state="ok">Conectado</p>
+          <button type="button" id="header-new" class="text-btn">Nova</button>
+        </header>
+        <main id="timeline" class="timeline" aria-live="polite">
+          <section id="empty-state" class="empty-state" data-testid="empty-state">
+            <h2>O que você quer lembrar, registrar ou descobrir?</h2>
+            <ul class="suggestions">
+              <li><button type="button" class="suggestion" data-text="Troquei a bateria do carro ontem.">Troquei a bateria do carro ontem.</button></li>
+              <li><button type="button" class="suggestion" data-text="Minha conta de energia vence dia 10.">Minha conta de energia vence dia 10.</button></li>
+              <li><button type="button" class="suggestion" data-text="Quando troquei a embreagem?">Quando troquei a embreagem?</button></li>
+            </ul>
+          </section>
+          <ol id="message-list" class="message-list"></ol>
+        </main>
+        <div id="processing" class="processing" hidden role="status" aria-live="polite">Pensando…</div>
+        <form id="composer" class="composer" data-testid="composer">
+          <label class="sr-only" for="composer-input">Mensagem</label>
+          <textarea
+            id="composer-input"
+            name="text"
+            rows="1"
+            placeholder="O que você quer registrar ou saber?"
+            autocomplete="off"
+            enterkeyhint="send"
+          ></textarea>
+          <button type="submit" id="send-button">Enviar</button>
+        </form>
+      </div>
+    </div>
+    <div id="debug-panel" class="debug-panel" hidden></div>
+    <script type="module" src="/assets/js/app.js"></script>
+  </body>
+</html>

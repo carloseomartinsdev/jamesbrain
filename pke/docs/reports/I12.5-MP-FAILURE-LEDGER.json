@@ -1,0 +1,268 @@
+{
+  "increment": "I12.5",
+  "source": [
+    "I12.3-R-CLOSURE-EXTRACT.json",
+    "I12.3-LIVE-CHARACTERIZATION.json"
+  ],
+  "ms18": {
+    "DID_THE_CAPTURED_PROPOSAL_CONTAIN_EXPLICIT_EVENT_SEMANTICS": "UNKNOWN_NOT_PERSISTED",
+    "conclusion": "MS18_MIXED_FAILURE",
+    "engine_defect": "route_primitive returned MEASUREMENT before residual action_expression; collect_assertions only attached Measurement when primary was EVENT",
+    "engine_fix": "has_explicit_occurrence_evidence + has_measurement_evidence => Event+Measurement without inventing from raw text",
+    "interpreter_debt": "when proposal has Measurement only (no action/event/change), Event must not be fabricated"
+  },
+  "cases": [
+    {
+      "case": "MS17",
+      "input": "medi a temperatura e deu 95°C",
+      "expected": "multi",
+      "runs": 5,
+      "unsafe_runs": 1,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S1": 4,
+        "S3": 1
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "SPORADIC"
+    },
+    {
+      "case": "MS18",
+      "input": "olhei o tanque e ele estava com 20 litros",
+      "expected": "multi",
+      "runs": 5,
+      "unsafe_runs": 5,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 5
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MS19",
+      "input": "pesei a caixa: 10 kg",
+      "expected": "multi",
+      "runs": 5,
+      "unsafe_runs": 4,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 4,
+        "S1": 1
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "REPEATED"
+    },
+    {
+      "case": "MS20",
+      "input": "consultei o saldo e tinha R$2500",
+      "expected": "multi",
+      "runs": 5,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3,
+        "S1": 2
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "REPEATED"
+    },
+    {
+      "case": "MPX01",
+      "input": "troquei a embreagem e o odômetro estava em 125000 km",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 1,
+      "actual_proposals_observed_primitive": [
+        "event"
+      ],
+      "failure_class": "OTHER",
+      "severity_mix": {
+        "S0": 2,
+        "S3": 1
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "SPORADIC"
+    },
+    {
+      "case": "MPX02",
+      "input": "revisei o carro e medi a temperatura: 90°C",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MPX03",
+      "input": "paguei a conta e o saldo ficou 100",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MPX04",
+      "input": "encheu o tanque: 40 litros",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MPX05",
+      "input": "verifiquei a bateria: 55%",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 2,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 2,
+        "S1": 1
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "REPEATED"
+    },
+    {
+      "case": "MPX06",
+      "input": "pesquei e a balança marcou 2 kg",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MPX07",
+      "input": "consultei o app: R$300",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MPX08",
+      "input": "olhei o painel e a velocidade era 80",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    },
+    {
+      "case": "MPX11",
+      "input": "o termômetro mostrou 38 e eu anotei",
+      "expected": "multi",
+      "runs": 3,
+      "unsafe_runs": 3,
+      "actual_proposals_observed_primitive": [
+        "measurement"
+      ],
+      "failure_class": "MISSING_EVENT",
+      "severity_mix": {
+        "S3": 3
+      },
+      "primary_root_i123": "B_PRIMITIVE_ROUTING",
+      "root_cause_i125": "MIXED_ENGINE_ORDERING_OR_INTERPRETER_OMISSION",
+      "did_captured_proposal_contain_event": "UNKNOWN_NOT_PERSISTED_IN_I123",
+      "engine_fix_applicable": "YES_IF_ACTION_EXPRESSION_PRESENT",
+      "repeatability": "ALL_RUNS"
+    }
+  ]
+}

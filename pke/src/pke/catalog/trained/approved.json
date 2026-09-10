@@ -1,0 +1,256 @@
+{
+  "version": "1",
+  "concepts": [
+    {
+      "key": "relation.likes",
+      "kind": "relation_type",
+      "label": "Gosta de",
+      "meaning": "Pessoa gosta, prefere ou é fã de alguém ou algo. Não é atributo nem ação.",
+      "extends_core": true,
+      "priority": 9,
+      "lemmas": [
+        "fa de",
+        "sou fa de",
+        "e fa de",
+        "fan of",
+        "a fan of",
+        "adoro",
+        "prefiro",
+        "prefere"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"]
+      }
+    },
+    {
+      "key": "relation.employed_by",
+      "kind": "relation_type",
+      "label": "Empregado por",
+      "meaning": "Pessoa empregada ou contratada por organização.",
+      "extends_core": true,
+      "priority": 9,
+      "lemmas": [
+        "contratado por",
+        "contratada por",
+        "hired by"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "object_kinds": ["organization"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.friend_of",
+      "kind": "relation_type",
+      "label": "Amigo de",
+      "meaning": "Vínculo de amizade entre pessoas.",
+      "lemmas": [
+        "amigo de",
+        "amiga de",
+        "amigos de",
+        "friends with",
+        "e amigo",
+        "e amiga"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.member_of",
+      "kind": "relation_type",
+      "label": "Membro de",
+      "meaning": "Pessoa pertence a grupo, clube, time ou organização.",
+      "lemmas": [
+        "membro de",
+        "e membro de",
+        "member of",
+        "faz parte de"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.studies_at",
+      "kind": "relation_type",
+      "label": "Estuda em",
+      "meaning": "Pessoa estuda em instituição. Distinto de emprego.",
+      "lemmas": [
+        "estuda em",
+        "estuda na",
+        "estudante em",
+        "aluno de",
+        "aluna de",
+        "studies at",
+        "student at"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.colleague_of",
+      "kind": "relation_type",
+      "label": "Colega de",
+      "meaning": "Colegas de trabalho ou estudo.",
+      "lemmas": [
+        "colega de",
+        "colegas de",
+        "colleague of",
+        "coworker of",
+        "co-worker"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.neighbor_of",
+      "kind": "relation_type",
+      "label": "Vizinho de",
+      "meaning": "Vizinhança entre pessoas.",
+      "lemmas": [
+        "vizinho de",
+        "vizinha de",
+        "neighbor of",
+        "neighbour of"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.sibling_of",
+      "kind": "relation_type",
+      "label": "Irmão de",
+      "meaning": "Irmãos. Distinto de pai/mãe (relation.parent_of).",
+      "lemmas": [
+        "irmao de",
+        "irma de",
+        "sibling of",
+        "brother of",
+        "sister of"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.partner_of",
+      "kind": "relation_type",
+      "label": "Parceiro de",
+      "meaning": "Parceria afetiva ou declarada como parceiro. Distinto de casamento (relation.married_to).",
+      "lemmas": [
+        "parceiro de",
+        "parceira de",
+        "namorado de",
+        "namorada de",
+        "partner of"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.located_in",
+      "kind": "relation_type",
+      "label": "Fica em",
+      "meaning": "Entidade está localizada em um lugar. Distinto de reside (relation.resides_at).",
+      "lemmas": [
+        "fica em",
+        "fica na",
+        "located in",
+        "localizado em",
+        "localizada em"
+      ],
+      "constraints": {
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.responsible_for",
+      "kind": "relation_type",
+      "label": "Responsável por",
+      "meaning": "Pessoa responsável por pessoa, coisa ou assunto.",
+      "lemmas": [
+        "responsavel por",
+        "responsible for"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.supervisor_of",
+      "kind": "relation_type",
+      "label": "Chefe de",
+      "meaning": "Pessoa chefia ou supervisiona outra.",
+      "lemmas": [
+        "chefe de",
+        "e chefe de",
+        "boss of",
+        "supervisor of",
+        "manager of"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.client_of",
+      "kind": "relation_type",
+      "label": "Cliente de",
+      "meaning": "Pessoa é cliente de prestador ou organização. Distinto de relation.provider_for.",
+      "lemmas": [
+        "cliente de",
+        "client of",
+        "sou cliente"
+      ],
+      "constraints": {
+        "subject_kinds": ["person"],
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.insured_by",
+      "kind": "relation_type",
+      "label": "Segurado por",
+      "meaning": "Pessoa ou bem coberto por seguradora.",
+      "lemmas": [
+        "segurado por",
+        "segurada por",
+        "insured by",
+        "e segurado por",
+        "is insured by"
+      ],
+      "constraints": {
+        "require_link_semantics": true
+      }
+    },
+    {
+      "key": "relation.supplier_of",
+      "kind": "relation_type",
+      "label": "Fornecedor de",
+      "meaning": "Fornece produto ou serviço. Distinto de relation.provider_for (profissional para pessoa).",
+      "lemmas": [
+        "fornecedor de",
+        "fornecedora de",
+        "supplier of"
+      ],
+      "constraints": {
+        "require_link_semantics": true
+      }
+    }
+  ]
+}

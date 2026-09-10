@@ -1,0 +1,389 @@
+{
+  "experiment_id": "I12.11",
+  "prompt_version": "pke.interpret.v4",
+  "semantic_proposal": "unchanged",
+  "wire": "unchanged",
+  "retry_policy": "Interpreter RetryPolicy unchanged (I12.2)",
+  "retry_max_attempts": 2,
+  "retry_rate_limit_policy": "RETRY_ONCE_BOUNDED",
+  "sdk_max_retries": 0,
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": null,
+  "structured_output_mode": "json_object",
+  "schema_version": "10",
+  "core_concept_count": 65,
+  "knowledge_core": "FROZEN",
+  "holdout": "untouched",
+  "runs_per_case": 3,
+  "runs_per_mp_anchor": 5,
+  "runs_per_mp1": 10,
+  "i12_6": "CLOSED \u2014 not reused as ranking",
+  "note": "Only model/provider varies. prompt v4 identical. No silent production switch. Thresholds frozen a priori.",
+  "started_at": "2026-09-03T20:03:32.983070+00:00",
+  "git_commit": null,
+  "corpus_fingerprint": "5bfa2c624d14b0e1",
+  "expected_label_hash": "a156596cfaef3c7c",
+  "corpus_size": 113,
+  "candidates": [
+    {
+      "candidate_id": "baseline_deepseek_chat",
+      "provider": "deepseek",
+      "model": "deepseek-chat",
+      "role": "baseline"
+    },
+    {
+      "candidate_id": "deepseek_reasoner",
+      "provider": "deepseek",
+      "model": "deepseek-reasoner",
+      "role": "alt_same_provider"
+    }
+  ],
+  "thresholds": {
+    "useful_capture_delta_min": 0.1,
+    "execution_ready_delta_min": 0.1,
+    "mp1_useful_capture_material": 0.7,
+    "post_s4": 0,
+    "false_correction_accepted": 0,
+    "partial_event_false_canonicalization": 0,
+    "missing_information_invented": 0,
+    "unsupported_primitive_addition": 0
+  },
+  "logical_requests": 708,
+  "I12.6": "CLOSED",
+  "candidates_evaluated": [
+    "baseline_deepseek_chat",
+    "deepseek_reasoner"
+  ],
+  "per_candidate": {
+    "baseline_deepseek_chat": {
+      "TOTAL_CASES": 113,
+      "TOTAL_RUNS": 354,
+      "SAFE_HANDLED_INTERACTION_RATE": 0.903954802259887,
+      "USEFUL_KNOWLEDGE_CAPTURE_RATE": 0.3700564971751412,
+      "VALID_SEMANTIC_PROPOSAL_RATE": 0.847457627118644,
+      "VALID_AND_SEMANTICALLY_USEFUL_PROPOSAL_RATE": 0.3813559322033898,
+      "EXECUTION_READY_PROPOSAL_RATE": 0.3813559322033898,
+      "VALID_ZERO_MATERIALIZABLE_RATE": 0.4661016949152542,
+      "SEMANTIC_COMPLETENESS_PRECISION": 0.9969432314410481,
+      "SEMANTIC_COMPLETENESS_RECALL": 0.89159891598916,
+      "FIRST_ATTEMPT_VALID_PROPOSAL_RATE": 0.7457627118644068,
+      "RETRY_RECOVERED": 21,
+      "RETRY_EXHAUSTED": 46,
+      "POST_S3": 45,
+      "POST_S4": 0,
+      "FALSE_CORRECTION_ACCEPTED": 0,
+      "PARTIAL_EVENT_FALSE_CANONICALIZATION": 0,
+      "MISSING_INFORMATION_INVENTED": 3,
+      "RAW_EVENT_PRESENT_POST_EVENT_LOST": 0,
+      "DOMINANT_EXECUTION_INCOMPLETENESS_REASON": "canonical_type_unresolved_safe_partial",
+      "INCOMPLETENESS_REASONS": {
+        "measurement dimension=temperature": 8,
+        "event_identity_incomplete": 20,
+        "missing_entity": 45,
+        "canonical_type_unresolved_safe_partial": 70,
+        "no alias match": 31,
+        "missing_measurement_dimension": 13,
+        "missing_measurement_value": 13,
+        "attribute dimension=color kind=text": 25,
+        "missing_state_value": 43,
+        "unknown_primitive": 8,
+        "measurement dimension=area": 1,
+        "attribute dimension=area kind=number": 2,
+        "measurement dimension=weight": 7,
+        "missing_attribute_dimension": 13,
+        "classification_not_materializable": 2,
+        "missing_relation_identity": 26,
+        "missing_relation_object": 1,
+        "alias=['replace clutch', 'substitui a embreagem', 'substituir a embreagem', 'trocar a embreagem', 'troquei a embreagem']": 12,
+        "alias=['consertar', 'consertei', 'consertei a', 'consertei o', 'repaired', 'repaired the']": 3,
+        "alias=['fez a instalacao', 'instalacao', 'instalacao do', 'instalar', 'instalaram', 'instalei', 'install', 'installed', 'instalou']": 3,
+        "alias=['oil change', 'trocar oleo', 'troquei o oleo']": 6,
+        "measurement dimension=distance": 1,
+        "measurement dimension=balance": 1,
+        "measurement dimension=volume": 3,
+        "measurement dimension=battery_level": 1,
+        "measurement dimension=charge_level": 1,
+        "measurement dimension=battery_charge": 1,
+        "measurement dimension=speed": 2,
+        "event_occurrence_required": 1,
+        "alias=['break', 'broke', 'failed', 'quebrou']": 3
+      },
+      "FAMILY": {
+        "measurement": {
+          "correct": 23,
+          "incomplete": 8,
+          "omitted": 7
+        },
+        "multi_primitive": {
+          "incomplete": 52,
+          "correct": 6
+        },
+        "ambiguity": {
+          "n/a": 9,
+          "omitted": 3
+        },
+        "attribute": {
+          "correct": 8,
+          "omitted": 7,
+          "incomplete": 9
+        },
+        "correction": {
+          "n/a": 29,
+          "omitted": 1
+        },
+        "event": {
+          "correct": 41,
+          "omitted": 1
+        },
+        "negative": {
+          "n/a": 11,
+          "omitted": 1
+        },
+        "query": {
+          "omitted": 24
+        },
+        "relation": {
+          "correct": 14,
+          "incomplete": 22,
+          "omitted": 6
+        },
+        "state": {
+          "correct": 9,
+          "incomplete": 30,
+          "omitted": 3
+        },
+        "temporal": {
+          "n/a": 9,
+          "omitted": 9
+        },
+        "unknown_concept": {
+          "n/a": 12
+        }
+      },
+      "MP": {
+        "MP1": {
+          "runs": 10,
+          "capture": 0.1,
+          "event_present": 10,
+          "measurement_present": 10
+        },
+        "MP2": {
+          "runs": 5,
+          "capture": 1.0,
+          "event_present": 5,
+          "measurement_present": 5
+        },
+        "MP3": {
+          "runs": 5,
+          "capture": 1.0,
+          "event_present": 5,
+          "measurement_present": 5
+        },
+        "MP4": {
+          "runs": 5,
+          "capture": 0.0,
+          "event_present": 5,
+          "measurement_present": 5
+        },
+        "MP5": {
+          "runs": 5,
+          "false_event": 0,
+          "capture": 1.0
+        }
+      },
+      "MP1_RUNS": 10,
+      "MP1_EVENT_PRESENT": 10,
+      "MP1_MEASUREMENT_PRESENT": 10,
+      "MP1_CORRECT_SUBJECT": 0,
+      "MP1_MISSING_SUBJECT": 10,
+      "MP1_WRONG_SUBJECT": 0,
+      "MP1_SAFE_HANDLING_RATE": 1.0,
+      "MP1_USEFUL_CAPTURE_RATE": 0.1,
+      "STABLE_CORRECT": 30,
+      "STABLE_SAFE_ABSTENTION": 5,
+      "UNSTABLE_BUT_SAFE": 59,
+      "UNSAFE_VARIANCE": 19,
+      "ALL_RUNS_CAPTURE": 34,
+      "SOME_RUNS_CAPTURE": 16,
+      "NO_RUN_CAPTURE": 63,
+      "p50": 1528.8154000008944,
+      "p95": 3313.964799977839,
+      "total_tokens": 1177849,
+      "_n": 354,
+      "role": "baseline",
+      "model": "deepseek-chat",
+      "provider": "deepseek",
+      "CANDIDATE_STATUS": "VIABLE_TRADEOFF"
+    },
+    "deepseek_reasoner": {
+      "TOTAL_CASES": 113,
+      "TOTAL_RUNS": 354,
+      "SAFE_HANDLED_INTERACTION_RATE": 0.3446327683615819,
+      "USEFUL_KNOWLEDGE_CAPTURE_RATE": 0.12146892655367232,
+      "VALID_SEMANTIC_PROPOSAL_RATE": 0.980225988700565,
+      "VALID_AND_SEMANTICALLY_USEFUL_PROPOSAL_RATE": 0.1553672316384181,
+      "EXECUTION_READY_PROPOSAL_RATE": 0.1553672316384181,
+      "VALID_ZERO_MATERIALIZABLE_RATE": 0.8248587570621468,
+      "SEMANTIC_COMPLETENESS_PRECISION": 0.5744336569579288,
+      "SEMANTIC_COMPLETENESS_RECALL": 0.8089430894308943,
+      "FIRST_ATTEMPT_VALID_PROPOSAL_RATE": 0.903954802259887,
+      "RETRY_RECOVERED": 12,
+      "RETRY_EXHAUSTED": 22,
+      "POST_S3": 15,
+      "POST_S4": 0,
+      "FALSE_CORRECTION_ACCEPTED": 0,
+      "PARTIAL_EVENT_FALSE_CANONICALIZATION": 0,
+      "MISSING_INFORMATION_INVENTED": 220,
+      "RAW_EVENT_PRESENT_POST_EVENT_LOST": 0,
+      "DOMINANT_EXECUTION_INCOMPLETENESS_REASON": "canonical_type_unresolved_safe_partial",
+      "INCOMPLETENESS_REASONS": {
+        "measurement dimension=temperature": 5,
+        "event_identity_incomplete": 16,
+        "missing_entity": 34,
+        "canonical_type_unresolved_safe_partial": 255,
+        "no alias match": 7,
+        "missing_measurement_dimension": 2,
+        "missing_measurement_value": 2,
+        "attribute dimension=color kind=text": 25,
+        "unknown_primitive": 5,
+        "missing_state_value": 1,
+        "attribute dimension=area kind=number": 3,
+        "measurement dimension=weight": 3,
+        "missing_attribute_dimension": 12,
+        "missing_relation_object": 3,
+        "missing_relation_subject": 3,
+        "missing_relation_identity": 3,
+        "alias=['replace clutch', 'substitui a embreagem', 'substituir a embreagem', 'trocar a embreagem', 'troquei a embreagem']": 6,
+        "alias=['consertar', 'consertei', 'consertei a', 'consertei o', 'repaired', 'repaired the']": 3,
+        "alias=['fez a instalacao', 'instalacao', 'instalacao do', 'instalar', 'instalaram', 'instalei', 'install', 'installed', 'instalou']": 3
+      },
+      "FAMILY": {
+        "measurement": {
+          "correct": 5,
+          "omitted": 33
+        },
+        "multi_primitive": {
+          "incomplete": 58
+        },
+        "ambiguity": {
+          "n/a": 11,
+          "omitted": 1
+        },
+        "attribute": {
+          "correct": 9,
+          "omitted": 7,
+          "incomplete": 8
+        },
+        "correction": {
+          "n/a": 28,
+          "omitted": 2
+        },
+        "event": {
+          "correct": 39,
+          "incomplete": 3
+        },
+        "negative": {
+          "n/a": 12
+        },
+        "query": {
+          "n/a": 24
+        },
+        "relation": {
+          "omitted": 42
+        },
+        "state": {
+          "omitted": 42
+        },
+        "temporal": {
+          "n/a": 18
+        },
+        "unknown_concept": {
+          "n/a": 12
+        }
+      },
+      "MP": {
+        "MP1": {
+          "runs": 10,
+          "capture": 0.0,
+          "event_present": 10,
+          "measurement_present": 10
+        },
+        "MP2": {
+          "runs": 5,
+          "capture": 0.6,
+          "event_present": 5,
+          "measurement_present": 5
+        },
+        "MP3": {
+          "runs": 5,
+          "capture": 0.8,
+          "event_present": 5,
+          "measurement_present": 5
+        },
+        "MP4": {
+          "runs": 5,
+          "capture": 0.0,
+          "event_present": 5,
+          "measurement_present": 5
+        },
+        "MP5": {
+          "runs": 5,
+          "false_event": 0,
+          "capture": 1.0
+        }
+      },
+      "MP1_RUNS": 10,
+      "MP1_EVENT_PRESENT": 10,
+      "MP1_MEASUREMENT_PRESENT": 10,
+      "MP1_CORRECT_SUBJECT": 0,
+      "MP1_MISSING_SUBJECT": 10,
+      "MP1_WRONG_SUBJECT": 0,
+      "MP1_SAFE_HANDLING_RATE": 1.0,
+      "MP1_USEFUL_CAPTURE_RATE": 0.0,
+      "STABLE_CORRECT": 11,
+      "STABLE_SAFE_ABSTENTION": 1,
+      "UNSTABLE_BUT_SAFE": 96,
+      "UNSAFE_VARIANCE": 5,
+      "ALL_RUNS_CAPTURE": 10,
+      "SOME_RUNS_CAPTURE": 5,
+      "NO_RUN_CAPTURE": 98,
+      "p50": 834.5579000015277,
+      "p95": 43532.43870000006,
+      "total_tokens": 1764709,
+      "_n": 354,
+      "role": "alt_same_provider",
+      "model": "deepseek-reasoner",
+      "provider": "deepseek",
+      "CANDIDATE_STATUS": "REJECTED_SAFETY"
+    }
+  },
+  "BEST_CANDIDATE": "NONE",
+  "CURRENT_BASELINE_REMAINS": true,
+  "completed_at": "2026-09-03T21:01:18.468210+00:00",
+  "executive": {
+    "IS_MODEL_CAPABILITY_REEVALUATION_COMPLETE": "YES",
+    "IS_THE_CURRENT_BASELINE_MODEL_CAPABLE_ENOUGH_FOR_ENGINE_V1_USEFUL_CAPTURE": "NO",
+    "IS_THERE_A_BETTER_CURRENTLY_AVAILABLE_CANDIDATE": "NO",
+    "BEST_CANDIDATE": "NONE",
+    "IS_SEMANTIC_COMPLETENESS_PRIMARILY_MODEL_DEPENDENT_UNDER_THE_CURRENT_CONTRACT": "MIXED",
+    "DOES_THE_EXISTING_SEMANTICPROPOSAL_DEMONSTRATE_SUFFICIENT_EXPRESSIVENESS": "YES",
+    "DID_ANY_NEW_ENGINE_DEFECT_APPEAR": "NO",
+    "DOES_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": "YES",
+    "IS_THERE_A_CURRENTLY_AVAILABLE_MODEL_PROVIDER_CONFIGURATION_THAT_MATERIALLY_IMPROVES_USEFUL_SEMANTIC_COMPLETENESS_WITHOUT_REDUCING_EPISTEMIC_SAFETY": "NO",
+    "IS_THE_CURRENT_EFFECTIVE_LANGUAGE_BOUNDARY_SAFE_ENOUGH_FOR_ENGINE_V1": "YES",
+    "IS_THE_CURRENT_EFFECTIVE_LANGUAGE_BOUNDARY_RELIABLE_ENOUGH_FOR_ENGINE_V1": "NO",
+    "WOULD_THE_BEST_CANDIDATE_LANGUAGE_BOUNDARY_BE_RELIABLE_ENOUGH_FOR_ENGINE_V1": null,
+    "AFTER_MODEL_CAPABILITY_REEVALUATION_HIGHEST_REMAINING_ENGINE_V1_BLOCKER": "SEMANTIC_COMPLETENESS",
+    "RECOMMENDATION": "I12.11_CLOSE_PROCEED_TO_MODEL_CAPABILITY_STRATEGY",
+    "I12.6": "CLOSED",
+    "openai_candidates": "NOT_EVALUATED_NO_CREDENTIAL",
+    "INTERPRETER_EVENT_01": "PARTIALLY_MITIGATED",
+    "INTERPRETER_STATE_01": "OPEN",
+    "INTERPRETER_RELATION_01": "OPEN",
+    "LIVE_INTERPRETER_RELIABILITY_01": "PARTIALLY_MITIGATED",
+    "regression_pytest": "3271 passed, 8 live deselected",
+    "material_threshold_pp": 0.1,
+    "capture_delta_reasoner_vs_baseline": -0.2485875706214689
+  }
+}

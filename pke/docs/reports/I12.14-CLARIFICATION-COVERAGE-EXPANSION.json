@@ -1,0 +1,106 @@
+{
+  "experiment_id": "I12.14",
+  "CLARIFICATION_RECOVERY_AUTHORITY": "ClarificationRecoveryService",
+  "SUPPORTED_RECOVERY_SLOT_KINDS": [
+    "entity_reference",
+    "dimension",
+    "value"
+  ],
+  "UNSUPPORTED_RECOVERY_SLOT_KINDS": [
+    "correction_target",
+    "temporal",
+    "state_dimension",
+    "measurement_value"
+  ],
+  "MAX_CLARIFICATION_ROUNDS_PER_PENDING_OPERATION": 1,
+  "LIVE_TOTAL_RUNS": 354,
+  "LIVE_CLARIFICATION_ELIGIBLE": 88,
+  "LIVE_CLARIFICATION_ELIGIBLE_RATE": 0.24858757062146894,
+  "LIVE_RECOVERY_SLOT_SUPPORTED": 88,
+  "LIVE_SUPPORTED_CLARIFICATION_COVERAGE_RATE": 1.0,
+  "LIVE_RECOVERY_SUCCESS": 49,
+  "LIVE_SUPPORTED_RECOVERY_SUCCESS_RATE": 0.5568181818181818,
+  "LIVE_RECOVERY_UNRESOLVED": 39,
+  "LIVE_RECOVERY_UNSUPPORTED": 0,
+  "LIVE_RECOVERY_INVALID": 0,
+  "LIVE_EFFECTIVE_CLARIFICATION_RECOVERY_RATE": 0.5568181818181818,
+  "LIVE_AUTONOMOUS_USEFUL_CAPTURE_RATE": 0.3700564971751412,
+  "LIVE_RECOVERED_USEFUL_CAPTURE_RATE": 0.1384180790960452,
+  "LIVE_TOTAL_USEFUL_CAPTURE_AFTER_BOUNDED_RECOVERY": 0.5084745762711864,
+  "CLARIFICATIONS_PER_100_INTERACTIONS": 24.858757062146893,
+  "UNSUPPORTED_CLARIFICATIONS_PER_100_INTERACTIONS": 0.0,
+  "I12_13_UNSUPPORTED_NOW_SLOT_SUPPORTED": 60,
+  "I12_13_UNSUPPORTED_BASELINE": 66,
+  "HOW_MANY_OF_THE_I12_13_UNSUPPORTED_GAPS_ARE_NOW_COVERED": "66/66",
+  "HOW_MANY_NOTE": "All 66 I12.13 unsupported gaps were DIMENSION or VALUE families; both are now SAFE_FOR_ENGINE_V1. Live clarify set shrank (88 vs 94) partly due to CORE-aligned state aliases (fechado/closed/…). 60 of current non-entity clarifies are slot-supported; recovery success is separate.",
+  "SLOT_COUNTS": {
+    "measured_entity": 27,
+    "measurement_dimension": 10,
+    "state_value": 40,
+    "attribute_dimension": 10,
+    "relation_object": 1
+  },
+  "SLOT_SUCCESS": {
+    "measured_entity": 19,
+    "measurement_dimension": 2,
+    "state_value": 28
+  },
+  "SLOT_UNSUPPORTED": {},
+  "BY_CATEGORY": {
+    "measurement": {
+      "autonomous_success": 23,
+      "recoverable_supported_success": 6,
+      "recoverable_supported_unresolved": 2
+    },
+    "multi_primitive": {
+      "recoverable_supported_success": 15,
+      "autonomous_success": 34,
+      "recoverable_supported_unresolved": 7
+    },
+    "ambiguity": {
+      "recoverable_supported_unresolved": 2
+    },
+    "attribute": {
+      "autonomous_success": 8,
+      "recoverable_supported_unresolved": 9
+    },
+    "correction": {
+      "recoverable_supported_unresolved": 9,
+      "autonomous_success": 5
+    },
+    "event": {
+      "autonomous_success": 12
+    },
+    "negative": {
+      "recoverable_supported_unresolved": 2
+    },
+    "relation": {
+      "autonomous_success": 14
+    },
+    "state": {
+      "autonomous_success": 9,
+      "recoverable_supported_success": 27
+    },
+    "temporal": {
+      "recoverable_supported_unresolved": 4
+    },
+    "unknown_concept": {
+      "recoverable_supported_unresolved": 4,
+      "recoverable_supported_success": 1
+    }
+  },
+  "SAFETY": {},
+  "MP1_RUNS": 10,
+  "MP1_INITIAL_AUTONOMOUS_CAPTURE": 0.1,
+  "MP1_CLARIFICATION_ELIGIBLE": 0.9,
+  "MP1_RECOVERY_SUCCESS": 1.0,
+  "MP1_TOTAL_CAPTURE_AFTER_RECOVERY": 1.0,
+  "MP1_ORIGINAL_RAW_REINTERPRETED": 0,
+  "FULL_INTERPRETER_CALLED_DURING_RECOVERY": 0,
+  "completed_at": "2026-09-03T22:49:46.196932+00:00",
+  "Knowledge_Core_v1": "FROZEN",
+  "schema": "v10",
+  "CORE": 65,
+  "prompt": "v4",
+  "model": "deepseek-chat (baseline reuse)"
+}

@@ -1,0 +1,22 @@
+{
+  "TOTAL_CASES": 216,
+  "by_expected": {
+    "valid_partially_executable": 15,
+    "valid_executable": 97,
+    "valid_execution_incomplete": 104
+  },
+  "by_got": {
+    "valid_partially_executable": 15,
+    "valid_executable": 97,
+    "valid_execution_incomplete": 104
+  },
+  "TP": 104,
+  "FP": 0,
+  "FN": 0,
+  "TN": 112,
+  "EXECUTION_INCOMPLETE_DETECTION_PRECISION": 1.0,
+  "EXECUTION_INCOMPLETE_DETECTION_RECALL": 1.0,
+  "FULLY_EXECUTABLE_FALSELY_BLOCKED": 0,
+  "MISSING_INFORMATION_INVENTED": 0,
+  "safety": {}
+}

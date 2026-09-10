@@ -1,0 +1,137 @@
+{
+  "experiment_id": "I12-R",
+  "title": "Engine v1 Final Revalidation and Freeze",
+  "recommendation": "ENGINE_V1_FREEZE",
+  "frozen": {
+    "Knowledge_Core_v1": "FROZEN",
+    "Engine_v1": "FROZEN",
+    "schema": "v10",
+    "CORE": 65,
+    "prompt": "v4",
+    "provider_baseline": "deepseek-chat",
+    "SemanticProposal": "unchanged",
+    "Wire": "unchanged",
+    "RetryPolicy": "unchanged",
+    "holdout": "UNTOUCHED",
+    "migration": "none"
+  },
+  "executive": {
+    "IS_ENGINE_V1_FINAL_REVALIDATION_COMPLETE": true,
+    "IS_LANGUAGE_BOUNDARY_SAFE_ENOUGH_FOR_ENGINE_V1": true,
+    "IS_ENGINE_V1_RELIABLE_WITHIN_ITS_EXPLICIT_CAPABILITY_BOUNDARY": true,
+    "IS_ENGINE_V1_END_TO_END_EPISTEMICALLY_SAFE": true,
+    "DO_ANY_OPEN_DEBTS_REMAIN_ENGINE_V1_SAFETY_BLOCKERS": false,
+    "DID_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": true,
+    "CAN_ENGINE_V1_BE_FROZEN": true
+  },
+  "authority": {
+    "ENGINE_AUTHORITY_CONFLICT_COUNT": 0,
+    "SECOND_INTERPRETER_COUNT": 0,
+    "DOWNSTREAM_RAW_REINTERPRETATION": 0
+  },
+  "capability_metrics": {
+    "FINAL_LIVE_EXECUTE_PRECISION": 1.0,
+    "FINAL_LIVE_CLARIFY_PRECISION": 1.0,
+    "FINAL_LIVE_CAPABILITY_DECISION_ACCURACY": 0.9411764705882353,
+    "FINAL_LIVE_UNSAFE_SEMANTIC_ACTION_RATE": 0.0,
+    "FINAL_AUTONOMOUS_USEFUL_CAPTURE": 0.4222222222222222,
+    "FINAL_USEFUL_CAPTURE_AFTER_BOUNDED_RECOVERY": 0.5833333333333334,
+    "live_sample": {
+      "cases": 60,
+      "N": 3,
+      "runs": 180,
+      "provider": "deepseek-chat",
+      "prompt": "pke.interpret.v4"
+    },
+    "checkpoint_replay": {
+      "TOTAL_RUNS": 300,
+      "LIVE_UNSAFE_SEMANTIC_ACTION_RATE": 0.0,
+      "LIVE_CAPABILITY_DECISION_ACCURACY": 1.0,
+      "LIVE_USEFUL_AUTONOMOUS_CAPTURE": 0.46,
+      "LIVE_USEFUL_CAPTURE_AFTER_SUPPORTED_RECOVERY": 0.6466666666666666
+    }
+  },
+  "safety": {
+    "ALL_CRITICAL_ENGINE_SAFETY_COUNTERS": 0,
+    "FALSE_CORRECTION_ACCEPTED": 0,
+    "FALSE_CANONICALIZATION": 0,
+    "FALSE_PRIMITIVE_COMMIT": 0,
+    "KNOWN_SEMANTICS_DROPPED": 0,
+    "MISSING_INFORMATION_INVENTED": 0,
+    "RAW_TEXT_REINTERPRETED_DOWNSTREAM": 0,
+    "SECOND_INTERPRETER_USED": 0,
+    "RETRY_DUPLICATE_COMMIT": 0,
+    "CLARIFICATION_DUPLICATE_COMMIT": 0,
+    "WRONG_USER_MUTATION": 0,
+    "WRONG_CONVERSATION_MUTATION": 0,
+    "FALSE_TEMPORAL_CERTAINTY": 0,
+    "FALSE_QUERY_NEGATIVE_FROM_UNKNOWN": 0,
+    "MP5_FALSE_EVENT": 0,
+    "STATE_FALSE_CAUSAL_EVENT": 0,
+    "RELATION_FALSE_START_EVENT": 0
+  },
+  "debts": {
+    "INTERPRETER-STATE-01": "PARTIALLY_MITIGATED",
+    "INTERPRETER-RELATION-01": "PARTIALLY_MITIGATED",
+    "INTERPRETER-EVENT-01": "CLOSED",
+    "ONTOLOGY-COVERAGE-01": "POST_V1",
+    "CLARIFICATION-COVERAGE": "PARTIALLY_MITIGATED",
+    "LIVE-INTERPRETER-RELIABILITY-01": "PARTIALLY_MITIGATED",
+    "MODEL_CAPABILITY": "POST_V1",
+    "PROVIDER_ROBUSTNESS": "CLOSED",
+    "CORRECTION_SAFETY": "CLOSED",
+    "MULTI_PRIMITIVE": "CLOSED",
+    "TEMPORAL_SAFETY": "CLOSED"
+  },
+  "debt_classification": [
+    {"debt": "Interpreter State", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "class": "POST_V1"},
+    {"debt": "Interpreter Relation", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "class": "POST_V1"},
+    {"debt": "Interpreter Event", "status": "CLOSED", "engine_blocker": false, "class": "CLOSED"},
+    {"debt": "Ontology coverage", "status": "OPEN", "engine_blocker": false, "class": "POST_V1"},
+    {"debt": "Clarification coverage", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "class": "POST_V1"},
+    {"debt": "Model capability", "status": "bounded", "engine_blocker": false, "class": "POST_V1"},
+    {"debt": "Live interpreter recall", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "class": "POST_V1"},
+    {"debt": "Provider robustness", "status": "CLOSED", "engine_blocker": false, "class": "NON_BLOCKING"},
+    {"debt": "Correction safety", "status": "CLOSED", "engine_blocker": false, "class": "CLOSED"},
+    {"debt": "Multi-primitive preservation", "status": "CLOSED", "engine_blocker": false, "class": "CLOSED"},
+    {"debt": "Temporal safety", "status": "CLOSED", "engine_blocker": false, "class": "CLOSED"}
+  ],
+  "clarification": {
+    "supported": ["entity_reference", "dimension", "state_value"],
+    "unsupported_post_v1": ["correction_target", "temporal", "state_dimension", "measurement_value"]
+  },
+  "freeze_corpus": {
+    "path": "tests/engine_v1_freeze/",
+    "size": 530,
+    "anchors": "F01-F50"
+  },
+  "regression": {
+    "command": "pytest tests/ -m \"not live\"",
+    "passed": 4715,
+    "failed": 0,
+    "deselected_live": 8,
+    "baseline_entering": 4177
+  },
+  "static": {
+    "ruff_tests_engine_v1_freeze": "All checks passed (E402 ignored on run scripts)"
+  },
+  "next_phase": "PRODUCT V1 / APPLICATION LAYER",
+  "artifacts": {
+    "freeze_doc": "docs/ENGINE-V1-FREEZE.md",
+    "adr": "docs/decisions/0069-engine-v1-final-revalidation-and-freeze.md",
+    "live": "docs/reports/i12r_artifacts/I12-R-LIVE-CAPABILITY.json",
+    "checkpoint": "docs/reports/i12r_artifacts/I12-R-CHECKPOINT-CAPABILITY.json",
+    "failure_matrix": "docs/reports/i12r_artifacts/FAILURE-MATRIX.md"
+  },
+  "changes": {
+    "feature_code": false,
+    "core": false,
+    "schema": false,
+    "prompt": false,
+    "model": false,
+    "SemanticProposal": false,
+    "Wire": false,
+    "RetryPolicy": false,
+    "docs_tests_metadata_only": true
+  }
+}

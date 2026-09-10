@@ -1,0 +1,19 @@
+{
+  "experiment_id": "I12.7.1-LIVE",
+  "started_at": "2026-09-03T16:43:51.692757+00:00",
+  "git_commit": null,
+  "prompt_version": "pke.interpret.v4",
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": null,
+  "retry_policy": "Interpreter RetryPolicy unchanged (I12.2)",
+  "semantic_proposal": "unchanged",
+  "wire": "unchanged",
+  "schema": "10",
+  "core_version": 65,
+  "corpus_fingerprint": "75b3786f61e5a68c",
+  "corpus_size": 5,
+  "logical_requests": 25
+}

@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-09-02 13:17 UTC",
+  "model": "deepseek-chat",
+  "offline_gate": {
+    "passed": 397,
+    "failed": 0,
+    "skipped": 7,
+    "ok": true
+  },
+  "live_ran": true,
+  "metrics": {
+    "deterministic_cases": 41,
+    "deterministic_passed": 41,
+    "PRIMITIVE_ROUTING_ACCURACY": 1.0,
+    "PRIMITIVE_COLLAPSE_RATE": 0.0,
+    "CANONICAL_POSITIVE_ACCURACY": 1.0,
+    "FALSE_CANONICALIZATION_RATE": 0.0,
+    "FALSE_CANONICALIZATION_COUNT": 0,
+    "SAFE_ABSTENTION_COUNT": 16,
+    "SAFE_ABSTENTION_CORRECT": 16,
+    "SENSE_RECOGNITION_ACCURACY": 1.0,
+    "SEMANTIC_RESOLUTION_DETERMINISM": 1.0,
+    "primitive_collapse_confusions": {},
+    "live_runs": 54,
+    "PROVIDER_RESPONSE_SUCCESS_RATE": 1.0,
+    "RAW_OUTPUT_RECOVERY_RATE": 1.0,
+    "TRANSPORT_VALIDITY_RATE": 0.9074,
+    "VALID_SEMANTIC_PROPOSAL_RATE": 1.0,
+    "SEMANTIC_ACTIONABILITY_RATE": 0.9796,
+    "V2_COMPAT_FALLBACK_RATE": 0.0,
+    "PROPOSAL_PARSE_SUCCESS_RATE": 0.9074,
+    "PROPOSAL_SEMANTIC_COMPLETENESS_RATE": 0.9796,
+    "PRIMITIVE_ROUTING_SUCCESS_RATE": 0.9184,
+    "SENSE_RECOGNITION_SUCCESS_RATE": 1.0,
+    "CANONICAL_RESOLUTION_SUCCESS_RATE": 0.9184,
+    "SAFE_ABSTENTION_RATE": 1.0,
+    "KNOWLEDGE_SUCCESS_RATE": 0.4444,
+    "live_by_group": {
+      "state": {
+        "knowledge_success_rate": 0.6667,
+        "runs": 9
+      },
+      "relation": {
+        "knowledge_success_rate": 0.5556,
+        "runs": 9
+      },
+      "event": {
+        "knowledge_success_rate": 0.6111,
+        "runs": 18
+      },
+      "attribute": {
+        "knowledge_success_rate": 0.0,
+        "runs": 6
+      },
+      "safety": {
+        "knowledge_success_rate": 0.1667,
+        "runs": 12
+      }
+    },
+    "severity_counts": {
+      "S0": 89,
+      "S1": 6,
+      "S2": 0,
+      "S3": 0,
+      "S4": 0
+    },
+    "frontier_counts": {
+      "PASS": 24,
+      "OTHER": 5,
+      "MATERIALIZATION": 9,
+      "PROPOSAL_SEMANTICS": 1,
+      "ONTOLOGY_GAP": 15
+    },
+    "event_frontier_stages": {
+      "PASS": 11,
+      "MATERIALIZATION": 4,
+      "ONTOLOGY_GAP": 3
+    }
+  },
+  "comparison": {
+    "canonical_before": 0.9556,
+    "canonical_after": 0.9184,
+    "knowledge_before": 0.3148,
+    "knowledge_after": 0.4444,
+    "frontier_before": {
+      "PASS": 17,
+      "MATERIALIZATION": 10,
+      "OTHER": 9,
+      "ONTOLOGY_GAP": 18
+    },
+    "frontier_after": {
+      "PASS": 24,
+      "OTHER": 5,
+      "MATERIALIZATION": 9,
+      "PROPOSAL_SEMANTICS": 1,
+      "ONTOLOGY_GAP": 15
+    }
+  },
+  "recommendation": "PROCEED",
+  "storage": {
+    "schema": "v6",
+    "migration": "none"
+  }
+}

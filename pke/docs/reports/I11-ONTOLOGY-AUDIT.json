@@ -1,0 +1,731 @@
+{
+  "metrics": {
+    "overall_concept_coverage": 0.5577,
+    "action_coverage": 0.9231,
+    "event_coverage": 0.6667,
+    "state_coverage": 0.0,
+    "relation_coverage": 0.0,
+    "entity_type_coverage": 0.125,
+    "alias_coverage": 0.7308,
+    "new_concept_candidates": 6,
+    "representation_gaps": 8,
+    "alias_gaps": 9
+  },
+  "inventory": {
+    "total": 33,
+    "by_kind": {
+      "entity": 4,
+      "event": 8,
+      "action": 6,
+      "relation": 2,
+      "attribute": 3,
+      "domain": 7,
+      "other": 3
+    },
+    "max_hierarchy_depth": 1,
+    "exposed_to_llm_count": 33,
+    "catalog_exposed": {
+      "entity_types": [
+        "entity.automobile",
+        "entity.organization",
+        "entity.person",
+        "entity.vehicle"
+      ],
+      "event_types": [
+        "event.appointment",
+        "event.intent",
+        "event.maintenance",
+        "event.obligation",
+        "event.payment",
+        "event.purchase",
+        "event.recurring_bill",
+        "event.vehicle_maintenance"
+      ],
+      "actions": [
+        "action.attend",
+        "action.buy",
+        "action.maintain",
+        "action.oil_change",
+        "action.pay",
+        "action.replace"
+      ],
+      "attributes": [
+        "attribute.amount",
+        "attribute.maintenance_type",
+        "attribute.mileage"
+      ],
+      "domains": [
+        "domain.appointments",
+        "domain.finance",
+        "domain.health",
+        "domain.home",
+        "domain.services",
+        "domain.shopping",
+        "domain.vehicle"
+      ],
+      "roles": [
+        "role.actor",
+        "role.provider",
+        "role.subject"
+      ]
+    }
+  },
+  "coverage": [
+    {
+      "need_id": "need.action.attend",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "action.attend",
+      "case_ids": [
+        "HEALTH_002"
+      ]
+    },
+    {
+      "need_id": "need.action.buy",
+      "classification": "DIRECT",
+      "canonical_key": "action.buy",
+      "case_ids": [
+        "SHOP_001"
+      ]
+    },
+    {
+      "need_id": "need.action.cancel",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "SVC_002",
+        "EQUIV_G4"
+      ]
+    },
+    {
+      "need_id": "need.action.install",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "HOME_003",
+        "EQUIV_G3"
+      ]
+    },
+    {
+      "need_id": "need.action.lend",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "PEOPLE_003",
+        "COLL_002"
+      ]
+    },
+    {
+      "need_id": "need.action.pay",
+      "classification": "DIRECT",
+      "canonical_key": "action.pay",
+      "case_ids": [
+        "UNC_001"
+      ]
+    },
+    {
+      "need_id": "need.action.renew",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "DOC_002"
+      ]
+    },
+    {
+      "need_id": "need.action.repair",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "SVC_001"
+      ]
+    },
+    {
+      "need_id": "need.action.replace",
+      "classification": "DIRECT",
+      "canonical_key": "action.replace",
+      "case_ids": [
+        "HOME_002",
+        "EQUIV_G1"
+      ]
+    },
+    {
+      "need_id": "need.action.reserve",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "TRAVEL_001",
+        "EQUIV_G5"
+      ]
+    },
+    {
+      "need_id": "need.action.return_item",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "EQUIV_G2"
+      ]
+    },
+    {
+      "need_id": "need.action.return_trip",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "TRAVEL_002"
+      ]
+    },
+    {
+      "need_id": "need.action.start",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "PEOPLE_002",
+        "EDU_001"
+      ]
+    },
+    {
+      "need_id": "need.attr.amount",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "attribute.amount",
+      "case_ids": [
+        "PEOPLE_003",
+        "SVC_001",
+        "COLL_002",
+        "UNC_001",
+        "CTX_FRIDGE_04"
+      ]
+    },
+    {
+      "need_id": "need.attr.expiry",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "DOC_001"
+      ]
+    },
+    {
+      "need_id": "need.attr.quantity",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "SHOP_001"
+      ]
+    },
+    {
+      "need_id": "need.domain.education",
+      "classification": "NEW_CONCEPT_CANDIDATE",
+      "canonical_key": null,
+      "case_ids": [
+        "EDU_001",
+        "EDU_002"
+      ]
+    },
+    {
+      "need_id": "need.domain.finance",
+      "classification": "DIRECT",
+      "canonical_key": "domain.finance",
+      "case_ids": [
+        "PEOPLE_003",
+        "COLL_002",
+        "NEG_002",
+        "UNC_001"
+      ]
+    },
+    {
+      "need_id": "need.domain.health",
+      "classification": "DIRECT",
+      "canonical_key": "domain.health",
+      "case_ids": [
+        "HEALTH_002"
+      ]
+    },
+    {
+      "need_id": "need.domain.home",
+      "classification": "DIRECT",
+      "canonical_key": "domain.home",
+      "case_ids": [
+        "HOME_001",
+        "HOME_002",
+        "HOME_003"
+      ]
+    },
+    {
+      "need_id": "need.domain.services",
+      "classification": "DIRECT",
+      "canonical_key": "domain.services",
+      "case_ids": [
+        "SVC_002"
+      ]
+    },
+    {
+      "need_id": "need.domain.shopping",
+      "classification": "DIRECT",
+      "canonical_key": "domain.shopping",
+      "case_ids": [
+        "SHOP_001",
+        "SHOP_002"
+      ]
+    },
+    {
+      "need_id": "need.domain.travel",
+      "classification": "NEW_CONCEPT_CANDIDATE",
+      "canonical_key": null,
+      "case_ids": [
+        "TRAVEL_001",
+        "TRAVEL_002"
+      ]
+    },
+    {
+      "need_id": "need.domain.vehicle",
+      "classification": "DIRECT",
+      "canonical_key": "domain.vehicle",
+      "case_ids": [
+        "NEG_001"
+      ]
+    },
+    {
+      "need_id": "need.entity.appliance",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "HOME_001",
+        "HOME_003",
+        "SVC_001",
+        "COLL_001"
+      ]
+    },
+    {
+      "need_id": "need.entity.document",
+      "classification": "NEW_CONCEPT_CANDIDATE",
+      "canonical_key": null,
+      "case_ids": [
+        "DOC_001",
+        "DOC_002"
+      ]
+    },
+    {
+      "need_id": "need.entity.home_component",
+      "classification": "NEW_CONCEPT_CANDIDATE",
+      "canonical_key": null,
+      "case_ids": [
+        "HOME_002"
+      ]
+    },
+    {
+      "need_id": "need.entity.organization",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "entity.organization",
+      "case_ids": [
+        "PEOPLE_001"
+      ]
+    },
+    {
+      "need_id": "need.entity.person",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "entity.person",
+      "case_ids": [
+        "PEOPLE_001",
+        "PEOPLE_002",
+        "PEOPLE_003",
+        "HEALTH_001",
+        "COLL_002",
+        "UNC_003"
+      ]
+    },
+    {
+      "need_id": "need.entity.place",
+      "classification": "NEW_CONCEPT_CANDIDATE",
+      "canonical_key": null,
+      "case_ids": [
+        "TRAVEL_001",
+        "TRAVEL_002"
+      ]
+    },
+    {
+      "need_id": "need.entity.product",
+      "classification": "NEW_CONCEPT_CANDIDATE",
+      "canonical_key": null,
+      "case_ids": [
+        "SHOP_002"
+      ]
+    },
+    {
+      "need_id": "need.entity.vehicle",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "entity.automobile",
+      "case_ids": [
+        "NEG_001",
+        "EQUIV_G1"
+      ]
+    },
+    {
+      "need_id": "need.event.anomaly",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "HOME_001"
+      ]
+    },
+    {
+      "need_id": "need.event.appointment",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "event.appointment",
+      "case_ids": [
+        "EDU_002",
+        "UNC_002"
+      ]
+    },
+    {
+      "need_id": "need.event.education",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "EDU_001"
+      ]
+    },
+    {
+      "need_id": "need.event.health_vaccination",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "HEALTH_001"
+      ]
+    },
+    {
+      "need_id": "need.event.health_visit",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "event.appointment",
+      "case_ids": [
+        "HEALTH_002"
+      ]
+    },
+    {
+      "need_id": "need.event.installation",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "HOME_003",
+        "EQUIV_G3"
+      ]
+    },
+    {
+      "need_id": "need.event.lend",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "PEOPLE_003"
+      ]
+    },
+    {
+      "need_id": "need.event.maintenance",
+      "classification": "DIRECT",
+      "canonical_key": "event.maintenance",
+      "case_ids": [
+        "HOME_002",
+        "SVC_001",
+        "CTX_FRIDGE_04"
+      ]
+    },
+    {
+      "need_id": "need.event.obligation_expiry",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "event.obligation",
+      "case_ids": [
+        "DOC_001"
+      ]
+    },
+    {
+      "need_id": "need.event.purchase",
+      "classification": "DIRECT",
+      "canonical_key": "event.purchase",
+      "case_ids": [
+        "SHOP_001"
+      ]
+    },
+    {
+      "need_id": "need.event.recurring_bill",
+      "classification": "DIRECT",
+      "canonical_key": "event.recurring_bill",
+      "case_ids": [
+        "SVC_002"
+      ]
+    },
+    {
+      "need_id": "need.event.reservation",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "TRAVEL_001",
+        "EQUIV_G5"
+      ]
+    },
+    {
+      "need_id": "need.event.service_cancel",
+      "classification": "GENERIZABLE",
+      "canonical_key": null,
+      "case_ids": [
+        "SVC_002",
+        "EQUIV_G4"
+      ]
+    },
+    {
+      "need_id": "need.event.travel",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "TRAVEL_002"
+      ]
+    },
+    {
+      "need_id": "need.event.vehicle_maintenance",
+      "classification": "ALIAS_NEEDED",
+      "canonical_key": "event.vehicle_maintenance",
+      "case_ids": [
+        "EQUIV_G1"
+      ]
+    },
+    {
+      "need_id": "need.relation.cohabitation",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "PEOPLE_002"
+      ]
+    },
+    {
+      "need_id": "need.relation.employment",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "PEOPLE_001"
+      ]
+    },
+    {
+      "need_id": "need.state.anomaly",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "HOME_001",
+        "COLL_001"
+      ]
+    },
+    {
+      "need_id": "need.state.depletion",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "SHOP_002"
+      ]
+    },
+    {
+      "need_id": "need.state.unpaid",
+      "classification": "REPRESENTATION_GAP",
+      "canonical_key": null,
+      "case_ids": [
+        "NEG_002"
+      ]
+    }
+  ],
+  "llm_key_observations": {
+    "domain.home": 25,
+    "domain.services": 23,
+    "event.appointment": 20,
+    "domain.appointments": 16,
+    "event.purchase": 15,
+    "action.buy": 15,
+    "event.maintenance": 13,
+    "action.pay": 13,
+    "domain.finance": 13,
+    "action.return": 13,
+    "action.attend": 12,
+    "action.install": 11,
+    "event.payment": 11,
+    "action.give": 11,
+    "action.cancel": 9,
+    "action.reserve": 9,
+    "action.book": 9,
+    "action.replace": 8,
+    "event.recurring_bill": 8,
+    "event.intent": 7,
+    "action.maintain": 7,
+    "domain.vehicle": 5,
+    "domain.education": 5,
+    "domain.health": 5,
+    "domain.shopping": 4,
+    "action.renew": 3,
+    "action.update": 3,
+    "event.vehicle_maintenance": 3,
+    "event.obligation": 3,
+    "domain.work": 2
+  },
+  "concept_candidates": [
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "return",
+      "observed_llm_keys": [
+        "action.return"
+      ],
+      "occurrences": 13
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "install",
+      "observed_llm_keys": [
+        "action.install"
+      ],
+      "occurrences": 11
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "give",
+      "observed_llm_keys": [
+        "action.give"
+      ],
+      "occurrences": 11
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "cancel",
+      "observed_llm_keys": [
+        "action.cancel"
+      ],
+      "occurrences": 9
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "reserve",
+      "observed_llm_keys": [
+        "action.reserve"
+      ],
+      "occurrences": 9
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "book",
+      "observed_llm_keys": [
+        "action.book"
+      ],
+      "occurrences": 9
+    },
+    {
+      "proposed_kind": "domain",
+      "proposed_meaning": "education",
+      "observed_llm_keys": [
+        "domain.education"
+      ],
+      "occurrences": 5
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "renew",
+      "observed_llm_keys": [
+        "action.renew"
+      ],
+      "occurrences": 3
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "update",
+      "observed_llm_keys": [
+        "action.update"
+      ],
+      "occurrences": 3
+    },
+    {
+      "proposed_kind": "domain",
+      "proposed_meaning": "work",
+      "observed_llm_keys": [
+        "domain.work"
+      ],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "domain",
+      "proposed_meaning": "people",
+      "observed_llm_keys": [
+        "domain.people"
+      ],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "travel",
+      "observed_llm_keys": [
+        "action.travel"
+      ],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "arrive",
+      "observed_llm_keys": [
+        "action.arrive"
+      ],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "domain",
+      "proposed_meaning": "travel",
+      "observed_llm_keys": [
+        "domain.travel"
+      ],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "entity",
+      "proposed_meaning": "documento oficial",
+      "observed_llm_keys": [],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "entity",
+      "proposed_meaning": "local/lugar",
+      "observed_llm_keys": [],
+      "occurrences": 2
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "start",
+      "observed_llm_keys": [
+        "action.start"
+      ],
+      "occurrences": 1
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "move",
+      "observed_llm_keys": [
+        "action.move"
+      ],
+      "occurrences": 1
+    },
+    {
+      "proposed_kind": "action",
+      "proposed_meaning": "live",
+      "observed_llm_keys": [
+        "action.live"
+      ],
+      "occurrences": 1
+    },
+    {
+      "proposed_kind": "entity",
+      "proposed_meaning": "componente doméstico",
+      "observed_llm_keys": [],
+      "occurrences": 1
+    },
+    {
+      "proposed_kind": "entity",
+      "proposed_meaning": "produto consumível",
+      "observed_llm_keys": [],
+      "occurrences": 1
+    }
+  ],
+  "recommendations": [
+    "STATE/relation não têm kind no wire — avaliar primitives IR antes de novos conceitos CORE",
+    "Adicionar relation.employment / relation.residence como candidatos EXTENDED, não CORE imediato",
+    "Candidato action.return: observado 13× — mais próximo: action.attend, action.buy, action.maintain",
+    "Candidato action.install: observado 11× — mais próximo: action.attend, action.buy, action.maintain",
+    "Candidato action.give: observado 11× — mais próximo: action.attend, action.buy, action.maintain",
+    "Candidato action.cancel: observado 9× — mais próximo: action.attend, action.buy, action.maintain",
+    "Candidato action.reserve: observado 9× — mais próximo: action.attend, action.buy, action.maintain",
+    "Priorizar aliases em SEMANTIC_HINTS/prompt antes de novos seeds CORE"
+  ]
+}

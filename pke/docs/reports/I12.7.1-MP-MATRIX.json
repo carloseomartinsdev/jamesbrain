@@ -1,0 +1,65 @@
+[
+  {
+    "case": "MP1",
+    "proposal": "E+M",
+    "resolution": "E partial",
+    "persistability": "E wire-blocked",
+    "wire": "M",
+    "persisted": "M",
+    "non_materialized": "E"
+  },
+  {
+    "case": "MP2",
+    "proposal": "E+M",
+    "resolution": "E partial",
+    "persistability": "E wire-blocked",
+    "wire": "M",
+    "persisted": "M",
+    "non_materialized": "E"
+  },
+  {
+    "case": "MP3",
+    "proposal": "E+M",
+    "resolution": "E partial",
+    "persistability": "E wire-blocked",
+    "wire": "M",
+    "persisted": "M",
+    "non_materialized": "E"
+  },
+  {
+    "case": "MP4",
+    "proposal": "E+M",
+    "resolution": "E partial",
+    "persistability": "E wire-blocked",
+    "wire": "M",
+    "persisted": "M",
+    "non_materialized": "E"
+  },
+  {
+    "case": "MP5",
+    "proposal": "measurement_only",
+    "resolution": "E resolved",
+    "persistability": "E allowed",
+    "wire": "M",
+    "persisted": "M",
+    "non_materialized": "NONE"
+  },
+  {
+    "case": "MS18",
+    "proposal": "E+M",
+    "resolution": "E partial",
+    "persistability": "E wire-blocked",
+    "wire": "M",
+    "persisted": "M",
+    "non_materialized": "E"
+  },
+  {
+    "case": "RESOLVED_EM",
+    "proposal": "resolved_materialized",
+    "resolution": "E resolved",
+    "persistability": "E allowed",
+    "wire": "E+M",
+    "persisted": "E+M",
+    "non_materialized": "NONE"
+  }
+]

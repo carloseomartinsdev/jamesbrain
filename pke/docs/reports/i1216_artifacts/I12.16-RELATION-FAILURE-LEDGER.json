@@ -1,0 +1,843 @@
+{
+  "experiment_id": "I12.16-CHAR",
+  "frozen": true,
+  "source": "I12.11 baseline_deepseek_chat category=relation; re-evaluated on current Engine",
+  "TOTAL_RELATION_RUNS": 36,
+  "TOTAL_RELATION_CASES": 12,
+  "primary_failure_counts": {
+    "RELATION_CORRECT": 14,
+    "VALID_RELATION_CANONICAL_UNRESOLVED": 22
+  },
+  "first_causal_stage_counts": {
+    "S9_FINAL_OUTCOME": 14,
+    "S4_CONCEPT_RESOLUTION": 22
+  },
+  "RELATION_AUTONOMOUS_CAPTURE_RATE": 0.3888888888888889,
+  "RELATION_RECOVERABLE_GAP_RATE": 0.0,
+  "RELATION_USEFUL_CAPTURE_AFTER_BOUNDED_RECOVERY": 0.3888888888888889,
+  "RELATION_FALSE_RECOVERABLE_GAP": 0,
+  "recovery": {},
+  "WHAT_IS_THE_DOMINANT_CAUSE_OF_REMAINING_RELATION_FAILURES": "CANONICALIZATION_FAILURE",
+  "deterministic_downstream_defect_found": false,
+  "unresolved_expression_histogram": {
+    "has": 1,
+    "é do": 1,
+    "owned by": 2,
+    "é segurado por": 1,
+    "sou segurado por": 1,
+    "is insured by": 1,
+    "member of": 1,
+    "é membro de": 1,
+    "membro de": 1,
+    "responsible for": 2,
+    "responsável por": 1,
+    "fica em": 2,
+    "located in": 1,
+    "não trabalha mais": 3,
+    "nunca trabalhou": 2,
+    "nunca trabalhou em": 1
+  },
+  "CAN_EXISTING_SEMANTICPROPOSAL_EXPRESS_A_COMPLETE_RELATION_ASSERTION": true,
+  "runs": [
+    {
+      "case_id": "RL01",
+      "run": 1,
+      "utterance": "joão trabalha na acme",
+      "relation_expression": "trabalha em",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.employed_by",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL01",
+      "run": 2,
+      "utterance": "joão trabalha na acme",
+      "relation_expression": "trabalha em",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.employed_by",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL01",
+      "run": 3,
+      "utterance": "joão trabalha na acme",
+      "relation_expression": "trabalha na",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.employed_by",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL02",
+      "run": 1,
+      "utterance": "joão trabalha lá na acme",
+      "relation_expression": "trabalha em",
+      "link_semantics": true,
+      "subject": "João",
+      "object": "acme",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.employed_by",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL02",
+      "run": 2,
+      "utterance": "joão trabalha lá na acme",
+      "relation_expression": "trabalha em",
+      "link_semantics": true,
+      "subject": "João",
+      "object": "Acme",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.employed_by",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL02",
+      "run": 3,
+      "utterance": "joão trabalha lá na acme",
+      "relation_expression": "trabalha em",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.employed_by",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL03",
+      "run": 1,
+      "utterance": "maria mora em curitiba",
+      "relation_expression": "mora em",
+      "link_semantics": true,
+      "subject": "maria",
+      "object": "curitiba",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.resides_at",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL03",
+      "run": 2,
+      "utterance": "maria mora em curitiba",
+      "relation_expression": "mora em",
+      "link_semantics": true,
+      "subject": "maria",
+      "object": "curitiba",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.resides_at",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL03",
+      "run": 3,
+      "utterance": "maria mora em curitiba",
+      "relation_expression": "mora em",
+      "link_semantics": true,
+      "subject": "maria",
+      "object": "curitiba",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.resides_at",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL04",
+      "run": 1,
+      "utterance": "o carlos tem um corolla",
+      "relation_expression": "has",
+      "link_semantics": true,
+      "subject": "carlos",
+      "object": "corolla",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL04",
+      "run": 2,
+      "utterance": "o carlos tem um corolla",
+      "relation_expression": "possui",
+      "link_semantics": true,
+      "subject": "carlos",
+      "object": "corolla",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.owns",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL04",
+      "run": 3,
+      "utterance": "o carlos tem um corolla",
+      "relation_expression": "owns",
+      "link_semantics": true,
+      "subject": "carlos",
+      "object": "corolla",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.owns",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL05",
+      "run": 1,
+      "utterance": "o carro é do joão",
+      "relation_expression": "é do",
+      "link_semantics": true,
+      "subject": "carro",
+      "object": "joão",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL05",
+      "run": 2,
+      "utterance": "o carro é do joão",
+      "relation_expression": "owned by",
+      "link_semantics": true,
+      "subject": "carro",
+      "object": "joão",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL05",
+      "run": 3,
+      "utterance": "o carro é do joão",
+      "relation_expression": "owned by",
+      "link_semantics": true,
+      "subject": "carro",
+      "object": "joão",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL06",
+      "run": 1,
+      "utterance": "sou segurado pela porto",
+      "relation_expression": "é segurado por",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "porto",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL06",
+      "run": 2,
+      "utterance": "sou segurado pela porto",
+      "relation_expression": "sou segurado por",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "porto",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL06",
+      "run": 3,
+      "utterance": "sou segurado pela porto",
+      "relation_expression": "is insured by",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "Porto",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL07",
+      "run": 1,
+      "utterance": "sou membro do clube",
+      "relation_expression": "member of",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "clube",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL07",
+      "run": 2,
+      "utterance": "sou membro do clube",
+      "relation_expression": "é membro de",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "clube",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL07",
+      "run": 3,
+      "utterance": "sou membro do clube",
+      "relation_expression": "membro de",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "clube",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL08",
+      "run": 1,
+      "utterance": "ana é casada com pedro",
+      "relation_expression": "married to",
+      "link_semantics": true,
+      "subject": "ana",
+      "object": "pedro",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.married_to",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL08",
+      "run": 2,
+      "utterance": "ana é casada com pedro",
+      "relation_expression": "casada com",
+      "link_semantics": true,
+      "subject": "ana",
+      "object": "pedro",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.married_to",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL08",
+      "run": 3,
+      "utterance": "ana é casada com pedro",
+      "relation_expression": "é casada com",
+      "link_semantics": true,
+      "subject": "ana",
+      "object": "pedro",
+      "primary": "RELATION_CORRECT",
+      "first_causal_stage": "S9_FINAL_OUTCOME",
+      "committed_autonomous": true,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "auto_execute",
+      "concepts_relation_type": "relation.married_to",
+      "concepts_unresolved": false,
+      "false_recoverable_gap": false,
+      "reasons": [
+        []
+      ]
+    },
+    {
+      "case_id": "RL09",
+      "run": 1,
+      "utterance": "sou responsável pelo projeto",
+      "relation_expression": "responsible for",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "projeto",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL09",
+      "run": 2,
+      "utterance": "sou responsável pelo projeto",
+      "relation_expression": "responsável por",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "projeto",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL09",
+      "run": 3,
+      "utterance": "sou responsável pelo projeto",
+      "relation_expression": "responsible for",
+      "link_semantics": true,
+      "subject": "eu",
+      "object": "projeto",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL10",
+      "run": 1,
+      "utterance": "a empresa fica em sp",
+      "relation_expression": "fica em",
+      "link_semantics": true,
+      "subject": "empresa",
+      "object": "sp",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL10",
+      "run": 2,
+      "utterance": "a empresa fica em sp",
+      "relation_expression": "fica em",
+      "link_semantics": true,
+      "subject": "empresa",
+      "object": "sp",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL10",
+      "run": 3,
+      "utterance": "a empresa fica em sp",
+      "relation_expression": "located in",
+      "link_semantics": true,
+      "subject": "empresa",
+      "object": "sp",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL11",
+      "run": 1,
+      "utterance": "joão não trabalha mais na acme",
+      "relation_expression": "não trabalha mais",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL11",
+      "run": 2,
+      "utterance": "joão não trabalha mais na acme",
+      "relation_expression": "não trabalha mais",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL11",
+      "run": 3,
+      "utterance": "joão não trabalha mais na acme",
+      "relation_expression": "não trabalha mais",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL12",
+      "run": 1,
+      "utterance": "joão nunca trabalhou na acme",
+      "relation_expression": "nunca trabalhou",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL12",
+      "run": 2,
+      "utterance": "joão nunca trabalhou na acme",
+      "relation_expression": "nunca trabalhou em",
+      "link_semantics": false,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    },
+    {
+      "case_id": "RL12",
+      "run": 3,
+      "utterance": "joão nunca trabalhou na acme",
+      "relation_expression": "nunca trabalhou",
+      "link_semantics": true,
+      "subject": "joão",
+      "object": "acme",
+      "primary": "VALID_RELATION_CANONICAL_UNRESOLVED",
+      "first_causal_stage": "S4_CONCEPT_RESOLUTION",
+      "committed_autonomous": false,
+      "recovered": false,
+      "clarify_slot": null,
+      "capability_outcome": "safe_abstain",
+      "concepts_relation_type": null,
+      "concepts_unresolved": true,
+      "false_recoverable_gap": false,
+      "reasons": [
+        [
+          "relation_canonical_unresolved"
+        ]
+      ]
+    }
+  ]
+}

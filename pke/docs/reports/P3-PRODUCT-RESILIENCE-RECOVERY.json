@@ -1,0 +1,70 @@
+{
+  "increment": "P3",
+  "title": "Product Resilience, Recovery & Operational Consistency",
+  "status": "CLOSED",
+  "phase": "PRODUCT V1 / APPLICATION LAYER",
+  "central": {
+    "CAN_PRODUCT_V1_RECOVER_FROM_PROCESS_NETWORK_AND_CROSS_STORE_PARTIAL_FAILURES_WITHOUT_DUPLICATING_OR_FALSIFYING_SEMANTIC_OUTCOMES": "YES"
+  },
+  "declaration": "NO DISTRIBUTED ACID CLAIM",
+  "authorities": {
+    "NORMAL_INTERACTION_AUTHORITY": "ConversationOrchestrator",
+    "RECOVERY_AUTHORITY": "ProductRecoveryService",
+    "IDEMPOTENCY_AUTHORITY": "ProductStore + ProductRecoveryService",
+    "PRODUCT_PERSISTENCE_AUTHORITY": "ProductStore",
+    "ENGINE_INVOCATION_AUTHORITY": "ConversationOrchestrator → EngineGateway",
+    "CLARIFICATION_OPERATION_AUTHORITY": "ConversationOrchestrator",
+    "PRODUCT_RESILIENCE_AUTHORITY_CONFLICT_COUNT": 0
+  },
+  "safety_counters": {
+    "DUPLICATE_ENGINE_INVOCATION_AFTER_RESTART": 0,
+    "DUPLICATE_KNOWLEDGE_COMMIT_AFTER_RESTART": 0,
+    "COMPLETED_OPERATION_ENGINE_REEXECUTION": 0,
+    "UNPROVEN_ENGINE_REEXECUTION": 0,
+    "RECOVERY_FALSE_COMMIT_ACK": 0,
+    "IDEMPOTENCY_FINGERPRINT_BYPASS": 0,
+    "CRASH_DUPLICATE_CLARIFICATION_RECOVERY": 0,
+    "CROSS_USER_RECOVERY_ACCESS": 0,
+    "ENGINE_INVOKED_WITHOUT_DURABLE_PRODUCT_GUARD": 0,
+    "PRODUCT_PROVIDER_RETRY_LOOP": 0,
+    "RECOVERY_RAW_TEXT_SEMANTIC_INFERENCE": 0,
+    "HISTORY_SEMANTIC_REPLAY_COUNT": 0,
+    "PERMANENT_STUCK_IN_PROGRESS_OPERATIONS": 0
+  },
+  "executive": {
+    "IS_PRODUCT_RESILIENCE_AND_RECOVERY_COMPLETE": "YES",
+    "CAN_COMPLETED_OPERATIONS_SURVIVE_PROCESS_RESTART": "YES",
+    "CAN_RETRY_AFTER_RESTART_DUPLICATE_A_KNOWLEDGE_MUTATION": "NO",
+    "CAN_A_STALE_IN_PROGRESS_OPERATION_CAUSE_UNPROVEN_ENGINE_REEXECUTION": "NO",
+    "CAN_PRODUCT_ACKNOWLEDGE_COMMIT_WITHOUT_RELIABLE_COMMIT_EVIDENCE": "NO",
+    "CAN_CLARIFICATION_RECOVERY_BE_APPLIED_TWICE_AFTER_CRASH_RETRY": "NO",
+    "CAN_PRODUCT_OPERATE_SAFELY_WHEN_PRODUCT_DB_IS_UNAVAILABLE": "YES",
+    "ARE_CROSS_STORE_PARTIAL_FAILURES_RECOVERABLE_OR_EXPLICITLY_CONTAINED": "YES",
+    "IS_PRODUCT_RECOVERY_NON_SEMANTIC": "YES",
+    "DID_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": "YES",
+    "DID_ENGINE_V1_REMAIN_FROZEN": "YES"
+  },
+  "baseline": {
+    "Product schema version": "1.4",
+    "Recovery model": "ProductRecoveryService lazy reconcile",
+    "Stale operation strategy": "age(updated_at) + evidence replay or recovery_required",
+    "Startup/lazy reconciliation": "lazy only",
+    "Manual reconciliation cases": "recovery_required ambiguity after crash without Product result evidence",
+    "Product/API tests": "44 passed",
+    "Web tests": "14 passed",
+    "Resilience/failure tests": "9 passed (test_p3_product_resilience.py)",
+    "Product suite total": "59 passed",
+    "Full non-live regression": "4749 passed, 0 failed, 8 live deselected"
+  },
+  "adr": "docs/decisions/0073-product-resilience-cross-store-recovery.md",
+  "report": "docs/reports/P3-PRODUCT-RESILIENCE-RECOVERY.md",
+  "recommendation": "P3_CLOSE_PROCEED_TO_PRODUCT_UX_COMPLETION",
+  "frozen": {
+    "Knowledge Core v1": "FROZEN",
+    "Engine v1": "FROZEN",
+    "schema": "v10",
+    "CORE": 65,
+    "prompt": "v4",
+    "holdout": "UNTOUCHED"
+  }
+}

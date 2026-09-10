@@ -1,0 +1,30 @@
+{
+  "increment": "I12.7.1",
+  "status": "CLOSED",
+  "PARTIAL_EVENT_FALSE_CANONICALIZATION": 0,
+  "PARTIAL_EVENT_SILENTLY_DISCARDED": 0,
+  "UNRESOLVED_EVENT_PERSISTED_WITH_FAKE_TYPE": 0,
+  "UNSUPPORTED_EVENT_ADDITION": 0,
+  "PARTIAL_EVENT_PRESERVED_NON_MATERIALIZED": ">0",
+  "RESOLVED_EVENT_MATERIALIZED": ">0",
+  "MEASUREMENT_MATERIALIZED_WITH_PARTIAL_EVENT": ">0",
+  "deterministic_regression": {
+    "baseline": 3149,
+    "new_tests": 83,
+    "total_passed": 3233,
+    "failed": 0,
+    "live_deselected": 8
+  },
+  "live_revalidation": {
+    "experiment": "I12.7.1-LIVE",
+    "cases": 5,
+    "runs": 25,
+    "RAW_EVENT_PRESENT_POST_EVENT_LOST": 0,
+    "LIVE_PARTIAL_EVENT_FALSE_CANONICALIZATION": 0,
+    "LIVE_EXPLICIT_EVENT_PRESERVATION_RATE": 1.0,
+    "LIVE_EXPLICIT_MEASUREMENT_PRESERVATION_RATE": 1.0
+  },
+  "core_frozen": true,
+  "schema": "10",
+  "core": 65
+}

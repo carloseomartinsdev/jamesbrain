@@ -1,0 +1,233 @@
+{
+  "version": "I11.2-draft",
+  "status": "design_only_not_production",
+  "semantic_dimensions": [
+    "actor",
+    "action",
+    "subject",
+    "object",
+    "participants",
+    "time",
+    "place",
+    "manner",
+    "cause",
+    "purpose",
+    "quantity",
+    "value",
+    "result",
+    "state_transition",
+    "event_type",
+    "relation"
+  ],
+  "dimension_slot_statuses": [
+    "known",
+    "unknown",
+    "missing",
+    "inferred",
+    "ambiguous",
+    "not_applicable",
+    "partially_known"
+  ],
+  "epistemic_dimensions": {
+    "status": ["explicit", "inferred", "uncertain", "confirmed", "contradicted", "hypothesized"],
+    "evidence_source_kind": [
+      "explicit",
+      "contextual",
+      "behavioral",
+      "semantic",
+      "derived",
+      "user_confirmation"
+    ],
+    "provenance_chain": "ordered list of derivation steps"
+  },
+  "temporal_dimensions": {
+    "absolute_time": "calendar instant/date when resolvable",
+    "relative_time": "today, yesterday, next_month, etc.",
+    "relation_to_now": ["past", "present", "future", "habitual", "unspecified"],
+    "aspect": ["completed", "ongoing", "prospective", "habitual", "unspecified"],
+    "recurrence": "habitual/recurring pattern descriptor",
+    "granularity": ["instant", "day", "week", "month", "year", "interval", "recurring", "unspecified"],
+    "tense_evidence": "grammatical tense/aspect evidence without forcing absolute date",
+    "uncertainty": "0.0-1.0",
+    "unknown_reason": ["not_provided", "forgotten", "unresolved", "inferred", "missing"],
+    "source": "explicit | inferred | ..."
+  },
+  "temporal_principle": "Grammar may establish temporal relation without establishing calendar time.",
+  "context_sources": {
+    "session_context": {
+      "priority": 2,
+      "examples": ["same_place", "same_temporal_context", "same_occurrence", "related_occurrence"]
+    },
+    "persistent_knowledge": {
+      "priority": 3,
+      "examples": ["entities", "relations", "states", "patterns"]
+    },
+    "behavioral_context": {
+      "priority": 4,
+      "examples": ["habitual_place", "usual_provider", "shopping_pattern"]
+    },
+    "semantic_linguistic_context": {
+      "priority": 5,
+      "examples": ["tense", "role", "polysemy_resolution"]
+    },
+    "explicit_current_statement": {
+      "priority": 1
+    }
+  },
+  "knowledge_categories": [
+    "ontological_knowledge",
+    "episodic_knowledge",
+    "semantic_world_knowledge",
+    "behavioral_knowledge",
+    "derived_knowledge",
+    "epistemic_meta_knowledge"
+  ],
+  "knowledge_validity_properties": {
+    "validity": "can persist?",
+    "completeness": "all useful slots filled?",
+    "usefulness": "value for future queries/predictions?"
+  },
+  "primitives_coexistence": {
+    "event": "acontecimento/contexto episódico",
+    "action": "algo executado — não obrigatoriamente subtipo de event",
+    "state": "condição persistente sem evento causal obrigatório",
+    "relation": "vínculo entre entidades, possivelmente temporal"
+  },
+  "clarification_factors": {
+    "knowledge_gain": "information added if user answers",
+    "future_utility": "predictive/maintenance/query value",
+    "uncertainty_reduction": "reduces epistemic spread",
+    "contextual_relevance": "relevant to current frame",
+    "user_relevance": "historical response interest",
+    "interaction_friction": "cost of asking",
+    "formula_conceptual": "clarification_priority ≈ knowledge_gain × future_utility × uncertainty_reduction × contextual_relevance × user_relevance − interaction_friction"
+  },
+  "clarification_policy_defaults": {
+    "max_questions_per_turn": 1,
+    "block_on_useful_missing": false,
+    "prefer_high_future_utility": true,
+    "avoid_low_value_interrogation": true,
+    "confirm_behavioral_hypothesis": true
+  },
+  "behavioral_pattern_model": {
+    "fields": ["pattern_id", "conditions", "prediction", "support", "confidence", "exceptions", "evidence_summary"],
+    "not_a_fact": true,
+    "conditional": true
+  },
+  "contextual_hypothesis_model": {
+    "fields": ["about_dimension", "candidate_value", "candidate_concept_key", "confidence", "basis", "status", "pattern_id"],
+    "statuses": ["proposed", "confirmed", "rejected", "superseded", "expired"],
+    "must_not_silent_promote_to_fact": true
+  },
+  "concept_mapping_types": {
+    "CANONICAL_ALIAS": "surface form maps to existing canonical concept",
+    "TYPE_LEXEME": "generic type word e.g. carro → entity.automobile",
+    "INSTANCE_MENTION": "named instance e.g. Corolla — not alias of type",
+    "ROLE_CUE": "dentista → role/provider cue, not event type",
+    "EVENT_CUE": "consulta → cues event.appointment",
+    "CONTEXTUAL_CUE": "discourse/session disambiguation"
+  },
+  "semantic_information_loss": {
+    "LOSSLESS": "generalization preserves query-answering distinctions",
+    "ACCEPTABLE_LOSS": "broader concept ok for aggregate queries",
+    "DESTRUCTIVE": "specific distinction lost e.g. install→maintain for 'foi instalado?'"
+  },
+  "proposed_occurrence_model": {
+    "Occurrence": {
+      "SemanticFrame": "compositional dimensions",
+      "TemporalKnowledge": "partial temporal representation",
+      "EpistemicMetadata": "status + evidence + provenance",
+      "EnrichmentState": "known/unknown/high_value_missing"
+    }
+  },
+  "adaptive_architecture": {
+    "flow": [
+      "Natural Language",
+      "LLM Semantic Proposal",
+      "Semantic Concept Resolver",
+      "CORE | EXTENDED | PERSONAL | contextual lexical mapping | unknown concept candidate",
+      "Canonical Semantic Representation",
+      "Knowledge Candidate",
+      "Validity",
+      "Commit",
+      "Knowledge Enrichment Analysis",
+      "Optional Clarification"
+    ],
+    "concept_discovery_flow": [
+      "Unknown semantic observations",
+      "Concept Discovery",
+      "Semantic grouping",
+      "Equivalence analysis",
+      "Candidate concept",
+      "Review / validation",
+      "EXTENDED"
+    ],
+    "llm_cannot_modify_core": true
+  },
+  "open_questions": [
+    "Event.time deve continuar como propriedade direta?",
+    "State deve ter histórico temporal próprio?",
+    "Occurrence deve virar primitive explícito no storage?",
+    "Pattern deve ser persistido ou projeção recalculável?",
+    "SemanticFrame pertence à IR ou camada pós-resolução?",
+    "ContextualHypothesis pertence ao knowledge store?",
+    "Polihierarquia vs semantic graph para EXTENDED?",
+    "Como materializar State sem inventar Event?",
+    "Relation temporal end_at/start_at no schema?",
+    "Benchmark I11 deve passar a exigir frame parcial?"
+  ],
+  "implementation_candidates": [
+    {
+      "id": "I11.3",
+      "title": "Partial Temporal Knowledge",
+      "rationale": "ADR v1 + HEALTH_002 + scenario B/C; menor breaking surface que State"
+    },
+    {
+      "id": "I11.4",
+      "title": "State Primitive",
+      "rationale": "state coverage 0% I11.1; HOME_001, SHOP_002, COLL_001"
+    },
+    {
+      "id": "I11.5",
+      "title": "Relation Evolution",
+      "rationale": "PEOPLE_001 employment; relation coverage 0%"
+    },
+    {
+      "id": "I11.6",
+      "title": "Semantic Lexical Resolution",
+      "rationale": "73% alias gaps; polysemy; TYPE_LEXEME vs ALIAS"
+    },
+    {
+      "id": "I11.7",
+      "title": "Knowledge Enrichment",
+      "rationale": "non-blocking clarification; enrichment after commit"
+    },
+    {
+      "id": "I11.8",
+      "title": "Behavioral Memory",
+      "rationale": "scenario E; hypothesis confirmation flow"
+    },
+    {
+      "id": "I11.9",
+      "title": "Adaptive Concept Resolver / EXTENDED",
+      "rationale": "NEW_CONCEPT_CANDIDATE clusters; bootstrap assistido"
+    }
+  ],
+  "storage_impact_preview": {
+    "TemporalKnowledge": "MIGRATION_REQUIRED",
+    "State": "NEW_TABLE",
+    "Relation_evolution": "RELATION_CHANGE",
+    "Pattern": "NEW_TABLE",
+    "ContextualHypothesis": "NEW_TABLE",
+    "SemanticFrame": "UNKNOWN",
+    "Concept_aliases": "NO_STORAGE_CHANGE",
+    "EXTENDED_ontology": "NO_STORAGE_CHANGE"
+  },
+  "ir_impact_preview": {
+    "IngestIR": "EXTENSION",
+    "QueryIR": "EXTENSION",
+    "WireEnvelope": "EXTENSION",
+    "KnowledgeCandidate": "EXTENSION",
+    "ApprovedKnowledge": "EXTENSION"
+  }
+}

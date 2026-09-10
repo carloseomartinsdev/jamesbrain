@@ -1,0 +1,56 @@
+[
+  {
+    "case_id": "MP1",
+    "proposal": "E+M",
+    "assertions": "E+M",
+    "resolution": "UNRESOLVED",
+    "materialization": "M",
+    "post": "E+M+NON_MATERIALIZED",
+    "loss": null
+  },
+  {
+    "case_id": "MP2",
+    "proposal": "E+M",
+    "assertions": "E+M",
+    "resolution": "UNRESOLVED",
+    "materialization": "M",
+    "post": "E+M+NON_MATERIALIZED",
+    "loss": null
+  },
+  {
+    "case_id": "MP3",
+    "proposal": "E+M",
+    "assertions": "E+M",
+    "resolution": "UNRESOLVED",
+    "materialization": "M",
+    "post": "E+M+NON_MATERIALIZED",
+    "loss": null
+  },
+  {
+    "case_id": "MP4",
+    "proposal": "E+M",
+    "assertions": "E+M",
+    "resolution": "UNRESOLVED",
+    "materialization": "M",
+    "post": "E+M+NON_MATERIALIZED",
+    "loss": null
+  },
+  {
+    "case_id": "MP5",
+    "proposal": "M",
+    "assertions": "M",
+    "resolution": "M",
+    "materialization": "M",
+    "post": "M",
+    "loss": null
+  },
+  {
+    "case_id": "MS18",
+    "proposal": "E+M",
+    "assertions": "E+M",
+    "resolution": "UNRESOLVED",
+    "materialization": "M",
+    "post": "E+M+NON_MATERIALIZED",
+    "loss": null
+  }
+]

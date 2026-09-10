@@ -1,0 +1,78 @@
+{
+  "increment": "P1",
+  "title": "Product Identity, Session & Ownership Foundation",
+  "status": "CLOSED",
+  "phase": "PRODUCT V1 / APPLICATION LAYER",
+  "central": {
+    "DOES_PRODUCT_V1_HAVE_A_REAL_SERVER_AUTHENTICATED_USER_IDENTITY": "YES",
+    "CAN_ONE_USER_ACCESS_OR_MUTATE_ANOTHER_USERS_PRODUCT_RESOURCES": "NO",
+    "IS_THE_IDENTITY_PASSED_TO_ENGINE_DERIVED_EXCLUSIVELY_FROM_SERVER_AUTHENTICATED_CONTEXT": "YES"
+  },
+  "authorities": {
+    "PRODUCT_IDENTITY_AUTHORITY": "ProductAuthService + Product users table",
+    "PRODUCT_SESSION_AUTHORITY": "ProductAuthService + Product sessions (token hash)",
+    "PRODUCT_RESOURCE_OWNERSHIP_AUTHORITY": "ConversationOrchestrator + user-scoped ProductStore",
+    "PRODUCT_IDEMPOTENCY_AUTHORITY": "(user_id, client_request_id)",
+    "ENGINE_USER_IDENTITY_SOURCE": "AuthUser.id from ProductAuthResolver (session|explicit-dev)"
+  },
+  "ownership_matrix": [
+    {"resource": "Session", "owner": "Product user", "authorization_path": "bearer → token_hash → sessions.user_id"},
+    {"resource": "Conversation", "owner": "Product user", "authorization_path": "conversations.user_id == AuthUser.id"},
+    {"resource": "Message", "owner": "via conversation", "authorization_path": "message → conversation → owner"},
+    {"resource": "Clarification", "owner": "Product user + conversation", "authorization_path": "clarifications.user_id == AuthUser.id"},
+    {"resource": "client_request_id record", "owner": "Product user", "authorization_path": "PK (user_id, client_request_id)"}
+  ],
+  "security_counters": {
+    "PLAINTEXT_PASSWORD_STORED": 0,
+    "PASSWORD_HASH_EXPOSED": 0,
+    "RAW_SESSION_TOKEN_LOGGED": 0,
+    "CLIENT_SUPPLIED_USER_ID_TRUSTED": 0,
+    "CROSS_USER_CONVERSATION_READ": 0,
+    "CROSS_USER_CONVERSATION_WRITE": 0,
+    "CROSS_USER_MESSAGE_READ": 0,
+    "CROSS_USER_CLARIFICATION_ANSWER": 0,
+    "CROSS_USER_CLIENT_REQUEST_COLLISION": 0,
+    "UNAUTHORIZED_ENGINE_INVOCATION": 0,
+    "DEV_AUTH_PRODUCTION_FALLBACK": 0,
+    "KNOWLEDGE_USER_ISOLATION_BREACH": 0
+  },
+  "executive": {
+    "IS_PRODUCT_IDENTITY_FOUNDATION_COMPLETE": "YES",
+    "IS_DEV_AUTH_REMOVED_FROM_CANONICAL_PRODUCT_PATH": "YES",
+    "IS_SERVER_AUTHENTICATED_IDENTITY_THE_ONLY_ENGINE_USER_IDENTITY_SOURCE": "YES",
+    "CAN_ONE_USER_READ_ANOTHER_USERS_CONVERSATION": "NO",
+    "CAN_ONE_USER_WRITE_TO_ANOTHER_USERS_CONVERSATION": "NO",
+    "CAN_ONE_USER_ANSWER_ANOTHER_USERS_CLARIFICATION": "NO",
+    "IS_CLIENT_REQUEST_ID_SAFE_ACROSS_USERS": "YES",
+    "IS_PRODUCT_STORAGE_STILL_SEPARATE_FROM_KNOWLEDGE_STORAGE": "YES",
+    "DID_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": "YES",
+    "DID_ENGINE_V1_REMAIN_FROZEN": "YES"
+  },
+  "baseline": {
+    "Product schema version": "1.2",
+    "Knowledge schema version": "10",
+    "Auth mechanism": "first-party username/password + session bearer",
+    "Session mechanism": "opaque bearer; SHA-256 hash at rest; TTL; multi-session allowed",
+    "Credential hashing": "PBKDF2-HMAC-SHA256",
+    "DEV_AUTH status": "opt-in PKE_AUTH_MODE=dev only; not canonical",
+    "CORS policy": "explicit origins; allow_credentials=false",
+    "CSRF policy": "N/A — Bearer Authorization, no cookie session credential",
+    "Product/API tests": "24 passed (tests/api)",
+    "Web tests": "12 passed (tests/web)",
+    "Security tests": "8 passed (tests/api/test_p1_identity_ownership.py)",
+    "Product boundary tests": "1 passed (tests/product)",
+    "Product suite total": "37 passed",
+    "Full non-live regression": "4727 passed, 0 failed, 8 live deselected"
+  },
+  "adr": "docs/decisions/0071-product-identity-session-ownership-boundary.md",
+  "report": "docs/reports/P1-PRODUCT-IDENTITY-SESSION-OWNERSHIP.md",
+  "recommendation": "P1_CLOSE_PROCEED_TO_CONVERSATION_APPLICATION_LIFECYCLE",
+  "frozen": {
+    "Knowledge Core v1": "FROZEN",
+    "Engine v1": "FROZEN",
+    "schema": "v10",
+    "CORE": 65,
+    "prompt": "v4",
+    "holdout": "UNTOUCHED"
+  }
+}

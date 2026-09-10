@@ -1,0 +1,1 @@
+"""Attribute query test package."""

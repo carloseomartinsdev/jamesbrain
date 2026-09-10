@@ -1,0 +1,307 @@
+{
+  "timestamp": "2026-09-02 12:03 UTC",
+  "prompt": "pke.interpret.v3",
+  "cases": 9,
+  "runs": 27,
+  "proposal_parse_success": 0.8889,
+  "primitive_resolution_success": 0.4815,
+  "canonical_resolution_success": 0.4815,
+  "knowledge_success": 0.4074,
+  "by_group": {
+    "state": {
+      "knowledge_success": 0.6667
+    },
+    "relation": {
+      "knowledge_success": 0.5556
+    },
+    "event": {
+      "knowledge_success": 0.0
+    }
+  },
+  "runs_detail": [
+    {
+      "group": "state",
+      "text": "A geladeira está quebrada.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "state",
+      "text": "A geladeira está quebrada.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "state",
+      "text": "A geladeira está quebrada.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "state",
+      "text": "A porta está aberta.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "state",
+      "text": "A porta está aberta.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "state",
+      "text": "A porta está aberta.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "state",
+      "text": "Acabou detergente.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual' (+1 more)"
+    },
+    {
+      "group": "state",
+      "text": "Acabou detergente.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": false,
+      "frontier": "MATERIALIZATION"
+    },
+    {
+      "group": "state",
+      "text": "Acabou detergente.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": false,
+      "frontier": "MATERIALIZATION"
+    },
+    {
+      "group": "relation",
+      "text": "João trabalha na Acme.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "relation",
+      "text": "João trabalha na Acme.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "relation",
+      "text": "João trabalha na Acme.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: participants.0 reason: Input should be a valid dictionary or instance of WireSemanticEntity (+2 more)"
+    },
+    {
+      "group": "relation",
+      "text": "O Corolla é meu.",
+      "run": 1,
+      "proposal_parse_success": false,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROVIDER",
+      "error": "\"Invalid error type: 'semantic_unresolved'\""
+    },
+    {
+      "group": "relation",
+      "text": "O Corolla é meu.",
+      "run": 2,
+      "proposal_parse_success": false,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROVIDER",
+      "error": "\"Invalid error type: 'semantic_unresolved'\""
+    },
+    {
+      "group": "relation",
+      "text": "O Corolla é meu.",
+      "run": 3,
+      "proposal_parse_success": false,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROVIDER",
+      "error": "\"Invalid error type: 'semantic_unresolved'\""
+    },
+    {
+      "group": "relation",
+      "text": "Ana é casada com João.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "relation",
+      "text": "Ana é casada com João.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "relation",
+      "text": "Ana é casada com João.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": true,
+      "canonical_resolution_success": true,
+      "knowledge_success": true,
+      "frontier": "PASS"
+    },
+    {
+      "group": "event",
+      "text": "Troquei o óleo do Corolla.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    },
+    {
+      "group": "event",
+      "text": "Troquei o óleo do Corolla.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: subject.implicit reason: Extra inputs are not permitted (+1 more)"
+    },
+    {
+      "group": "event",
+      "text": "Troquei o óleo do Corolla.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: subject.implicit reason: Extra inputs are not permitted (+3 more)"
+    },
+    {
+      "group": "event",
+      "text": "A geladeira quebrou.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    },
+    {
+      "group": "event",
+      "text": "A geladeira quebrou.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    },
+    {
+      "group": "event",
+      "text": "A geladeira quebrou.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    },
+    {
+      "group": "event",
+      "text": "A porta abriu.",
+      "run": 1,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    },
+    {
+      "group": "event",
+      "text": "A porta abriu.",
+      "run": 2,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    },
+    {
+      "group": "event",
+      "text": "A porta abriu.",
+      "run": 3,
+      "proposal_parse_success": true,
+      "primitive_resolution_success": false,
+      "canonical_resolution_success": false,
+      "knowledge_success": false,
+      "frontier": "PROPOSAL_WIRE",
+      "error": "path: temporal.occurrence_aspect reason: Input should be 'happened', 'ongoing', 'planned' or 'habitual'"
+    }
+  ]
+}

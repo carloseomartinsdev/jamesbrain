@@ -1,0 +1,652 @@
+{
+  "experiment_id": "I12.6",
+  "stage": "A",
+  "freeze": {
+    "experiment_id": "I12.6",
+    "date_utc": "2026-09-03T15:17:07.581957+00:00",
+    "stage": "A",
+    "prompt_version": "pke.interpret.v4",
+    "semantic_proposal": "unchanged",
+    "wire": "unchanged",
+    "correction_guard": "unchanged",
+    "multi_primitive_preservation": "unchanged",
+    "retry_max_attempts": 2,
+    "retry_rate_limit_policy": "RETRY_ONCE_BOUNDED",
+    "schema_version": "10",
+    "core_concept_count": 65,
+    "knowledge_core": "FROZEN",
+    "holdout": "untouched",
+    "runs_per_case": 3,
+    "runs_per_mp_anchor": 5,
+    "corpus_target_min": 80,
+    "corpus_target_max": 120,
+    "sdk_max_retries": 0,
+    "http_client_retries": 0,
+    "effective_max_provider_calls": 2,
+    "temperature_policy": "provider default (unset by PKE) — identical for all candidates",
+    "top_p_policy": "provider default (unset by PKE)",
+    "max_tokens_policy": "provider default (unset by PKE)",
+    "structured_output_mode": "json_object",
+    "note": "Only model/provider varies. No prompt/guard/router/Core changes during experiment. No silent production switch."
+  },
+  "thresholds_a_priori": {
+    "post_engine_s4": 0,
+    "post_engine_unsafe_variance_max": 0.01,
+    "post_engine_systematic_s3_family_allowed": false,
+    "critical_correction_safety": 1.0,
+    "mp_anchors_post_engine_safety": 1.0,
+    "explicit_assertion_preservation": 1.0,
+    "intent_stable_correctness_min": 0.97,
+    "primitive_stable_correctness_min": 0.95,
+    "temporal_evidence_preservation_min": 0.97,
+    "preferred_stable_correct_delta_min": 0.1
+  },
+  "corpus_size": 91,
+  "candidates": [
+    {
+      "candidate_id": "baseline_deepseek_chat",
+      "provider": "deepseek",
+      "model": "deepseek-chat",
+      "role": "baseline",
+      "status": "REJECTED_SAFETY",
+      "total_cases_with_results": 91,
+      "total_runs": 283,
+      "logical_requests": 283,
+      "provider_calls_approx": 345,
+      "RAW_STABLE_CORRECT": 60,
+      "RAW_UNSTABLE_SAFE": 20,
+      "RAW_UNSAFE_CASES": 11,
+      "POST_ENGINE_STABLE_CORRECT": 22,
+      "POST_ENGINE_UNSTABLE_SAFE": 45,
+      "POST_ENGINE_UNSAFE_CASES": 24,
+      "POST_ENGINE_UNSAFE_VARIANCE_RATE": 0.26373626373626374,
+      "RAW_S3": 10,
+      "RAW_S4": 11,
+      "POST_S3": 64,
+      "POST_S4": 0,
+      "CLARIFICATION_RATE": 0.0,
+      "SAFE_ABSTENTION_RATE": 0.12014134275618374,
+      "RETRIES_TRIGGERED": 62,
+      "RETRIES_RECOVERED": 13,
+      "RAW_FALSE_CORRECTION": 11,
+      "GUARD_BLOCKED_FALSE_CORRECTION": 11,
+      "GUARD_REJECTED_TRUE_CORRECTION": 0,
+      "POST_ENGINE_FALSE_CORRECTION_ACCEPTED": 0,
+      "latency_p50": 1402.3331000062171,
+      "latency_p95": 1910.4141000134405,
+      "latency_max": 2390.5161999864504,
+      "total_tokens": 941861,
+      "cost": "NOT_PRICED_IN_REPO",
+      "primitive_matrix_post": {
+        "ambiguity": {
+          "unsafe": 11,
+          "safe_unstable": 4
+        },
+        "attribute": {
+          "stable_correct": 8,
+          "unsafe": 4,
+          "safe_unstable": 6
+        },
+        "type": {
+          "safe_unstable": 6
+        },
+        "correction": {
+          "stable_correct": 15,
+          "safe_unstable": 9
+        },
+        "conversational": {
+          "safe_unstable": 9
+        },
+        "event": {
+          "stable_correct": 12,
+          "safe_unstable": 12
+        },
+        "multi_primitive": {
+          "unsafe": 32,
+          "safe_unstable": 14,
+          "stable_correct": 1
+        },
+        "measurement": {
+          "safe_unstable": 13,
+          "stable_correct": 13
+        },
+        "negative": {
+          "stable_correct": 4,
+          "safe_unstable": 8
+        },
+        "query": {
+          "stable_correct": 12,
+          "safe_unstable": 6
+        },
+        "relation": {
+          "stable_correct": 9,
+          "safe_unstable": 15
+        },
+        "state": {
+          "stable_correct": 6,
+          "safe_unstable": 18
+        },
+        "temporal": {
+          "safe_unstable": 16,
+          "unsafe": 2
+        },
+        "unknown_concept": {
+          "unsafe": 15,
+          "safe_unstable": 3
+        }
+      },
+      "mp_matrix": {
+        "MP5": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "raw_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement"
+          ],
+          "post_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement"
+          ],
+          "post_severities": [
+            "S0",
+            "S0",
+            "S0",
+            "S0",
+            "S0"
+          ]
+        },
+        "MP1": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "post_severities": [
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1"
+          ]
+        },
+        "MP2": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement"
+          ],
+          "post_severities": [
+            "S3",
+            "S3",
+            "S3",
+            "S3",
+            "S3"
+          ]
+        },
+        "MP3": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement"
+          ],
+          "post_severities": [
+            "S3",
+            "S3",
+            "S3",
+            "S3",
+            "S3"
+          ]
+        },
+        "MP4": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            "measurement",
+            "measurement",
+            null,
+            null,
+            null
+          ],
+          "post_severities": [
+            "S3",
+            "S3",
+            "S1",
+            "S1",
+            "S1"
+          ]
+        }
+      },
+      "delta_vs_baseline": {
+        "stable_correct": 0,
+        "unstable_safe": 0,
+        "unsafe_cases": 0,
+        "post_s3": 0,
+        "post_s4": 0,
+        "retries": 0,
+        "latency_p50": 0.0
+      }
+    },
+    {
+      "candidate_id": "deepseek_reasoner",
+      "provider": "deepseek",
+      "model": "deepseek-reasoner",
+      "role": "alt_same_provider",
+      "status": "REJECTED_SAFETY",
+      "total_cases_with_results": 91,
+      "total_runs": 283,
+      "logical_requests": 283,
+      "provider_calls_approx": 369,
+      "RAW_STABLE_CORRECT": 61,
+      "RAW_UNSTABLE_SAFE": 19,
+      "RAW_UNSAFE_CASES": 11,
+      "POST_ENGINE_STABLE_CORRECT": 22,
+      "POST_ENGINE_UNSTABLE_SAFE": 52,
+      "POST_ENGINE_UNSAFE_CASES": 17,
+      "POST_ENGINE_UNSAFE_VARIANCE_RATE": 0.18681318681318682,
+      "RAW_S3": 8,
+      "RAW_S4": 15,
+      "POST_S3": 39,
+      "POST_S4": 0,
+      "CLARIFICATION_RATE": 0.0,
+      "SAFE_ABSTENTION_RATE": 0.10600706713780919,
+      "RETRIES_TRIGGERED": 86,
+      "RETRIES_RECOVERED": 13,
+      "RAW_FALSE_CORRECTION": 15,
+      "GUARD_BLOCKED_FALSE_CORRECTION": 10,
+      "GUARD_REJECTED_TRUE_CORRECTION": 0,
+      "POST_ENGINE_FALSE_CORRECTION_ACCEPTED": 0,
+      "latency_p50": 12092.120299988892,
+      "latency_p95": 28500.450199993793,
+      "latency_max": 30433.128400007263,
+      "total_tokens": 1418093,
+      "cost": "NOT_PRICED_IN_REPO",
+      "primitive_matrix_post": {
+        "ambiguity": {
+          "unsafe": 8,
+          "stable_correct": 1,
+          "safe_unstable": 6
+        },
+        "attribute": {
+          "stable_correct": 9,
+          "safe_unstable": 7,
+          "unsafe": 2
+        },
+        "type": {
+          "safe_unstable": 6
+        },
+        "correction": {
+          "safe_unstable": 13,
+          "stable_correct": 11
+        },
+        "conversational": {
+          "safe_unstable": 9
+        },
+        "event": {
+          "stable_correct": 12,
+          "safe_unstable": 12
+        },
+        "multi_primitive": {
+          "safe_unstable": 31,
+          "stable_correct": 1,
+          "unsafe": 15
+        },
+        "measurement": {
+          "safe_unstable": 15,
+          "stable_correct": 11
+        },
+        "negative": {
+          "safe_unstable": 9,
+          "stable_correct": 3
+        },
+        "query": {
+          "stable_correct": 13,
+          "safe_unstable": 5
+        },
+        "relation": {
+          "stable_correct": 12,
+          "safe_unstable": 12
+        },
+        "state": {
+          "safe_unstable": 20,
+          "stable_correct": 4
+        },
+        "temporal": {
+          "safe_unstable": 15,
+          "unsafe": 3
+        },
+        "unknown_concept": {
+          "unsafe": 11,
+          "safe_unstable": 7
+        }
+      },
+      "mp_matrix": {
+        "MP5": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "raw_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement"
+          ],
+          "post_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement",
+            "measurement"
+          ],
+          "post_severities": [
+            "S0",
+            "S0",
+            "S0",
+            "S0",
+            "S0"
+          ]
+        },
+        "MP1": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "post_severities": [
+            "S1",
+            "S1",
+            "S1",
+            "S1",
+            "S1"
+          ]
+        },
+        "MP2": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "COVERAGE_MISS",
+            "WRONG_PRIMITIVE",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "TRANSPORT_FAILURE"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            null,
+            "measurement",
+            null,
+            null,
+            null
+          ],
+          "post_severities": [
+            "S1",
+            "S3",
+            "S1",
+            "S1",
+            "S2"
+          ]
+        },
+        "MP3": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "WRONG_PRIMITIVE",
+            "COVERAGE_MISS",
+            "WRONG_PRIMITIVE"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            "measurement",
+            "measurement",
+            "measurement",
+            null,
+            "measurement"
+          ],
+          "post_severities": [
+            "S3",
+            "S3",
+            "S3",
+            "S1",
+            "S3"
+          ]
+        },
+        "MP4": {
+          "runs": 5,
+          "raw_outcomes": [
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT",
+            "CORRECT"
+          ],
+          "post_outcomes": [
+            "COVERAGE_MISS",
+            "WRONG_PRIMITIVE",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS",
+            "COVERAGE_MISS"
+          ],
+          "raw_primitives": [
+            "multi",
+            "multi",
+            "multi",
+            "multi",
+            "multi"
+          ],
+          "post_primitives": [
+            null,
+            "measurement",
+            null,
+            null,
+            null
+          ],
+          "post_severities": [
+            "S1",
+            "S3",
+            "S1",
+            "S1",
+            "S1"
+          ]
+        }
+      },
+      "delta_vs_baseline": {
+        "stable_correct": 0,
+        "unstable_safe": 7,
+        "unsafe_cases": -7,
+        "post_s3": -25,
+        "post_s4": 0,
+        "retries": 24,
+        "latency_p50": 10689.787199982675
+      }
+    },
+    {
+      "candidate_id": "openai_gpt4o_mini",
+      "provider": "openai",
+      "model": "gpt-4o-mini",
+      "status": "NOT_EXECUTED_NO_CREDENTIAL",
+      "total_runs": 0
+    },
+    {
+      "candidate_id": "openai_gpt4o",
+      "provider": "openai",
+      "model": "gpt-4o",
+      "status": "NOT_EXECUTED_NO_CREDENTIAL",
+      "total_runs": 0
+    }
+  ],
+  "best_candidate": "NONE",
+  "openai_candidates_status": "NOT_EXECUTED_NO_CREDENTIAL"
+}

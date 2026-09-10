@@ -1,0 +1,53 @@
+{
+  "experiment_id": "I12.11",
+  "prompt_version": "pke.interpret.v4",
+  "semantic_proposal": "unchanged",
+  "wire": "unchanged",
+  "retry_policy": "Interpreter RetryPolicy unchanged (I12.2)",
+  "retry_max_attempts": 2,
+  "retry_rate_limit_policy": "RETRY_ONCE_BOUNDED",
+  "sdk_max_retries": 0,
+  "temperature": null,
+  "top_p": null,
+  "max_tokens": null,
+  "structured_output_mode": "json_object",
+  "schema_version": "10",
+  "core_concept_count": 65,
+  "knowledge_core": "FROZEN",
+  "holdout": "untouched",
+  "runs_per_case": 3,
+  "runs_per_mp_anchor": 5,
+  "runs_per_mp1": 10,
+  "i12_6": "CLOSED \u2014 not reused as ranking",
+  "note": "Only model/provider varies. prompt v4 identical. No silent production switch. Thresholds frozen a priori.",
+  "started_at": "2026-09-03T20:03:32.983070+00:00",
+  "git_commit": null,
+  "corpus_fingerprint": "5bfa2c624d14b0e1",
+  "expected_label_hash": "a156596cfaef3c7c",
+  "corpus_size": 113,
+  "candidates": [
+    {
+      "candidate_id": "baseline_deepseek_chat",
+      "provider": "deepseek",
+      "model": "deepseek-chat",
+      "role": "baseline"
+    },
+    {
+      "candidate_id": "deepseek_reasoner",
+      "provider": "deepseek",
+      "model": "deepseek-reasoner",
+      "role": "alt_same_provider"
+    }
+  ],
+  "thresholds": {
+    "useful_capture_delta_min": 0.1,
+    "execution_ready_delta_min": 0.1,
+    "mp1_useful_capture_material": 0.7,
+    "post_s4": 0,
+    "false_correction_accepted": 0,
+    "partial_event_false_canonicalization": 0,
+    "missing_information_invented": 0,
+    "unsupported_primitive_addition": 0
+  },
+  "logical_requests": 708
+}

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pke"
+version = "0.1.0"
+description = "Personal Knowledge Engine — núcleo cognitivo (Onda 1)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.10",
+    "sqlalchemy>=2.0",
+    "tzdata>=2024.1",
+    "httpx>=0.27",
+    "truststore>=0.10",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.8",
+]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pke = ["catalog/trained/*.json", "catalog/trained/*.md"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests/unit", "tests/integration", "tests/golden", "tests/api", "tests/web", "tests/product", "tests/debug"]
+markers = [
+    "live: chama a API DeepSeek real (requer DEEPSEEK_API_KEY; não roda no pytest padrão)",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

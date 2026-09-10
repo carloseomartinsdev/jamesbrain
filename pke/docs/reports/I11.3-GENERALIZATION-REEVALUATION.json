@@ -1,0 +1,3803 @@
+{
+  "experiment": "I11.3-R",
+  "model": "deepseek-chat",
+  "prompt_version": "pke.interpret.v2",
+  "timestamp": "2026-09-02 03:57 UTC",
+  "baseline_reference": "I11-GENERALIZATION-BASELINE.json",
+  "development_cases": 30,
+  "holdout_executed": false,
+  "runs_per_case": 3,
+  "metrics": {
+    "total_runs": 135,
+    "provider_json_valid_rate": 0.6741,
+    "wire_valid_rate": 0.6741,
+    "canonical_valid_rate": 0.6741,
+    "semantic_accuracy": 0.1407,
+    "forbidden_inference_rate": 0.0,
+    "unsupported_rate": 0.0,
+    "provider_failures": 0,
+    "wire_failures": 0,
+    "canonical_failures": 44,
+    "semantic_failures": 71,
+    "context_gaps": 3
+  },
+  "aggregates": {
+    "HOME_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 3
+      }
+    },
+    "HOME_002": {
+      "pass_count": 3,
+      "total_runs": 3,
+      "stability": "3/3 stable",
+      "failure_categories": {}
+    },
+    "HOME_003": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 3
+      }
+    },
+    "PEOPLE_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 2,
+        "SEMANTIC": 1
+      }
+    },
+    "PEOPLE_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 1,
+        "SEMANTIC": 2
+      }
+    },
+    "PEOPLE_003": {
+      "pass_count": 3,
+      "total_runs": 3,
+      "stability": "3/3 stable",
+      "failure_categories": {}
+    },
+    "DOC_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 2,
+        "SEMANTIC": 1
+      }
+    },
+    "DOC_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 3
+      }
+    },
+    "EDU_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 2,
+        "SEMANTIC": 1
+      }
+    },
+    "EDU_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 3
+      }
+    },
+    "HEALTH_001": {
+      "pass_count": 1,
+      "total_runs": 3,
+      "stability": "1/3 weak",
+      "failure_categories": {
+        "CANONICAL": 1,
+        "CONTEXT_GAP": 1
+      }
+    },
+    "HEALTH_002": {
+      "pass_count": 2,
+      "total_runs": 3,
+      "stability": "2/3 acceptable but unstable",
+      "failure_categories": {
+        "CANONICAL": 1
+      }
+    },
+    "SHOP_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 3
+      }
+    },
+    "SHOP_002": {
+      "pass_count": 2,
+      "total_runs": 3,
+      "stability": "2/3 acceptable but unstable",
+      "failure_categories": {
+        "CANONICAL": 1
+      }
+    },
+    "SVC_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 2,
+        "CANONICAL": 1
+      }
+    },
+    "SVC_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 3
+      }
+    },
+    "TRAVEL_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 1,
+        "CANONICAL": 2
+      }
+    },
+    "TRAVEL_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 1,
+        "SEMANTIC": 2
+      }
+    },
+    "COLL_001": {
+      "pass_count": 1,
+      "total_runs": 3,
+      "stability": "1/3 weak",
+      "failure_categories": {
+        "CANONICAL": 2
+      }
+    },
+    "COLL_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 3
+      }
+    },
+    "NEG_001": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 1,
+        "SEMANTIC": 2
+      }
+    },
+    "NEG_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 2,
+        "CANONICAL": 1
+      }
+    },
+    "UNC_001": {
+      "pass_count": 3,
+      "total_runs": 3,
+      "stability": "3/3 stable",
+      "failure_categories": {}
+    },
+    "UNC_002": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 3
+      }
+    },
+    "EQUIV_G1": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "CANONICAL": 10
+      }
+    },
+    "EQUIV_G2": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 10,
+        "CANONICAL": 2
+      }
+    },
+    "EQUIV_G3": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 11,
+        "CANONICAL": 1
+      }
+    },
+    "EQUIV_G4": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 10,
+        "CANONICAL": 2
+      }
+    },
+    "EQUIV_G5": {
+      "pass_count": 0,
+      "total_runs": 3,
+      "stability": "0/3 failed",
+      "failure_categories": {
+        "SEMANTIC": 8,
+        "CANONICAL": 4
+      }
+    },
+    "CTX_FRIDGE_04": {
+      "pass_count": 2,
+      "total_runs": 3,
+      "stability": "2/3 acceptable but unstable",
+      "failure_categories": {
+        "CANONICAL": 1,
+        "CONTEXT_GAP": 2
+      }
+    }
+  },
+  "runs": [
+    {
+      "case_id": "HOME_001",
+      "run": 1,
+      "text": "A geladeira começou a fazer um barulho estranho.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "HOME_001",
+      "run": 2,
+      "text": "A geladeira começou a fazer um barulho estranho.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "HOME_001",
+      "run": 3,
+      "text": "A geladeira começou a fazer um barulho estranho.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "HOME_002",
+      "run": 1,
+      "text": "Troquei a resistência do chuveiro ontem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "HOME_002",
+      "run": 2,
+      "text": "Troquei a resistência do chuveiro ontem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "HOME_002",
+      "run": 3,
+      "text": "Troquei a resistência do chuveiro ontem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "HOME_003",
+      "run": 1,
+      "text": "Instalaram um ar-condicionado no quarto.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "HOME_003",
+      "run": 2,
+      "text": "Instalaram um ar-condicionado no quarto.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "HOME_003",
+      "run": 3,
+      "text": "Instalaram um ar-condicionado no quarto.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "PEOPLE_001",
+      "run": 1,
+      "text": "O João não trabalha mais na Acme.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "PEOPLE_001",
+      "run": 2,
+      "text": "O João não trabalha mais na Acme.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=joao",
+        "domain in ('domain.work', 'domain.people')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [
+          "João",
+          "Acme"
+        ],
+        "event_type": "event.intent",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "PEOPLE_001",
+      "run": 3,
+      "text": "O João não trabalha mais na Acme.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "PEOPLE_002",
+      "run": 1,
+      "text": "A Mariana começou a morar comigo em julho.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "PEOPLE_002",
+      "run": 2,
+      "text": "A Mariana começou a morar comigo em julho.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.start', 'action.move', 'action.live')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [
+          "Mariana"
+        ],
+        "event_type": "event.intent",
+        "action": null,
+        "time": {
+          "original_text": "em julho",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "PEOPLE_002",
+      "run": 3,
+      "text": "A Mariana começou a morar comigo em julho.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.start', 'action.move', 'action.live')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [
+          "Mariana"
+        ],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "em julho",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "PEOPLE_003",
+      "run": 1,
+      "text": "Emprestei 500 reais pro Pedro.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [
+          "Pedro"
+        ],
+        "event_type": "event.purchase",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "PEOPLE_003",
+      "run": 2,
+      "text": "Emprestei 500 reais pro Pedro.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [
+          "Pedro"
+        ],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "hoje",
+          "relative_day": "today",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "PEOPLE_003",
+      "run": 3,
+      "text": "Emprestei 500 reais pro Pedro.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [
+          "Pedro"
+        ],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "DOC_001",
+      "run": 1,
+      "text": "Minha CNH vence em novembro.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "DOC_001",
+      "run": 2,
+      "text": "Minha CNH vence em novembro.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "has_event",
+        "mention=habilitação",
+        "mention=habilitacao"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_obligation",
+        "domains": [
+          "domain.appointments",
+          "domain.vehicle"
+        ],
+        "mentions": []
+      }
+    },
+    {
+      "case_id": "DOC_001",
+      "run": 3,
+      "text": "Minha CNH vence em novembro.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "DOC_002",
+      "run": 1,
+      "text": "Renovei meu passaporte.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.renew', 'action.update')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "DOC_002",
+      "run": 2,
+      "text": "Renovei meu passaporte.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.renew', 'action.update')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.intent",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "DOC_002",
+      "run": 3,
+      "text": "Renovei meu passaporte.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.renew', 'action.update')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "Renovei meu passaporte.",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EDU_001",
+      "run": 1,
+      "text": "Comecei um curso de espanhol na terça.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EDU_001",
+      "run": 2,
+      "text": "Comecei um curso de espanhol na terça.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EDU_001",
+      "run": 3,
+      "text": "Comecei um curso de espanhol na terça.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "domain in ('domain.education',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "na terça",
+          "relative_day": null,
+          "weekday": 1
+        }
+      }
+    },
+    {
+      "case_id": "EDU_002",
+      "run": 1,
+      "text": "A prova de estatística ficou para sexta.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=estatistica",
+        "domain in ('domain.education',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "sexta",
+          "relative_day": null,
+          "weekday": 4
+        }
+      }
+    },
+    {
+      "case_id": "EDU_002",
+      "run": 2,
+      "text": "A prova de estatística ficou para sexta.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=estatistica",
+        "domain in ('domain.education',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "sexta",
+          "relative_day": null,
+          "weekday": 4
+        }
+      }
+    },
+    {
+      "case_id": "EDU_002",
+      "run": 3,
+      "text": "A prova de estatística ficou para sexta.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=estatistica",
+        "domain in ('domain.education',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "sexta",
+          "relative_day": null,
+          "weekday": 4
+        }
+      }
+    },
+    {
+      "case_id": "HEALTH_001",
+      "run": 1,
+      "text": "A Mel tomou a segunda dose da vacina sábado.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "HEALTH_001",
+      "run": 2,
+      "text": "A Mel tomou a segunda dose da vacina sábado.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.health"
+        ],
+        "mentions": [
+          "Mel"
+        ],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "sábado",
+          "relative_day": null,
+          "weekday": 5
+        }
+      }
+    },
+    {
+      "case_id": "HEALTH_001",
+      "run": 3,
+      "text": "A Mel tomou a segunda dose da vacina sábado.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CONTEXT_GAP",
+      "semantic_fails": [
+        "domain in ('domain.health',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [
+          "Mel"
+        ],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "sábado",
+          "relative_day": null,
+          "weekday": 5
+        }
+      }
+    },
+    {
+      "case_id": "HEALTH_002",
+      "run": 1,
+      "text": "Fui ao cardiologista, mas não lembro quando.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.health",
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "HEALTH_002",
+      "run": 2,
+      "text": "Fui ao cardiologista, mas não lembro quando.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "HEALTH_002",
+      "run": 3,
+      "text": "Fui ao cardiologista, mas não lembro quando.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.health",
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "não lembro quando",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SHOP_001",
+      "run": 1,
+      "text": "Comprei três filtros de café.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=cafe",
+        "quantity=3"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.shopping"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "hoje",
+          "relative_day": "today",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SHOP_001",
+      "run": 2,
+      "text": "Comprei três filtros de café.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=cafe",
+        "quantity=3"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.shopping"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "há pouco",
+          "relative_day": "today",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SHOP_001",
+      "run": 3,
+      "text": "Comprei três filtros de café.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=cafe",
+        "quantity=3"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.shopping"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SHOP_002",
+      "run": 1,
+      "text": "Acabou detergente.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.intent",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SHOP_002",
+      "run": 2,
+      "text": "Acabou detergente.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "SHOP_002",
+      "run": 3,
+      "text": "Acabou detergente.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SVC_001",
+      "run": 1,
+      "text": "O técnico consertou a máquina de lavar por 180 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=maquina",
+        "mention=tecnico"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SVC_001",
+      "run": 2,
+      "text": "O técnico consertou a máquina de lavar por 180 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=maquina",
+        "mention=tecnico"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services",
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SVC_001",
+      "run": 3,
+      "text": "O técnico consertou a máquina de lavar por 180 reais.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "SVC_002",
+      "run": 1,
+      "text": "Cancelei a internet da casa.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)",
+        "domain in ('domain.services',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home",
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SVC_002",
+      "run": 2,
+      "text": "Cancelei a internet da casa.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)",
+        "domain in ('domain.services',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home",
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": "action.pay",
+        "time": {
+          "original_text": "hoje",
+          "relative_day": "today",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "SVC_002",
+      "run": 3,
+      "text": "Cancelei a internet da casa.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)",
+        "domain in ('domain.services',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home",
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "TRAVEL_001",
+      "run": 1,
+      "text": "Reservei um hotel em Recife para dezembro.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.reserve', 'action.book')",
+        "domain in ('domain.travel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services",
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "para dezembro",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "TRAVEL_001",
+      "run": 2,
+      "text": "Reservei um hotel em Recife para dezembro.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "TRAVEL_001",
+      "run": 3,
+      "text": "Reservei um hotel em Recife para dezembro.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "TRAVEL_002",
+      "run": 1,
+      "text": "Voltei de Fortaleza ontem.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "TRAVEL_002",
+      "run": 2,
+      "text": "Voltei de Fortaleza ontem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.travel', 'action.arrive')",
+        "domain in ('domain.travel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [],
+        "event_type": "event.intent",
+        "action": null,
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "TRAVEL_002",
+      "run": 3,
+      "text": "Voltei de Fortaleza ontem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.travel', 'action.arrive')",
+        "domain in ('domain.travel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.health"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "COLL_001",
+      "run": 1,
+      "text": "O notebook tá desligando sozinho.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "COLL_001",
+      "run": 2,
+      "text": "O notebook tá desligando sozinho.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "COLL_001",
+      "run": 3,
+      "text": "O notebook tá desligando sozinho.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "COLL_002",
+      "run": 1,
+      "text": "Dei 200 conto pro João pagar depois.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=joao"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [
+          "João"
+        ],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "depois",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "COLL_002",
+      "run": 2,
+      "text": "Dei 200 conto pro João pagar depois.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=joao"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance",
+          "domain.services"
+        ],
+        "mentions": [
+          "João"
+        ],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "depois",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "COLL_002",
+      "run": 3,
+      "text": "Dei 200 conto pro João pagar depois.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=joao"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [
+          "João"
+        ],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "NEG_001",
+      "run": 1,
+      "text": "Eu não vendi o Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "NEG_001",
+      "run": 2,
+      "text": "Eu não vendi o Corolla.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "intent=record_event",
+        "has_event"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "correct",
+        "domains": [
+          "domain.vehicle",
+          "domain.finance"
+        ],
+        "mentions": [
+          "Corolla"
+        ]
+      }
+    },
+    {
+      "case_id": "NEG_001",
+      "run": 3,
+      "text": "Eu não vendi o Corolla.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "intent=record_event",
+        "has_event",
+        "domain in ('domain.vehicle',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "correct",
+        "domains": [],
+        "mentions": []
+      }
+    },
+    {
+      "case_id": "NEG_002",
+      "run": 1,
+      "text": "A conta ainda não foi paga.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "intent=record_event",
+        "has_event"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_obligation",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": []
+      }
+    },
+    {
+      "case_id": "NEG_002",
+      "run": 2,
+      "text": "A conta ainda não foi paga.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "intent=record_event",
+        "has_event",
+        "domain in ('domain.finance',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_obligation",
+        "domains": [],
+        "mentions": []
+      }
+    },
+    {
+      "case_id": "NEG_002",
+      "run": 3,
+      "text": "A conta ainda não foi paga.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "UNC_001",
+      "run": 1,
+      "text": "Acho que paguei uns 90 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "UNC_001",
+      "run": 2,
+      "text": "Acho que paguei uns 90 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "UNC_001",
+      "run": 3,
+      "text": "Acho que paguei uns 90 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "UNC_002",
+      "run": 1,
+      "text": "Talvez tenha sido na terça.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "UNC_002",
+      "run": 2,
+      "text": "Talvez tenha sido na terça.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "UNC_002",
+      "run": 3,
+      "text": "Talvez tenha sido na terça.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 1,
+      "text": "Troquei a embreagem do Corolla.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.vehicle"
+        ],
+        "mentions": [
+          "Corolla"
+        ],
+        "event_type": "event.vehicle_maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 1,
+      "text": "Mandei trocar a embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 1,
+      "text": "A embreagem do Corolla foi substituída.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 1,
+      "text": "Foi feita a troca da embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 2,
+      "text": "Troquei a embreagem do Corolla.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": null,
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.vehicle"
+        ],
+        "mentions": [
+          "Corolla"
+        ],
+        "event_type": "event.vehicle_maintenance",
+        "action": "action.replace",
+        "time": {
+          "original_text": "agora",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 2,
+      "text": "Mandei trocar a embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 2,
+      "text": "A embreagem do Corolla foi substituída.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 2,
+      "text": "Foi feita a troca da embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 3,
+      "text": "Troquei a embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 3,
+      "text": "Mandei trocar a embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 3,
+      "text": "A embreagem do Corolla foi substituída.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G1",
+      "run": 3,
+      "text": "Foi feita a troca da embreagem do Corolla.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 1,
+      "text": "Devolvi o livro pra biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [
+          "biblioteca"
+        ],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 1,
+      "text": "Entreguei o livro de volta na biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "na biblioteca",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 1,
+      "text": "O livro foi devolvido à biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [],
+        "event_type": "event.intent",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 1,
+      "text": "Fiz a devolução do livro na biblioteca.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 2,
+      "text": "Devolvi o livro pra biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 2,
+      "text": "Entreguei o livro de volta na biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [],
+        "event_type": "event.payment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 2,
+      "text": "O livro foi devolvido à biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 2,
+      "text": "Fiz a devolução do livro na biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.obligation",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 3,
+      "text": "Devolvi o livro pra biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [
+          "biblioteca"
+        ],
+        "event_type": "event.payment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 3,
+      "text": "Entreguei o livro de volta na biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 3,
+      "text": "O livro foi devolvido à biblioteca.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G2",
+      "run": 3,
+      "text": "Fiz a devolução do livro na biblioteca.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.return', 'action.give')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 1,
+      "text": "Instalei uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 1,
+      "text": "Coloquei uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 1,
+      "text": "Uma câmera foi instalada na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 1,
+      "text": "Fizeram a instalação de uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 2,
+      "text": "Instalei uma câmera na garagem.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 2,
+      "text": "Coloquei uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 2,
+      "text": "Uma câmera foi instalada na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 2,
+      "text": "Fizeram a instalação de uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 3,
+      "text": "Instalei uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 3,
+      "text": "Coloquei uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.purchase",
+        "action": "action.buy",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 3,
+      "text": "Uma câmera foi instalada na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.intent",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G3",
+      "run": 3,
+      "text": "Fizeram a instalação de uma câmera na garagem.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=camera",
+        "action in ('action.install',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 1,
+      "text": "Cancelei a assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance",
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 1,
+      "text": "Pedi cancelamento da assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "intent=record_event",
+        "has_event"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_obligation",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": []
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 1,
+      "text": "A assinatura do streaming foi cancelada.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 1,
+      "text": "Foi cancelada a assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 2,
+      "text": "Cancelei a assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services",
+          "domain.finance"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 2,
+      "text": "Pedi cancelamento da assinatura do streaming.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 2,
+      "text": "A assinatura do streaming foi cancelada.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance",
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 2,
+      "text": "Foi cancelada a assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": "action.pay",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 3,
+      "text": "Cancelei a assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance",
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 3,
+      "text": "Pedi cancelamento da assinatura do streaming.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 3,
+      "text": "A assinatura do streaming foi cancelada.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance",
+          "domain.home"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G4",
+      "run": 3,
+      "text": "Foi cancelada a assinatura do streaming.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.cancel',)"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.finance",
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.recurring_bill",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 1,
+      "text": "Reservei mesa no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 1,
+      "text": "Fiz reserva no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=mesa",
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 1,
+      "text": "A mesa no restaurante italiano foi reservada.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [
+          "restaurante italiano"
+        ],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 1,
+      "text": "Foi feita a reserva no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=mesa",
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 2,
+      "text": "Reservei mesa no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 2,
+      "text": "Fiz reserva no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=mesa",
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 2,
+      "text": "A mesa no restaurante italiano foi reservada.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 2,
+      "text": "Foi feita a reserva no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "mention=mesa",
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments",
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": "action.attend",
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 3,
+      "text": "Reservei mesa no restaurante italiano.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "SEMANTIC",
+      "semantic_fails": [
+        "action in ('action.reserve', 'action.book')"
+      ],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.appointments"
+        ],
+        "mentions": [],
+        "event_type": "event.appointment",
+        "action": null,
+        "time": {
+          "original_text": "",
+          "relative_day": null,
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 3,
+      "text": "Fiz reserva no restaurante italiano.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 3,
+      "text": "A mesa no restaurante italiano foi reservada.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "EQUIV_G5",
+      "run": 3,
+      "text": "Foi feita a reserva no restaurante italiano.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "CTX_FRIDGE_04",
+      "run": 1,
+      "text": "Comprei uma geladeira nova.\nEla começou a fazer um barulho estranho.\nChamei um técnico ontem.\nFicou 250 reais.",
+      "provider_json_valid": false,
+      "wire_valid": false,
+      "canonical_valid": false,
+      "semantic_required_pass": false,
+      "forbidden_inference_count": 0,
+      "failure_category": "CANONICAL",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": "InterpretationError",
+      "ir_summary": null
+    },
+    {
+      "case_id": "CTX_FRIDGE_04",
+      "run": 2,
+      "text": "Comprei uma geladeira nova.\nEla começou a fazer um barulho estranho.\nChamei um técnico ontem.\nFicou 250 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": "CONTEXT_GAP",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home",
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.payment",
+        "action": "action.pay",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    },
+    {
+      "case_id": "CTX_FRIDGE_04",
+      "run": 3,
+      "text": "Comprei uma geladeira nova.\nEla começou a fazer um barulho estranho.\nChamei um técnico ontem.\nFicou 250 reais.",
+      "provider_json_valid": true,
+      "wire_valid": true,
+      "canonical_valid": true,
+      "semantic_required_pass": true,
+      "forbidden_inference_count": 0,
+      "failure_category": "CONTEXT_GAP",
+      "semantic_fails": [],
+      "forbidden_hits": [],
+      "error_class": null,
+      "ir_summary": {
+        "kind": "IngestIR",
+        "intent": "record_event",
+        "domains": [
+          "domain.home",
+          "domain.services"
+        ],
+        "mentions": [],
+        "event_type": "event.maintenance",
+        "action": "action.maintain",
+        "time": {
+          "original_text": "ontem",
+          "relative_day": "yesterday",
+          "weekday": null
+        }
+      }
+    }
+  ],
+  "comparison": {
+    "baseline_metrics": {
+      "total_runs": 135,
+      "provider_json_valid_rate": 0.6148,
+      "wire_valid_rate": 0.6148,
+      "canonical_valid_rate": 0.6148,
+      "semantic_accuracy": 0.163,
+      "forbidden_inference_rate": 0.0,
+      "unsupported_rate": 0.0,
+      "provider_failures": 0,
+      "wire_failures": 0,
+      "canonical_failures": 52,
+      "semantic_failures": 61,
+      "context_gaps": 2
+    },
+    "delta_provider_json_valid_rate": 0.0593,
+    "delta_wire_valid_rate": 0.0593,
+    "delta_canonical_valid_rate": 0.0593,
+    "delta_semantic_accuracy": -0.0223,
+    "delta_forbidden_inference_rate": 0.0,
+    "stability_baseline": {"stable": 3, "unstable": 4, "weak": 3, "failed": 20},
+    "stability_current": {"stable": 3, "unstable": 3, "weak": 2, "failed": 22},
+    "case_movement": {"improved": 0, "unchanged": 27, "regressed": 3, "mixed": 0},
+    "regressed_cases": ["HOME_001", "HEALTH_001", "NEG_002"],
+    "failure_frontier": {"CANONICAL": 14, "SEMANTIC": 11, "CONTEXT": 3, "CONCEPT": 2},
+    "temporal_blockers": {"before": 4, "after": 4, "removed": 0, "remaining": 4},
+    "i11_2_hypothesis": "PARTIALLY_CONFIRMED",
+    "d2_offline": {
+      "text": "Acho que a revisão ficou em uns 180 reais.",
+      "temporal_validity": "COMMITTED partial, no time.missing",
+      "entity_resolution": "separate blocker without vehicle",
+      "architectural_progress": true
+    },
+    "forbidden_inference_audit": {"baseline_runs_with_hits": 0, "current_runs_with_hits": 0},
+    "unknown_temporal_audit": "N/A on DEV live; offline integration tests OK",
+    "temporal_model_audit": {
+      "exact_vs_relative": "CURRENT_MODEL_OK",
+      "time_precision_partial": "NEEDS_FUTURE_REFACTOR",
+      "recorded_at_separation": "CURRENT_MODEL_OK",
+      "ternary_membership": "CURRENT_MODEL_OK"
+    },
+    "migration_audit": {
+      "canonical_upgrade_path": "init_database + migrate_v1_to_v2",
+      "double_application_risk": "low (idempotent version check)",
+      "follow_up_required": "MIGRATION_ARCHITECTURE_FOLLOWUP"
+    },
+    "methodology_note": "DEV generalization benchmark evaluates interpreter layer only; I11.3 ingest/query changes not exercised",
+    "offline_gate": {"passed": 279, "failed": 0, "skipped": 7},
+    "recommendation": "MORE_TEMPORAL_EVIDENCE_REQUIRED"
+  }
+}

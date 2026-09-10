@@ -1,0 +1,22 @@
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+x509_extensions = v3_req
+
+[dn]
+CN = core.james.sandbox.momsys.com.br
+O = Jamesbrain
+C = BR
+
+[v3_req]
+subjectAltName = @alt_names
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+
+[alt_names]
+DNS.1 = core.james.sandbox.momsys.com.br
+DNS.2 = pke.james.sandbox.momsys.com.br
+DNS.3 = tools.james.sandbox.momsys.com.br

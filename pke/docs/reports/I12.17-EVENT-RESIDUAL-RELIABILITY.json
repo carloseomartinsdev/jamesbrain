@@ -1,0 +1,86 @@
+{
+  "experiment_id": "I12.17",
+  "title": "Event Residual Reliability and Engine v1 Freeze Gate",
+  "frozen": {
+    "Knowledge_Core_v1": "FROZEN",
+    "schema": "v10",
+    "CORE": 65,
+    "prompt": "v4",
+    "migration": "none",
+    "holdout": "untouched"
+  },
+  "executive": {
+    "IS_EVENT_RESIDUAL_AUDIT_COMPLETE": true,
+    "DOES_EVENT_STILL_HAVE_A_MATERIAL_ENGINE_V1_BLOCKER": false,
+    "IS_EXPLICIT_EVENT_SEMANTICS_PRESERVED_END_TO_END": true,
+    "DO_PARTIAL_EVENTS_REMAIN_SAFE": true,
+    "IS_FALSE_EVENT_CANONICALIZATION_ZERO": true,
+    "DO_MP1_MP4_PRESERVE_EVENT_PLUS_MEASUREMENT": true,
+    "DOES_MP5_REMAIN_MEASUREMENT_ONLY": true,
+    "DOES_KNOWLEDGE_CORE_V1_REMAIN_FROZEN": true,
+    "IS_LANGUAGE_BOUNDARY_SAFE_ENOUGH_FOR_ENGINE_V1": true,
+    "IS_ENGINE_V1_RELIABLE_WITHIN_ITS_EXPLICIT_CAPABILITY_BOUNDARY": true,
+    "DOES_EVENT_INTERPRETATION_STILL_CONTAIN_A_MATERIAL_ENGINE_V1_BLOCKING_DEFECT": false
+  },
+  "recommendation": "I12.17_CLOSE_PROCEED_TO_ENGINE_V1_FINAL_REVALIDATION",
+  "metrics": {
+    "TOTAL_EVENT_CASES": 34,
+    "TOTAL_EVENT_RUNS": 114,
+    "DETERMINISTIC_CORPUS_SIZE": 122,
+    "EVENT_AUTONOMOUS_USEFUL_CAPTURE_RATE": 0.47368421052631576,
+    "EVENT_RECOVERABLE_GAP_RATE": 0.17543859649122806,
+    "EVENT_USEFUL_CAPTURE_AFTER_BOUNDED_RECOVERY": 0.6491228070175439,
+    "EVENT_SAFE_PARTIAL_RATE": 0.7894736842105263,
+    "EVENT_CANONICAL_UNRESOLVED_RATE": 0.6140350877192983,
+    "EVENT_UNDETECTABLE_OMISSION_RATE": 0.008771929824561403,
+    "EVENT_ENGINE_DEFECT_RATE": 0.0,
+    "EVENT_FALSE_CANONICALIZATION": 0,
+    "VALID_EXPLICIT_EVENT_DROPPED_DOWNSTREAM": 0,
+    "EVENT_FALSELY_ADDED": 0,
+    "EVENT_WRONG_PRIMITIVE_COMMIT": 0,
+    "STATE_FALSE_CAUSAL_EVENT": 0,
+    "RELATION_FALSE_START_EVENT": 0,
+    "MP5_FALSE_EVENT": 0,
+    "EVENT_MEASUREMENT_DUPLICATE_COMMIT": 0,
+    "MISSING_EVENT_INFORMATION_INVENTED": 0,
+    "RAW_TEXT_REINTERPRETED_DOWNSTREAM": 0
+  },
+  "debts": {
+    "INTERPRETER-STATE-01": "PARTIALLY_MITIGATED",
+    "INTERPRETER-RELATION-01": "PARTIALLY_MITIGATED",
+    "INTERPRETER-EVENT-01": "CLOSED",
+    "ONTOLOGY-COVERAGE-01": "POST_V1",
+    "CLARIFICATION-COVERAGE": "PARTIALLY_MITIGATED",
+    "LIVE-INTERPRETER-RELIABILITY-01": "PARTIALLY_MITIGATED"
+  },
+  "freeze_inventory": [
+    {"debt": "State interpretation", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "post_v1": true},
+    {"debt": "Relation interpretation", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "post_v1": true},
+    {"debt": "Event interpretation", "status": "CLOSED", "engine_blocker": false, "post_v1": false},
+    {"debt": "Ontology coverage", "status": "OPEN / POST_V1", "engine_blocker": false, "post_v1": true},
+    {"debt": "Clarification coverage", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "post_v1": true},
+    {"debt": "Model capability", "status": "bounded", "engine_blocker": false, "post_v1": true},
+    {"debt": "Live interpreter reliability", "status": "PARTIALLY_MITIGATED", "engine_blocker": false, "post_v1": true}
+  ],
+  "artifacts": {
+    "ledger": "docs/reports/i1217_artifacts/I12.17-EVENT-FAILURE-LEDGER.json",
+    "adr": "docs/decisions/0068-event-residual-reliability-engine-v1-freeze-gate.md",
+    "tests": "tests/event_residual_reliability/"
+  },
+  "changes": {
+    "prompt": false,
+    "model": false,
+    "SemanticProposal": false,
+    "Wire": false,
+    "RetryPolicy": false,
+    "Core": false,
+    "schema": false
+  },
+  "regression": {
+    "command": "pytest tests/ -m \"not live\"",
+    "passed": 4177,
+    "failed": 0,
+    "deselected_live": 8,
+    "baseline_entering": 4051
+  }
+}

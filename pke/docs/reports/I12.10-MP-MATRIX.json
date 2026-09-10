@@ -1,0 +1,42 @@
+[
+  {
+    "case": "MP1",
+    "outcome": "valid_partially_executable",
+    "ready": 1,
+    "partial": 1,
+    "incomplete": 0,
+    "ir": true
+  },
+  {
+    "case": "MP2",
+    "outcome": "valid_partially_executable",
+    "ready": 1,
+    "partial": 1,
+    "incomplete": 0,
+    "ir": true
+  },
+  {
+    "case": "MP3",
+    "outcome": "valid_partially_executable",
+    "ready": 1,
+    "partial": 1,
+    "incomplete": 0,
+    "ir": true
+  },
+  {
+    "case": "MP4",
+    "outcome": "valid_partially_executable",
+    "ready": 1,
+    "partial": 1,
+    "incomplete": 0,
+    "ir": true
+  },
+  {
+    "case": "MP5",
+    "outcome": "valid_executable",
+    "ready": 1,
+    "partial": 0,
+    "incomplete": 0,
+    "ir": true
+  }
+]
