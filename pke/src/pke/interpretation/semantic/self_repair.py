@@ -1,9 +1,15 @@
-"""Deterministic self / name-misparse repair (E1.1). Prompt tuning is secondary (D-E1-12)."""
+"""Deterministic self / name-misparse repair (E1.1). Prompt tuning is secondary (D-E1-12).
+
+LANGUAGE repairs that read raw_input are frozen (ADR 0093). Do not add new
+phrase/lexeme branches here; the Interpreter must emit Graph Semantic Core
+claims. Existing steps remain compatibility until they can be retired.
+"""
 
 from __future__ import annotations
 
 import re
 import unicodedata
+from contextvars import ContextVar
 
 from pke.interpretation.semantic.attribute_commit import commit_attribute_slots
 from pke.interpretation.semantic.models import SemanticEntityMention, SemanticProposal
@@ -110,6 +116,16 @@ def repair_self_name_misparse(proposal: SemanticProposal) -> SemanticProposal:
     return proposal
 
 
+_LAST_APPLIED_REPAIRS: ContextVar[tuple[str, ...]] = ContextVar(
+    "pke_last_applied_repairs", default=()
+)
+
+
+def last_applied_repairs() -> tuple[str, ...]:
+    """Names of E1 repairs that changed the proposal in the last apply() call."""
+    return _LAST_APPLIED_REPAIRS.get()
+
+
 def apply_e1_self_repairs(
     proposal: SemanticProposal,
     *,
@@ -126,11 +142,32 @@ def apply_e1_self_repairs(
         repair_my_name_query,
     )
 
-    proposal = align_llm_slots(proposal)
-    proposal = repair_self_name_misparse(proposal)
-    proposal = repair_my_name_query(proposal)
-    proposal = repair_possessive_attributes(proposal, prior_utterances=prior_utterances)
-    proposal = repair_my_car_attribute(proposal)
-    proposal = repair_my_car_query(proposal)
-    proposal = repair_likes_inventory_query(proposal)
+    applied: list[str] = []
+
+    def _step(name: str, fn, **kwargs) -> None:
+        nonlocal proposal
+        before = proposal.model_dump(mode="json")
+        nxt = fn(proposal, **kwargs) if kwargs else fn(proposal)
+        if nxt.model_dump(mode="json") != before:
+            applied.append(name)
+        proposal = nxt
+
+    _step("slot_align", align_llm_slots)
+    _step("self_reference_repair", repair_self_name_misparse)
+    _step("name_query_repair", repair_my_name_query)
+    _step(
+        "possessive_attribute_repair",
+        repair_possessive_attributes,
+        prior_utterances=prior_utterances,
+    )
+    _step("vehicle_attribute_repair", repair_my_car_attribute)
+    _step("vehicle_query_repair", repair_my_car_query)
+    _step("likes_inventory_repair", repair_likes_inventory_query)
+    from pke.interpretation.semantic.class_reference import propagate_class_hints
+
+    _step("class_hint_propagation", propagate_class_hints)
+    from pke.interpretation.semantic.identity_naming import fold_identity_naming
+
+    _step("identity_naming_fold", fold_identity_naming)
+    _LAST_APPLIED_REPAIRS.set(tuple(applied))
     return proposal

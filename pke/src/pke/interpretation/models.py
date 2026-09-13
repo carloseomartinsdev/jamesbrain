@@ -47,11 +47,16 @@ class CorrectionStrategy(StrEnum):
 
 
 class MentionReferenceKind(StrEnum):
-    """NAMED is lexical identity. CONTEXTUAL is situational. POSSESSIVE is owned-by-speaker."""
+    """Instance vs class/type constraint.
+
+    NAMED is lexical identity. CONTEXTUAL is situational. POSSESSIVE is owned-by-speaker.
+    CLASS is not an instance to resolve — it constrains targets by entity type.
+    """
 
     NAMED = "named"
     CONTEXTUAL = "contextual"
     POSSESSIVE = "possessive"
+    CLASS = "class"
 
 
 class EntityMention(BaseModel):
@@ -240,6 +245,35 @@ class IrCorrection(BaseModel):
         return self
 
 
+class ClaimExecution(BaseModel):
+    """Per-claim overlay outcome — identity after canonicalization, before persist."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    claim_id: str
+    kind: str
+    status: str
+    predicate: str | None = None
+    canonical_dimension: str | None = None
+    dimension_source: str | None = None
+    value: str | None = None
+    reason: str | None = None
+    materialized_as: str | None = None
+
+
+class ClaimReport(BaseModel):
+    """Interpreter-side claim accounting — Engine does not re-read raw_input."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    received: int = 0
+    assumed_dropped: int = 0
+    derived_deferred: int = 0
+    unsupported: int = 0
+    notes: list[str] = Field(default_factory=list)
+    executions: list[ClaimExecution] = Field(default_factory=list)
+
+
 class IngestIR(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -253,10 +287,14 @@ class IngestIR(BaseModel):
     additional_attributes: list[IrAttribute] = Field(default_factory=list)
     """Companion Attribute writes (e.g. model alongside brand) — same subject."""
     measurement: IrMeasurement | None = None
+    additional_measurements: list[IrMeasurement] = Field(default_factory=list)
     relation: IrRelation | None = None
+    additional_relations: list[IrRelation] = Field(default_factory=list)
     obligation: IrObligation | None = None
     correction: IrCorrection | None = None
     missing_hints: list[ConceptRef] = Field(default_factory=list)
+    claim_report: ClaimReport | None = None
+    discourse_decision: Literal["continue", "new_topic", "ambiguous", "none"] | None = None
 
 
 class RelativePeriod(StrEnum):
@@ -366,6 +404,7 @@ class QueryIR(BaseModel):
     intent: Literal["query"] = "query"
     raw_input: str
     query: QuerySpec
+    discourse_decision: Literal["continue", "new_topic", "ambiguous", "none"] | None = None
 
 
 InterpretationResult = IngestIR | QueryIR

@@ -55,8 +55,20 @@ def test_prompt_size_delta_bounded() -> None:
     v5_len = len(prompts_v5.SYSTEM_PROMPT)
     delta = v5_len - v4_len
     delta_pct = 100.0 * delta / v4_len
-    assert delta_pct < 9.0, f"delta {delta_pct:.1f}% too large"
-    assert 200 <= delta <= 500, f"unexpected delta chars={delta}"
+    assert delta_pct < 15.0, f"delta {delta_pct:.1f}% too large"
+    assert 200 <= delta <= 1500, f"unexpected delta chars={delta}"
+
+
+def test_owned_object_block_in_v4_and_v5() -> None:
+    for text in (prompts_v4.SYSTEM_PROMPT, prompts_v5.SYSTEM_PROMPT):
+        folded = _norm(text)
+        assert "owned object + copular description" in folded
+        assert "thinkpad" in folded
+        assert "do not turn descriptive values into standalone named entities" in folded
+        assert "person role vs identity" in folded
+        assert "pending_intent" in folded
+        assert "graph primitives" in folded
+        assert "profession property" in folded
 
 
 def test_v5_preserves_v4_few_shots_via_import() -> None:

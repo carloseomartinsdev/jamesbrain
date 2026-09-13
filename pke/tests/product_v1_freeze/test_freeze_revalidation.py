@@ -144,7 +144,7 @@ def test_P13_P18_write_query_cross_conversation(client: TestClient) -> None:
     w = client.post("/api/v1/messages", json={"text": RAW_A}, headers=auth)
     assert w.status_code == 200
     assert w.json()["operation"]["outcome"] == "committed"
-    assert "Registrei" in w.json()["text"]
+    assert "Entendi" in w.json()["text"]
     cid_a = w.json()["conversation_id"]
     hyd = client.get(f"/api/v1/conversations/{cid_a}", headers=auth).json()
     assert any(m["role"] == "user" for m in hyd["messages"])

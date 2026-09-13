@@ -12,6 +12,8 @@ from __future__ import annotations
 from pke.interpretation.semantic.models import (
     PrimitiveKind,
     SemanticAssertionFrame,
+    SemanticClaimKind,
+    SemanticClaimOrigin,
     SemanticProposal,
 )
 from pke.interpretation.semantic.multi_primitive_evidence import (
@@ -66,13 +68,25 @@ def collect_assertions(proposal: SemanticProposal) -> list[SemanticAssertionFram
         ]
 
     primary, notes = route_primitive(proposal)
-    return [
+    frames = [
         SemanticAssertionFrame(
             primitive=primary,
             confidence=_assertion_confidence(proposal, primary),
             notes=list(notes),
         )
     ]
+    # Measurement companion: primary routing must not drop an explicit quantitative claim.
+    # Attribute/relation companions are overlaid from proposal.claims (not extra frames)
+    # so execution_readiness is not downgraded by unresolved sibling concepts.
+    if has_m and primary is not PrimitiveKind.MEASUREMENT:
+        frames.append(
+            SemanticAssertionFrame(
+                primitive=PrimitiveKind.MEASUREMENT,
+                confidence=_assertion_confidence(proposal, PrimitiveKind.MEASUREMENT),
+                notes=["explicit quantitative result → MEASUREMENT"],
+            )
+        )
+    return frames
 
 
 def route_primitive(proposal: SemanticProposal) -> tuple[PrimitiveKind, list[str]]:
@@ -84,11 +98,11 @@ def route_primitive(proposal: SemanticProposal) -> tuple[PrimitiveKind, list[str
 
     if proposal.utterance_kind == "query":
         notes.append("query utterance — primitive resolved downstream")
+        if proposal.link_semantics or proposal.relation_expression:
+            return PrimitiveKind.RELATION, notes
         if proposal.classification_semantics:
             notes.append("classification query → TYPE (not Attribute)")
             return PrimitiveKind.TYPE, notes
-        if proposal.link_semantics or proposal.relation_expression:
-            return PrimitiveKind.RELATION, notes
         if _has_measurement_evidence(proposal):
             notes.append("measurement query → MEASUREMENT")
             return PrimitiveKind.MEASUREMENT, notes
@@ -96,6 +110,13 @@ def route_primitive(proposal: SemanticProposal) -> tuple[PrimitiveKind, list[str
             proposal.attribute_expression and not proposal.condition_semantics
         ):
             notes.append("stable property query → ATTRIBUTE")
+            return PrimitiveKind.ATTRIBUTE, notes
+        if any(
+            claim.kind is SemanticClaimKind.ATTRIBUTE
+            and claim.origin is SemanticClaimOrigin.EXPLICIT
+            for claim in proposal.claims
+        ):
+            notes.append("attribute claim → ATTRIBUTE")
             return PrimitiveKind.ATTRIBUTE, notes
         if proposal.condition_semantics or proposal.state_expression:
             return PrimitiveKind.STATE, notes

@@ -1,6 +1,8 @@
 """Controlled Attribute Dimension Registry (E1.2).
 
-LLM proposals never register dimensions. Only this registry authorizes materialization.
+The CORE tuple is closed: Interpreter proposals never mutate it.
+Learned dimensions live in a separate overlay (`attribute.learned.*`) and are
+authorized by key identity, not by language tables.
 """
 
 from __future__ import annotations
@@ -13,6 +15,7 @@ from typing import Literal
 class AttributeDimensionTier(StrEnum):
     CORE_V1 = "core_v1"
     EVERYDAY_E1 = "everyday_e1"
+    LEARNED = "learned"
 
 
 @dataclass(frozen=True)
@@ -54,7 +57,7 @@ def _spec(
     )
 
 
-# Static controlled catalog — no runtime mutation / adaptive learning.
+# Static controlled catalog — no runtime mutation. Learned keys use `_LEARNED_*`.
 ATTRIBUTE_DIMENSION_REGISTRY: tuple[AttributeDimensionSpec, ...] = (
     # --- v1 core write dimensions ---
     _spec(
@@ -125,6 +128,22 @@ ATTRIBUTE_DIMENSION_REGISTRY: tuple[AttributeDimensionSpec, ...] = (
         subject_kind_hints=frozenset({"vehicle", "automobile"}),
         singleton_current=True,
     ),
+    # Conceptual dimensions — Interpreter supplies canonical values (female, doctor).
+    # Not linguistic lemmas (gata, irmão) and not domain-specific branches.
+    _spec(
+        "sex",
+        "text",
+        ("sex", "sexo", "gender", "genero", "género"),
+        tier=AttributeDimensionTier.EVERYDAY_E1,
+        singleton_current=True,
+    ),
+    _spec(
+        "profession",
+        "text",
+        ("profession", "occupation", "profissao", "profissão", "profesion", "profesión"),
+        tier=AttributeDimensionTier.EVERYDAY_E1,
+        singleton_current=True,
+    ),
 )
 
 _BY_KEY: dict[str, AttributeDimensionSpec] = {s.key: s for s in ATTRIBUTE_DIMENSION_REGISTRY}
@@ -135,25 +154,54 @@ for _spec_row in ATTRIBUTE_DIMENSION_REGISTRY:
     for _alias in _spec_row.aliases:
         _ALIAS_TO_KEY[_alias] = _spec_row.key
 
+_LEARNED_BY_KEY: dict[str, AttributeDimensionSpec] = {}
+_LEARNED_ALIAS_TO_KEY: dict[str, str] = {}
+
+
+def register_learned_dimension(spec: AttributeDimensionSpec) -> AttributeDimensionSpec:
+    """Publish an overlay spec. Never overrides CORE keys or CORE aliases."""
+    existing = _BY_KEY.get(spec.key) or _LEARNED_BY_KEY.get(spec.key)
+    if existing is not None:
+        return existing
+    _LEARNED_BY_KEY[spec.key] = spec
+    _LEARNED_ALIAS_TO_KEY[spec.key] = spec.key
+    for alias in spec.aliases:
+        token = (alias or "").strip()
+        if not token or token in _ALIAS_TO_KEY or token in _LEARNED_ALIAS_TO_KEY:
+            continue
+        _LEARNED_ALIAS_TO_KEY[token] = spec.key
+    return spec
+
+
+def clear_learned_dimensions() -> None:
+    """Test isolation — CORE catalog is untouched."""
+    _LEARNED_BY_KEY.clear()
+    _LEARNED_ALIAS_TO_KEY.clear()
+
 
 def get_dimension(key: str) -> AttributeDimensionSpec | None:
-    return _BY_KEY.get(key)
+    return _BY_KEY.get(key) or _LEARNED_BY_KEY.get(key)
 
 
 def is_registered_dimension(key: str) -> bool:
-    spec = _BY_KEY.get(key)
+    spec = get_dimension(key)
     return spec is not None and spec.materializable
 
 
 def alias_to_dimension_key(alias: str) -> str | None:
     """Map normalized alias → dimension key. Unknown → None (never invent)."""
-    return _ALIAS_TO_KEY.get(alias)
+    core = _ALIAS_TO_KEY.get(alias)
+    if core is not None:
+        return core
+    return _LEARNED_ALIAS_TO_KEY.get(alias)
 
 
 def dimension_alias_map() -> dict[str, str]:
-    """Copy of alias→key for resolvers (read-only use)."""
-    return dict(_ALIAS_TO_KEY)
+    """Copy of alias→key for resolvers. CORE wins on collision."""
+    merged = dict(_LEARNED_ALIAS_TO_KEY)
+    merged.update(_ALIAS_TO_KEY)
+    return merged
 
 
 def registered_dimension_keys() -> frozenset[str]:
-    return frozenset(_BY_KEY.keys())
+    return frozenset(_BY_KEY.keys()) | frozenset(_LEARNED_BY_KEY.keys())

@@ -8,8 +8,21 @@ from collections.abc import Callable
 from pke.application.builder import KnowledgeCandidateBuilder
 from pke.application.clock import Clock
 from pke.application.correction_ingest import CorrectionIngestOrchestrator
+from pke.application.discourse import (
+    apply_ingest_to_discourse,
+    binding_allowed,
+    interpret_context_from_session,
+    names_from_entities,
+    type_keys_from_entities,
+)
 from pke.application.materializer import ApprovedKnowledge, KnowledgeMaterializer
-from pke.application.results import IngestResult, IngestStatus, MaterializationResult
+from pke.application.results import (
+    IngestResult,
+    IngestStatus,
+    MaterializationResult,
+    ingest_status_from_tally,
+    interpreter_claims_present,
+)
 from pke.interpretation.semantic.execution_readiness import (
     question_key_for_reason,
 )
@@ -17,7 +30,7 @@ from pke.application.principal import PrincipalBindingService
 from pke.application.session import SessionContext
 from pke.domain.temporal_knowledge import TemporalKnowledge
 from pke.domain.value_objects import SourceKind, TimeValue, UserContext
-from pke.interpretation.interpreter import InterpretationContext, InterpretationError, Interpreter
+from pke.interpretation.interpreter import InterpretationError, Interpreter
 from pke.interpretation.models import (
     CorrectionStrategy,
     IngestIntent,
@@ -71,11 +84,7 @@ class IngestService:
         try:
             interpreted = self._interpreter.interpret(
                 raw,
-                InterpretationContext(
-                    user=user,
-                    recent_event_ids=session.recent_event_ids,
-                    recent_utterances=list(session.recent_utterances),
-                ),
+                interpret_context_from_session(session, user),
             )
         except InterpretationError as exc:
             mapped = ingest_result_from_interpretation_error(raw, exc)
@@ -107,9 +116,19 @@ class IngestService:
         raw = ir.raw_input
         if now is None:
             now = self._instant(user)
+        if ir.discourse_decision == "ambiguous":
+            return IngestResult(
+                status=IngestStatus.NEEDS_CLARIFICATION,
+                raw_text=raw,
+                issues=[_issue("discourse.ambiguous", "referente discursivo ambíguo")],
+            )
+        from pke.interpretation.semantic.learned_attribute import bind_learned_attribute_dimensions
+        from pke.interpretation.semantic.learned_entity import bind_learned_entity_types
         from pke.interpretation.semantic.learned_relation import bind_learned_relation_types
 
         bind_learned_relation_types(self._ontology, ir)
+        bind_learned_entity_types(self._ontology, ir)
+        bind_learned_attribute_dimensions(self._ontology, ir)
         uow = self._open_uow()
         with uow:
             lookup = self._hydrate(uow, user.user_id)
@@ -132,6 +151,9 @@ class IngestService:
                     resolve_times=self._times,
                 )
             ir = self._concretize_correction(ir, session, uow)
+            invalid = self._invalid_discourse_binding(ir, session)
+            if invalid is not None:
+                return invalid
             try:
                 resolved_temporal, resolved_due = self._times(ir, user, now)
             except InsufficientTemporalContextError as exc:
@@ -182,8 +204,12 @@ class IngestService:
                     )
                 raise
             updated = self._touch_context(session, materialization, uow, bindings)
-            return IngestResult(
-                status=IngestStatus.COMMITTED,
+            status = ingest_status_from_tally(
+                materialization.claims,
+                interpreter_claims=interpreter_claims_present(ir),
+            )
+            result = IngestResult(
+                status=status,
                 raw_text=raw,
                 assessment=assessment,
                 materialization=materialization,
@@ -194,7 +220,10 @@ class IngestService:
                     *materialization.reused_entity_ids,
                 ],
                 context_updated=updated,
+                claims=materialization.claims,
             )
+            self._update_discourse(session, result, uow, user.user_id, ir=ir)
+            return result
 
     def _instant(self, user: UserContext) -> dt.datetime:
         instant = user.now if user.now is not None else self._clock.now()
@@ -257,6 +286,25 @@ class IngestService:
                 ir.state.time,
                 TemporalContext(user=user, reference_at=now),
             )
+        elif ir.relation is not None:
+            resolved_temporal = self._temporal.resolve(
+                ir.relation.time,
+                TemporalContext(user=user, reference_at=now),
+            )
+        elif ir.measurement is not None:
+            try:
+                resolved_temporal = self._temporal.resolve(
+                    ir.measurement.time,
+                    TemporalContext(user=user, reference_at=now),
+                )
+            except (InsufficientTemporalContextError, TemporalError):
+                from pke.domain.temporal_knowledge import TemporalUnknownReason
+
+                resolved_temporal = TemporalKnowledge.unknown(
+                    ir.measurement.time.original_text or "",
+                    unknown_reason=TemporalUnknownReason.NOT_PROVIDED,
+                    tense_evidence=ir.measurement.time.tense_evidence,
+                )
         elif ir.attribute is not None:
             # Descriptive Attribute: unknown fact time is valid; do not force calendar resolution
             try:
@@ -272,25 +320,6 @@ class IngestService:
                     unknown_reason=TemporalUnknownReason.NOT_PROVIDED,
                     tense_evidence=ir.attribute.time.tense_evidence,
                 )
-        elif ir.measurement is not None:
-            try:
-                resolved_temporal = self._temporal.resolve(
-                    ir.measurement.time,
-                    TemporalContext(user=user, reference_at=now),
-                )
-            except (InsufficientTemporalContextError, TemporalError):
-                from pke.domain.temporal_knowledge import TemporalUnknownReason
-
-                resolved_temporal = TemporalKnowledge.unknown(
-                    ir.measurement.time.original_text or "",
-                    unknown_reason=TemporalUnknownReason.NOT_PROVIDED,
-                    tense_evidence=ir.measurement.time.tense_evidence,
-                )
-        elif ir.relation is not None:
-            resolved_temporal = self._temporal.resolve(
-                ir.relation.time,
-                TemporalContext(user=user, reference_at=now),
-            )
         if ir.obligation is not None and ir.obligation.due is not None:
             due_temporal = self._temporal.resolve(
                 ir.obligation.due,
@@ -312,7 +341,10 @@ class IngestService:
         mentions = list(self._builder.collect_mentions(ir))
         principal_entity_id: str | None = None
         owned_vehicle_ids: list[str] = []
+        owned_ids: list[str] = []
         needs_principal = any(is_self_entity_mention(m) for m in mentions) or any(
+            m.reference_kind is MentionReferenceKind.POSSESSIVE for m in mentions
+        ) or any(
             m.reference_kind in {MentionReferenceKind.CONTEXTUAL, MentionReferenceKind.POSSESSIVE}
             and m.type_hint is not None
             and m.type_hint.key
@@ -338,12 +370,18 @@ class IngestService:
             # Re-hydrate so CREATE/RESOLVE see the new principal Entity.
             for entity in uow.entities.all_for_user(user.user_id):
                 lookup.add(entity)
-            from pke.application.ownership import owned_vehicle_entity_ids
+            from pke.application.ownership import owned_entity_ids, owned_vehicle_entity_ids
 
             entities_map = {e.id: e for e in uow.entities.all_for_user(user.user_id)}
+            rels = uow.relations.for_entity(user.user_id, principal_entity_id)
+            owned_ids = owned_entity_ids(
+                principal_entity_id=principal_entity_id,
+                relations=rels,
+                entities=entities_map,
+            )
             owned_vehicle_ids = owned_vehicle_entity_ids(
                 principal_entity_id=principal_entity_id,
-                relations=uow.relations.for_entity(user.user_id, principal_entity_id),
+                relations=rels,
                 entities=entities_map,
                 ontology=self._ontology,
             )
@@ -353,13 +391,24 @@ class IngestService:
             personal=session.personal,
             principal_entity_id=principal_entity_id,
             owned_vehicle_entity_ids=owned_vehicle_ids,
+            owned_entity_ids=owned_ids,
         )
         bindings: list[MentionBinding] = []
-        for mention in mentions:
-            bindings.append(
-                MentionBinding(mention=mention, resolution=resolver.resolve(mention, context))
-            )
-        return bindings
+        try:
+            for mention in mentions:
+                if mention.reference_kind is MentionReferenceKind.CLASS:
+                    continue
+                bindings.append(
+                    MentionBinding(mention=mention, resolution=resolver.resolve(mention, context))
+                )
+            return bindings
+        finally:
+            try:
+                from pke.debug.semantic_trace import flush_entity_resolution_stage
+
+                flush_entity_resolution_stage()
+            except Exception:
+                pass
 
     def _blocked(self, raw: str, assessment: KnowledgeAssessment) -> IngestResult:
         issues = [*assessment.validation.errors, *assessment.validation.warnings]
@@ -416,6 +465,54 @@ class IngestService:
             return True
         except Exception:
             return False
+
+    def _invalid_discourse_binding(
+        self, ir: IngestIR, session: SessionContext
+    ) -> IngestResult | None:
+        for mention in self._builder.collect_mentions(ir):
+            if mention.known_entity_id and not binding_allowed(
+                session.discourse, mention.known_entity_id
+            ):
+                return IngestResult(
+                    status=IngestStatus.REJECTED,
+                    raw_text=ir.raw_input,
+                    issues=[
+                        _issue(
+                            "discourse.invalid_binding",
+                            "known_entity_id ausente do discourse state",
+                        )
+                    ],
+                )
+        return None
+
+    def _update_discourse(
+        self,
+        session: SessionContext,
+        result: IngestResult,
+        uow,
+        user_id: str,
+        *,
+        ir: IngestIR | None = None,
+    ) -> None:
+        if result.status not in {IngestStatus.COMMITTED, IngestStatus.PARTIAL}:
+            return
+        principal_id = None
+        binding = uow.principal_bindings.get(user_id)
+        if binding is not None:
+            principal_id = binding.entity_id
+        entities = []
+        for eid in result.bound_entity_ids:
+            entity = uow.entities.get(user_id, eid)
+            if entity is not None:
+                entities.append(entity)
+        session.discourse = apply_ingest_to_discourse(
+            session.discourse,
+            result,
+            principal_id=principal_id,
+            type_by_entity=type_keys_from_entities(self._ontology, entities),
+            names=names_from_entities(entities),
+            ir=ir,
+        )
 
 
 def ingest_result_from_interpretation_error(

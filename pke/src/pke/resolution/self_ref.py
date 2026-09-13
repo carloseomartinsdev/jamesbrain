@@ -18,8 +18,14 @@ _SELF_TOKENS = frozenset(
         "minha",
         "meus",
         "minhas",
+        # Language-independent speaker markers (Interpreter SHOULD emit these).
+        "self",
+        "actor",
+        "speaker",
     }
 )
+
+_SELF_ROLES = frozenset({"self", "actor", "speaker", "role.self", "role.actor"})
 
 _SELF_PHRASES = frozenset(
     {
@@ -49,6 +55,9 @@ def is_self_lexeme(text: str) -> bool:
 def is_self_semantic_mention(mention: SemanticEntityMention | None) -> bool:
     if mention is None:
         return False
+    role = (mention.role_hint or "").strip().casefold()
+    if role in _SELF_ROLES:
+        return True
     if mention.reference_kind == "contextual" and is_self_lexeme(mention.text):
         return True
     return False

@@ -41,13 +41,17 @@ def _fold(text: str) -> str:
 
 
 def repair_my_car_attribute(proposal: SemanticProposal) -> SemanticProposal:
-    """Meu carro é um Honda [Civic] | vermelho → vehicle subject + attribute cues.
+    """Legacy E1.2 vehicle attribute translation — retired when Atomic Claims exist.
 
-    Does not invent ownership IR here; ingest ensures relation.owns after commit path.
+    Does not grow a model lexicon. Does not overwrite a multi-claim proposal.
     """
     if proposal.utterance_kind not in {"assert", "correction"}:
         return proposal
     if proposal.correction_semantics:
+        return proposal
+    from pke.interpretation.semantic.owned_object import has_explicit_claims
+
+    if has_explicit_claims(proposal):
         return proposal
     raw = (proposal.raw_input or "").strip()
     match = _VEHICLE_ATTR.match(raw)
@@ -72,6 +76,7 @@ def repair_my_car_attribute(proposal: SemanticProposal) -> SemanticProposal:
             proposal,
             subject=vehicle,
             attribute_expression=f"cor {color_token}",
+            object=None,
         )
 
     # Brand / brand+model — strip leading articles already handled by regex
@@ -79,6 +84,7 @@ def repair_my_car_attribute(proposal: SemanticProposal) -> SemanticProposal:
         proposal,
         subject=vehicle,
         attribute_expression=rest,
+        object=None,
     )
 
 
@@ -159,11 +165,11 @@ def repair_my_car_query(proposal: SemanticProposal) -> SemanticProposal:
         and "cor" not in raw
         and "marca" not in raw
     ):
-        # Identity-ish query over owned vehicle — brand (+ model composition in Ask).
+        # Identity of a possessed vehicle is a snapshot, not a brand lookup.
         return commit_attribute_slots(
             proposal,
             utterance_kind="query",
             subject=vehicle,
-            attribute_expression="marca",
+            attribute_expression=SNAPSHOT_EXPRESSION,
         )
     return proposal

@@ -325,6 +325,9 @@ def test_r8_unknown_time_now_temporally_unknown(tmp_path: Path) -> None:
         time_range=hq.now_range(QUERY_NOW),
     )
     assert r.measurement_status == "temporally_unknown"
+    assert r.measurement_values
+    assert r.measurement_values[0].numeric_value == Decimal("80")
+    assert r.measurement_values[0].unit == "%"
 
 
 def test_r9_today_wording_not_now(tmp_path: Path) -> None:

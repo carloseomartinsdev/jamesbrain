@@ -81,6 +81,7 @@ class EntityResolution(BaseModel):
     suggested_alias: str | None = None
     create_type_id: str | None = None
     create_canonical_name: str | None = None
+    notes: list[str] = Field(default_factory=list)
 
 
 class EntityResolver:
@@ -89,6 +90,18 @@ class EntityResolver:
         self._ontology = ontology
 
     def resolve(self, mention: EntityMention, context: ResolutionContext) -> EntityResolution:
+        resolution = self._resolve(mention, context)
+        try:
+            from pke.debug.semantic_trace import record_entity_resolution
+
+            record_entity_resolution(
+                mention, resolution, self._lookup, self._ontology, context
+            )
+        except Exception:
+            pass
+        return resolution
+
+    def _resolve(self, mention: EntityMention, context: ResolutionContext) -> EntityResolution:
         if context.personal.user_id != context.user_id:
             raise ContextIsolationError("contexto pessoal isolado por usuário")
 
@@ -97,10 +110,18 @@ class EntityResolver:
 
         hint_id = self._hint_type_id(mention.type_hint)
 
-        if mention.reference_kind in {
-            MentionReferenceKind.CONTEXTUAL,
-            MentionReferenceKind.POSSESSIVE,
-        }:
+        if mention.reference_kind is MentionReferenceKind.CLASS:
+            return EntityResolution(
+                status=ResolutionStatus.UNRESOLVED,
+                original_text=mention.text,
+                requires_clarification=False,
+                clarification_reason="class_is_type_constraint",
+            )
+
+        if mention.reference_kind is MentionReferenceKind.POSSESSIVE:
+            return self._from_possessive(mention, context, hint_id)
+
+        if mention.reference_kind is MentionReferenceKind.CONTEXTUAL:
             return self._from_context(mention, context, hint_id)
 
         return self._from_named(mention, context, hint_id)
@@ -117,14 +138,10 @@ class EntityResolver:
             raise ForeignEntityError(f"entidade não visível para {context.user_id}")
         evidence = [EvidenceKind.EXPLICIT_ID]
         type_ev = self._type_evidence(entity, self._hint_type_id(mention.type_hint), context)
-        if mention.type_hint and type_ev is None:
-            return EntityResolution(
-                status=ResolutionStatus.UNRESOLVED,
-                original_text=mention.text,
-                clarification_reason="explicit_id_type_mismatch",
-            )
         if type_ev:
             evidence.append(type_ev)
+        # Explicit id is identity (discourse binding / known_entity_id).
+        # Coarse kind_hint must not veto a listed id (thing vs entity.learned.cat).
         return EntityResolution(
             status=ResolutionStatus.RESOLVED,
             original_text=mention.text,
@@ -140,10 +157,22 @@ class EntityResolver:
         context: ResolutionContext,
         hint_id: str | None,
     ) -> EntityResolution:
+        """Name is the identity key. type_hint ranks/disambiguates; it is not a hard filter."""
         scored = self._lexical_candidates(mention, context, hint_id)
         if len(scored) == 1:
-            return self._resolved_unique(mention, scored[0])
+            return self._resolved_unique(
+                mention,
+                scored[0],
+                notes=_named_unique_notes(scored[0], hint_id),
+            )
         if len(scored) > 1:
+            compatible = [c for c in scored if _has_type_match(c)] if hint_id else []
+            if hint_id and len(compatible) == 1:
+                return self._resolved_unique(
+                    mention,
+                    compatible[0],
+                    notes=["named_disambiguated_by_type"],
+                )
             return EntityResolution(
                 status=ResolutionStatus.AMBIGUOUS,
                 original_text=mention.text,
@@ -152,6 +181,7 @@ class EntityResolver:
                 evidence=_merge_evidence(scored),
                 requires_clarification=True,
                 clarification_reason="multiple_equivalent_candidates",
+                notes=["named_multiple_candidates"],
             )
         if hint_id is not None and context.purpose is ResolutionPurpose.INGEST:
             return EntityResolution(
@@ -251,6 +281,93 @@ class EntityResolver:
             suggested_alias=None,
         )
 
+    def _from_possessive(
+        self,
+        mention: EntityMention,
+        context: ResolutionContext,
+        hint_id: str | None,
+    ) -> EntityResolution:
+        """possessive(type=T) → owns(actor, X) AND type(X)=T. No raw_input."""
+        if hint_id is None:
+            return EntityResolution(
+                status=ResolutionStatus.UNRESOLVED,
+                original_text=mention.text,
+                requires_clarification=True,
+                clarification_reason="possessive_needs_type",
+            )
+        matching = self._owned_matching_type(context, hint_id)
+        if len(matching) == 1:
+            entity = matching[0]
+            evidence = [
+                EvidenceKind.OWNED_BY_PRINCIPAL,
+                EvidenceKind.UNIQUE_CANDIDATE,
+                EvidenceKind.TYPE_MATCH,
+            ]
+            return EntityResolution(
+                status=ResolutionStatus.RESOLVED,
+                original_text=mention.text,
+                entity_id=entity.id,
+                candidates=[ResolutionCandidate(entity_id=entity.id, evidence=evidence)],
+                confidence=ResolutionConfidence.HIGH,
+                evidence=evidence,
+            )
+        if len(matching) > 1:
+            candidates = [
+                ResolutionCandidate(
+                    entity_id=e.id,
+                    evidence=[EvidenceKind.OWNED_BY_PRINCIPAL, EvidenceKind.TYPE_MATCH],
+                )
+                for e in matching
+            ]
+            return EntityResolution(
+                status=ResolutionStatus.AMBIGUOUS,
+                original_text=mention.text,
+                candidates=candidates,
+                confidence=ResolutionConfidence.LOW,
+                evidence=[EvidenceKind.OWNED_BY_PRINCIPAL],
+                requires_clarification=True,
+                clarification_reason="possessive_ambiguous",
+            )
+        if context.purpose is ResolutionPurpose.INGEST:
+            return EntityResolution(
+                status=ResolutionStatus.CREATE_CANDIDATE,
+                original_text=mention.text,
+                confidence=ResolutionConfidence.MEDIUM,
+                create_type_id=hint_id,
+                create_canonical_name=None,
+                clarification_reason=None,
+                notes=["possessive_owned_object_create"],
+            )
+        return EntityResolution(
+            status=ResolutionStatus.UNRESOLVED,
+            original_text=mention.text,
+            requires_clarification=False,
+            clarification_reason="possessive_no_match",
+        )
+
+    def _principal_owned_ids(self, context: ResolutionContext) -> list[str]:
+        seen: list[str] = []
+        for eid in [*context.owned_entity_ids, *context.owned_vehicle_entity_ids]:
+            if eid not in seen:
+                seen.append(eid)
+        return seen
+
+    def _owned_matching_type(
+        self,
+        context: ResolutionContext,
+        hint_id: str,
+    ) -> list[Entity]:
+        matching: list[Entity] = []
+        for eid in self._principal_owned_ids(context):
+            entity = self._lookup.get_by_id(eid, context.user_id)
+            if entity is None:
+                continue
+            type_ev = self._type_evidence(entity, hint_id, context)
+            if type_ev is None:
+                continue
+            matching.append(entity)
+        return matching
+
     def _is_vehicle_hint(self, hint_id: str) -> bool:
         vehicle_type = self._ontology.resolve_ref(
             ConceptRef(key="entity.vehicle"), expected_kind=ConceptKind.ENTITY_TYPE
@@ -274,7 +391,7 @@ class EntityResolver:
             if entity is None:
                 continue
             type_ev = self._type_evidence(entity, hint_id, context)
-            if type_ev is None and mention.type_hint is not None:
+            if type_ev is None:
                 continue
             owned_entities.append(entity)
 
@@ -355,7 +472,7 @@ class EntityResolver:
                 original_text=mention.text,
                 confidence=ResolutionConfidence.MEDIUM,
                 create_type_id=hint_id,
-                create_canonical_name=mention.text or "carro",
+                create_canonical_name=None,
                 clarification_reason=None,
             )
         return EntityResolution(
@@ -414,16 +531,12 @@ class EntityResolver:
 
         for entity in self._lookup.by_canonical_name(context.user_id, normalized):
             ev = self._type_evidence(entity, hint_id, context)
-            if hint_id and ev is None:
-                continue
             by_id.setdefault(entity.id, []).append(EvidenceKind.EXACT_CANONICAL_NAME)
             if ev:
                 by_id[entity.id].append(ev)
 
         for entity in self._lookup.by_alias(context.user_id, normalized):
             ev = self._type_evidence(entity, hint_id, context)
-            if hint_id and ev is None:
-                continue
             by_id.setdefault(entity.id, []).append(EvidenceKind.EXACT_ALIAS)
             if ev:
                 by_id[entity.id].append(ev)
@@ -433,10 +546,9 @@ class EntityResolver:
             entity = self._lookup.get_by_id(confirmed_id, context.user_id)
             if entity is not None:
                 ev = self._type_evidence(entity, hint_id, context)
-                if not hint_id or ev is not None:
-                    by_id.setdefault(entity.id, []).append(EvidenceKind.CONFIRMED_PERSONAL_ALIAS)
-                    if ev:
-                        by_id[entity.id].append(ev)
+                by_id.setdefault(entity.id, []).append(EvidenceKind.CONFIRMED_PERSONAL_ALIAS)
+                if ev:
+                    by_id[entity.id].append(ev)
 
         if mention.role is not None:
             role_entity_id = context.personal.last_by_role_key.get(mention.role.key)
@@ -493,12 +605,14 @@ class EntityResolver:
         self,
         mention: EntityMention,
         candidate: ResolutionCandidate,
+        *,
+        notes: list[str] | None = None,
     ) -> EntityResolution:
         evidence = [*candidate.evidence, EvidenceKind.UNIQUE_CANDIDATE]
         high = (
             EvidenceKind.EXACT_CANONICAL_NAME in evidence
-            and EvidenceKind.TYPE_MATCH in evidence
-        ) or EvidenceKind.EXPLICIT_ID in evidence
+            or EvidenceKind.EXPLICIT_ID in evidence
+        )
         return EntityResolution(
             status=ResolutionStatus.RESOLVED,
             original_text=mention.text,
@@ -507,7 +621,23 @@ class EntityResolver:
             confidence=ResolutionConfidence.HIGH if high else ResolutionConfidence.MEDIUM,
             evidence=evidence,
             suggested_alias=None,
+            notes=list(notes or []),
         )
+
+
+def _has_type_match(candidate: ResolutionCandidate) -> bool:
+    return (
+        EvidenceKind.TYPE_MATCH in candidate.evidence
+        or EvidenceKind.TYPE_DESCENDANT_MATCH in candidate.evidence
+    )
+
+
+def _named_unique_notes(candidate: ResolutionCandidate, hint_id: str | None) -> list[str]:
+    if hint_id is None:
+        return ["named_exact_match"]
+    if _has_type_match(candidate):
+        return ["named_exact_match"]
+    return ["named_match_with_nonbinding_type_hint", "type_hint_mismatch"]
 
 
 def _unique(items: list[EvidenceKind]) -> list[EvidenceKind]:

@@ -192,12 +192,18 @@ def resolve_attribute_dimension_key_from_answer(answer: str) -> str | None:
 
 
 def resolve_attribute_dimension_key(proposal: SemanticProposal) -> str | None:
-    """Shared WRITE/READ dimension key from controlled registry + value resolution.
+    """Shared WRITE/READ dimension key from controlled registry + structured claims.
 
-    Does not invent ontology concepts. Returns None when unsafe.
+    Claims use exact semantic identity (CORE or learned). Does not invent from
+    raw_input and does not collapse `fur_color` into `color`.
     """
     if proposal.classification_semantics:
         return None
+    from pke.interpretation.semantic.learned_attribute import structured_attribute_claim
+
+    claimed = structured_attribute_claim(proposal, learn=False, require_value=False)
+    if claimed is not None:
+        return claimed[0].key
     valued = resolve_attribute_value(proposal)
     if valued is not None:
         return valued.dimension_key
@@ -240,6 +246,41 @@ def resolve_companion_attribute_values(
     return tuple(out)
 
 
+def _from_structured_claim(proposal: SemanticProposal) -> ResolvedAttributeValue | None:
+    from pke.interpretation.semantic.learned_attribute import (
+        claim_attribute_value,
+        structured_attribute_claim,
+    )
+
+    claimed = structured_attribute_claim(proposal, learn=True)
+    if claimed is None:
+        return None
+    identity, claim = claimed
+    text, numeric, unit = claim_attribute_value(claim)
+    spec = get_dimension(identity.key)
+    if numeric and (spec is None or spec.value_kind in {"text", "number"}):
+        try:
+            number = Decimal(numeric)
+        except (InvalidOperation, ValueError):
+            number = None
+        else:
+            return ResolvedAttributeValue(
+                dimension_key=identity.key,
+                value_kind=AttributeValueKind.NUMBER,
+                numeric_value=number,
+                unit=unit,
+                is_current=True,
+            )
+    if text:
+        return ResolvedAttributeValue(
+            dimension_key=identity.key,
+            value_kind=AttributeValueKind.TEXT,
+            text_value=text,
+            is_current=True,
+        )
+    return None
+
+
 def resolve_attribute_value(proposal: SemanticProposal) -> ResolvedAttributeValue | None:
     """Map structured Attribute proposals to dimension + typed value.
 
@@ -247,6 +288,9 @@ def resolve_attribute_value(proposal: SemanticProposal) -> ResolvedAttributeValu
     """
     if proposal.classification_semantics:
         return None
+    claimed = _from_structured_claim(proposal)
+    if claimed is not None:
+        return claimed
     if not (proposal.stable_property_semantics or proposal.attribute_expression):
         return None
 

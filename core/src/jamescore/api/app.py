@@ -7,6 +7,7 @@ from jamescore.application.orchestrator import Orchestrator
 from jamescore.application.store import ConversationStore
 from jamescore.capabilities.social import SocialCapability
 from jamescore.clients.pke import PkeClient
+from jamescore.presentation.presenter import ResponsePresenter
 from jamescore.settings import Settings
 from jamescore.tooling.registry import ToolRegistry
 
@@ -20,6 +21,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         pke=PkeClient(settings),
         social=SocialCapability(),
         tooling=ToolRegistry(),
+        presenter=ResponsePresenter.from_settings(settings),
     )
     app = FastAPI(title="jamesCore", version="0.1.0")
     app.state.settings = settings

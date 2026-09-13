@@ -73,6 +73,53 @@ class PkeClient:
             principal=principal,
         )
 
+    def knowledge_graph(
+        self,
+        principal: AuthenticatedPrincipal,
+        *,
+        root_entity_id: str | None = None,
+        depth: int = 2,
+        current_only: bool = True,
+        expand_entity_id: str | None = None,
+    ) -> dict[str, Any]:
+        params: dict[str, str] = {
+            "depth": str(depth),
+            "current_only": "true" if current_only else "false",
+        }
+        if root_entity_id:
+            params["root_entity_id"] = root_entity_id
+        if expand_entity_id:
+            params["expand_entity_id"] = expand_entity_id
+        return self._request("GET", "/api/v1/knowledge/graph", principal=principal, params=params)
+
+    def knowledge_entity(
+        self,
+        principal: AuthenticatedPrincipal,
+        entity_id: str,
+        *,
+        current_only: bool = True,
+    ) -> dict[str, Any]:
+        params = {"current_only": "true" if current_only else "false"}
+        return self._request(
+            "GET",
+            f"/api/v1/knowledge/entities/{quote(entity_id, safe='')}",
+            principal=principal,
+            params=params,
+        )
+
+    def knowledge_search(
+        self,
+        principal: AuthenticatedPrincipal,
+        q: str,
+        *,
+        type_key: str | None = None,
+        limit: int = 50,
+    ) -> dict[str, Any]:
+        params: dict[str, str] = {"q": q, "limit": str(limit)}
+        if type_key:
+            params["type"] = type_key
+        return self._request("GET", "/api/v1/knowledge/search", principal=principal, params=params)
+
     def _request(
         self,
         method: str,
@@ -80,6 +127,7 @@ class PkeClient:
         json: dict[str, Any] | None = None,
         principal: AuthenticatedPrincipal | None = None,
         authenticated: bool = True,
+        params: dict[str, str] | None = None,
     ) -> dict[str, Any]:
         started = time.perf_counter()
         url = self._base + path
@@ -104,7 +152,7 @@ class PkeClient:
         decoded: Any = {}
         try:
             with httpx.Client(timeout=timeout) as client:
-                resp = client.request(method, url, headers=headers, json=json)
+                resp = client.request(method, url, headers=headers, json=json, params=params)
             http_status = resp.status_code
             decoded = resp.json() if resp.content else {}
             err_obj = decoded.get("error") if isinstance(decoded, dict) else None

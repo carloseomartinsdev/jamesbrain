@@ -58,8 +58,61 @@ class SemanticEntityMention(BaseModel):
         | None
     ) = None
     role_hint: str | None = None
-    reference_kind: Literal["named", "contextual", "possessive"] = "named"
+    reference_kind: Literal["named", "contextual", "possessive", "class"] = "named"
+    class_hint: str | None = None
+    """Language-independent class lemma (cat, employee, property). Not a closed kind_hint."""
+    known_entity_id: str | None = None
+    """Copy only from discourse.structured.allowed_entity_ids. Never invent."""
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+
+
+class SemanticClaimKind(StrEnum):
+    """Atomic knowledge unit — not a surface sentence and not a domain taxonomy."""
+
+    ENTITY = "entity"
+    CLASSIFICATION = "classification"
+    RELATION = "relation"
+    ATTRIBUTE = "attribute"
+    INTRINSIC_PROPERTY = "intrinsic_property"
+    MEASUREMENT = "measurement"
+    STATE = "state"
+    EVENT = "event"
+
+
+class SemanticClaimOrigin(StrEnum):
+    """Epistemic origin. ASSUMED is never auto-persisted (ADR 0086)."""
+
+    EXPLICIT = "explicit"
+    DERIVED = "derived"
+    ASSUMED = "assumed"
+
+
+class SemanticClaim(BaseModel):
+    """One independently useful factual claim already interpreted by the LLM.
+
+    The Engine must not re-read raw_input to discover these. Origin ASSUMED is
+    dropped; DERIVED is not materialized in this increment (hierarchy deferred).
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    kind: SemanticClaimKind
+    subject: SemanticEntityMention | None = None
+    object: SemanticEntityMention | None = None
+    predicate: str | None = None
+    """Relation predicate or intrinsic dimension (e.g. owns, name)."""
+    predicate_key: str | None = None
+    """Optional Interpreter-owned semantic identity (e.g. fur_color). Not a PKE glossary."""
+    class_hint: str | None = None
+    dimension: str | None = None
+    value_text: str | None = None
+    value_key: str | None = None
+    """Optional Interpreter-owned value identity. PKE does not translate value_text."""
+    numeric_value: str | None = None
+    unit: str | None = None
+    currency_code: str | None = None
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    origin: SemanticClaimOrigin = SemanticClaimOrigin.EXPLICIT
 
 
 class SemanticTime(BaseModel):
@@ -69,6 +122,8 @@ class SemanticTime(BaseModel):
     relative_day: Literal["today", "yesterday", "tomorrow"] | None = None
     occurrence_aspect: Literal["happened", "ongoing", "planned", "habitual"] | None = None
     relation_to_reference: Literal["before", "after", "during", "habitual"] | None = None
+    selection: Literal["current", "previous", "first", "last"] | None = None
+    """Structured temporal pick — Interpreter-owned. PKE must not parse 'antes'/'primeira'."""
     tense_evidence: str | None = None
     partial_month: int | None = Field(default=None, ge=1, le=12)
     partial_year: int | None = None
@@ -125,6 +180,8 @@ class SemanticProposal(BaseModel):
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
     assertion_confidence: dict[str, float] = Field(default_factory=dict)
     """Optional per-primitive confidence keyed by PrimitiveKind value."""
+    claims: list[SemanticClaim] = Field(default_factory=list)
+    """Atomic explicit claims. primitive_hint does not limit this list."""
 
     correction_semantics: bool = False
     """Explicit epistemic correction intent — not negation/contradiction alone."""
@@ -145,6 +202,8 @@ class SemanticProposal(BaseModel):
     """Proposal-only; never trusted without controlled candidate membership validation."""
     correction_conversation_assertion_id: str | None = None
     """Application-supplied conversation binding — not DB insertion order."""
+    discourse_decision: Literal["continue", "new_topic", "ambiguous", "none"] | None = None
+    """Interpreter stance: continue previous focus, switch topic, or request clarification."""
 
 
 class ResolutionStatus(StrEnum):

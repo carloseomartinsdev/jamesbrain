@@ -148,6 +148,8 @@ class ResolvedQuerySpec(BaseModel):
     state_dimension_ids: list[str] = Field(default_factory=list)
     state_value_ids: list[str] = Field(default_factory=list)
     relation_type_ids: list[str] = Field(default_factory=list)
+    object_entity_type_ids: list[str] = Field(default_factory=list)
+    """Type constraint on the relation object — not an instance id to resolve."""
     relation_scope: RelationScope = RelationScope.CURRENT
     relation_query_kind: RelationQueryKind | None = None
     attribute_dimension_key: str | None = None

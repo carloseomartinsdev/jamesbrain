@@ -161,6 +161,8 @@ def _assess_attribute(
     concepts: ResolvedConcepts, proposal: SemanticProposal
 ) -> PersistabilityAssessment:
     """Distinguish user value gaps (clarify) from known unsupported dimensions."""
+    from pke.interpretation.semantic.learned_attribute import structured_attribute_claim
+
     if concepts.attribute_dimension_key and concepts.attribute_value_kind:
         status = (
             PersistabilityStatus.FULLY_RESOLVED
@@ -172,6 +174,16 @@ def _assess_attribute(
             status=status,
             semantic_anchors=("attribute_dimension", "attribute_value"),
             notes=tuple(concepts.notes),
+        )
+
+    claimed = structured_attribute_claim(proposal, learn=True)
+    if claimed is not None:
+        identity, _claim = claimed
+        return PersistabilityAssessment(
+            wire_allowed=True,
+            status=PersistabilityStatus.FULLY_RESOLVED,
+            semantic_anchors=("attribute_dimension", "attribute_value"),
+            notes=(f"attribute dimension={identity.key} source={identity.source}",),
         )
 
     if concepts.attribute_dimension_key and not concepts.attribute_value_kind:

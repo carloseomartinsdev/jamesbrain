@@ -12,6 +12,7 @@ from pke.domain.temporal_knowledge import (
 )
 from pke.domain.value_objects import EpistemicStatus, EventStatus, Qualifier, Recurrence
 from pke.interpretation.models import (
+    ClaimReport,
     EntityMention,
     IngestIR,
     IngestIntent,
@@ -61,6 +62,7 @@ def _mention(wire: WireEntityMention) -> EntityMention:
         role=_cref(wire.role) if wire.role else None,
         reference_kind=MentionReferenceKind(wire.reference_kind),
         confidence=wire.confidence,
+        known_entity_id=wire.known_entity_id,
     )
 
 
@@ -166,6 +168,18 @@ def _map_ingest(wire: WireIngestIR) -> IngestIR:
             if wire.measurement
             else None
         ),
+        additional_measurements=[
+            IrMeasurement(
+                subject=_mention(m.subject),
+                context=_mention(m.context) if m.context else None,
+                dimension_key=m.dimension_key,
+                numeric_value=m.numeric_value,
+                unit=m.unit,
+                currency_code=m.currency_code,
+                time=_time(m.time),
+            )
+            for m in wire.additional_measurements
+        ],
         relation=(
             IrRelation(
                 type=_cref(wire.relation.type),
@@ -177,6 +191,16 @@ def _map_ingest(wire: WireIngestIR) -> IngestIR:
             if wire.relation
             else None
         ),
+        additional_relations=[
+            IrRelation(
+                type=_cref(r.type),
+                subject=_mention(r.subject),
+                object=_mention(r.object),
+                mode=RelationAssertionMode(r.mode),
+                time=_time(r.time),
+            )
+            for r in wire.additional_relations
+        ],
         event=(
             IrEvent(
                 type=_cref(wire.event.type),
@@ -229,6 +253,9 @@ def _map_ingest(wire: WireIngestIR) -> IngestIR:
             else None
         ),
         missing_hints=[_cref(k) for k in wire.missing_hints],
+        claim_report=(
+            ClaimReport.model_validate(wire.claim_report) if wire.claim_report else None
+        ),
     )
 
 
@@ -266,4 +293,5 @@ def _map_query(wire: WireQueryIR) -> QueryIR:
             sort=q.sort,
             limit=q.limit,
         ),
+        discourse_decision=wire.discourse_decision,
     )

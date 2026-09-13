@@ -11,6 +11,13 @@ _CADENCE_ALIASES = {"by_month_day": "by_monthday"}
 _REFERENCE_KIND_ALIASES = {
     "explicit": "named",
     "specific": "named",
+    "type": "class",
+    "generic": "class",
+    "category": "class",
+    "class_constraint": "class",
+    "type_constraint": "class",
+    "entity_type": "class",
+    "entity_class": "class",
 }
 
 # Campos de texto opcional onde "" significa ausência semântica (categoria C).

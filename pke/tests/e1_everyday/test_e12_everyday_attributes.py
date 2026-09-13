@@ -16,6 +16,7 @@ from pke.interpretation.semantic.attribute_registry import (
     is_registered_dimension,
     registered_dimension_keys,
 )
+from pke.interpretation.semantic.possessive_attribute_repair import SNAPSHOT_EXPRESSION
 from pke.interpretation.semantic.models import SemanticEntityMention, SemanticProposal, SemanticTime
 from pke.interpretation.semantic.pipeline import proposal_to_canonical_ir
 from pke.interpretation.semantic.query_resolution import proposal_to_query_ir
@@ -413,7 +414,7 @@ def test_e12_c07_vehicle_identity_query(tmp_path: Path) -> None:
         subject=SemanticEntityMention(
             text="carro", kind_hint="vehicle", reference_kind="contextual", confidence=1.0
         ),
-        attribute_expression="marca",
+        attribute_expression=SNAPSHOT_EXPRESSION,
         stable_property_semantics=True,
         temporal=SemanticTime(),
         confidence=1.0,

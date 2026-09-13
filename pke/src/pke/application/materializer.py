@@ -8,7 +8,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from pke.application.errors import MaterializationDenied
-from pke.application.results import MaterializationResult
+from pke.application.results import ClaimTally, MaterializationResult
 from pke.domain.attributes import AttributeValueKind, EntityAttribute
 from pke.domain.entities import Entity
 from pke.domain.event_participants import EventParticipant
@@ -38,8 +38,13 @@ from pke.domain.value_objects import (
     TimePrecision,
     TimeValue,
 )
-from pke.interpretation.models import IngestIntent, IrFact, RelationAssertionMode
-from pke.ontology.relation_metadata import canonical_endpoints
+from pke.interpretation.models import (
+    IngestIntent,
+    IrFact,
+    MentionReferenceKind,
+    RelationAssertionMode,
+)
+from pke.ontology.relation_metadata import canonical_endpoints, stored_relation_query
 from pke.ontology.registry import OntologyRegistry
 from pke.ontology.seeds import core_concept_id
 from pke.persist.contracts import UnitOfWork
@@ -94,6 +99,22 @@ class KnowledgeMaterializer:
         self._ontology = ontology
         self._on_progress = on_progress
 
+    def _trace_materialization(
+        self, result: MaterializationResult, uow: UnitOfWork, candidate: Any
+    ) -> None:
+        try:
+            from pke.debug.semantic_trace import log_materialization_stage
+
+            log_materialization_stage(
+                result,
+                uow,
+                candidate.user_id,
+                self._ontology,
+                candidate.ir,
+            )
+        except Exception:
+            return
+
     def materialize(self, approved: ApprovedKnowledge, uow: UnitOfWork) -> MaterializationResult:
         if not isinstance(approved, ApprovedKnowledge):
             raise MaterializationDenied("materialize exige ApprovedKnowledge")
@@ -126,41 +147,62 @@ class KnowledgeMaterializer:
         ir = candidate.ir
         if ir.correction is not None:
             self._correction(candidate, stored_source, entity_ids, uow, at, result)
+            result.claims = self._claim_tally(ir, result)
+            self._trace_materialization(result, uow, candidate)
             return result
-        # COMMIT_VALID_INDEPENDENTLY: Event and Measurement may both persist.
-        # Process without exclusive early-return between them.
+        # Multi-claim ingest: persist every present family in one transaction.
+        # Event+Measurement remains COMMIT_VALID_INDEPENDENTLY (no exclusive return).
         if ir.event is not None:
             self._event(candidate, stored_source, raw.id, entity_ids, uow, at, result)
         if ir.measurement is not None:
             self._measurement(candidate, stored_source, raw.id, entity_ids, uow, at, result)
-        if ir.event is not None or ir.measurement is not None:
-            return result
+        for extra_m in ir.additional_measurements:
+            self._measurement_record(
+                candidate, stored_source, raw.id, entity_ids, uow, at, result, extra_m
+            )
         if ir.obligation is not None:
             self._obligation(candidate, stored_source, raw.id, entity_ids, uow, at, result)
-            return result
         if ir.state is not None:
             self._state(candidate, stored_source, raw.id, entity_ids, uow, at, result)
-            return result
         if ir.attribute is not None:
             self._attribute(candidate, stored_source, raw.id, entity_ids, uow, at, result)
-            for extra in ir.additional_attributes:
-                self._attribute_record(
-                    candidate,
-                    stored_source,
-                    raw.id,
-                    entity_ids,
-                    uow,
-                    at,
-                    result,
-                    extra,
-                )
-            self._ensure_vehicle_ownership(
-                candidate, stored_source, raw.id, entity_ids, uow, at, result
+        for extra in ir.additional_attributes:
+            self._attribute_record(
+                candidate,
+                stored_source,
+                raw.id,
+                entity_ids,
+                uow,
+                at,
+                result,
+                extra,
             )
-            return result
         if ir.relation is not None:
             self._relation(candidate, stored_source, raw.id, entity_ids, uow, at, result)
-            return result
+        for extra_r in ir.additional_relations:
+            self._relation_record(
+                candidate,
+                stored_source,
+                raw.id,
+                entity_ids,
+                uow,
+                at,
+                result,
+                extra_r,
+                require_persistable=False,
+            )
+        if (
+            ir.attribute is not None
+            or ir.additional_attributes
+            or ir.relation is not None
+            or ir.additional_relations
+        ):
+            self._ensure_principal_ownership(
+                candidate, stored_source, raw.id, entity_ids, uow, at, result
+            )
+        self._flag_orphan_owned(candidate, entity_ids, result, uow)
+        result.claims = self._claim_tally(ir, result)
+        self._trace_materialization(result, uow, candidate)
         return result
 
     def _entities(
@@ -184,11 +226,21 @@ class KnowledgeMaterializer:
                     type_id = self._concept_id(binding.mention.type_hint)
                 if type_id is None:
                     raise MaterializationDenied("create_candidate sem type_id")
+                name = res.create_canonical_name
+                if binding.mention.reference_kind is MentionReferenceKind.POSSESSIVE:
+                    from pke.interpretation.semantic.owned_object import anonymous_owned_name
+
+                    type_key = None
+                    if binding.mention.type_hint is not None:
+                        type_key = binding.mention.type_hint.key
+                    name = f"{anonymous_owned_name(type_key)}:{new_ulid()[-8:]}"
+                elif not name:
+                    name = binding.mention.text
                 entity = Entity(
                     id=new_ulid(),
                     user_id=candidate.user_id,
                     type_id=type_id,
-                    canonical_name=res.create_canonical_name or binding.mention.text,
+                    canonical_name=name,
                     aliases=list(binding.mention.suggested_aliases),
                     created_at=at,
                 )
@@ -366,8 +418,19 @@ class KnowledgeMaterializer:
     ) -> None:
         from pke.interpretation.models import IrAttribute
         from pke.interpretation.semantic.attribute_registry import get_dimension
+        from pke.resolution.self_ref import is_self_entity_mention
 
         assert isinstance(ir_attr, IrAttribute)
+        if ir_attr.dimension_key == "name" and not is_self_entity_mention(ir_attr.subject):
+            subject_id = entity_ids.get(ir_attr.subject.text)
+            binding = uow.principal_bindings.get(candidate.user_id)
+            if (
+                binding is not None
+                and subject_id is not None
+                and subject_id != binding.entity_id
+            ):
+                # ADR 0083: intrinsic name lives on Entity.canonical_name.
+                return
         subject_id = entity_ids.get(ir_attr.subject.text)
         if subject_id is None:
             subject_id = self._subject_id(candidate.bindings, entity_ids)
@@ -403,12 +466,23 @@ class KnowledgeMaterializer:
                     uow.attributes.save(closed)
                     supersedes_id = old.id
 
+        dimension_concept_id = None
+        from pke.ontology.learned import is_learned_attribute_key, learned_concept_id
+
+        if is_learned_attribute_key(ir_attr.dimension_key):
+            from pke.interpretation.semantic.learned_attribute import (
+                bind_learned_attribute_dimensions,
+            )
+
+            bind_learned_attribute_dimensions(self._ontology, candidate.ir)
+            dimension_concept_id = learned_concept_id(ir_attr.dimension_key)
+
         attr = EntityAttribute(
             id=new_ulid(),
             user_id=candidate.user_id,
             entity_id=subject_id,
             dimension_key=ir_attr.dimension_key,
-            dimension_concept_id=None,
+            dimension_concept_id=dimension_concept_id,
             value_kind=AttributeValueKind(ir_attr.value_kind),
             concept_value_id=ir_attr.concept_value_id,
             text_value=ir_attr.text_value,
@@ -430,7 +504,7 @@ class KnowledgeMaterializer:
         uow.attributes.add(attr)
         result.attribute_ids.append(attr.id)
 
-    def _ensure_vehicle_ownership(
+    def _ensure_principal_ownership(
         self,
         candidate: KnowledgeCandidate,
         source: Source,
@@ -440,55 +514,112 @@ class KnowledgeMaterializer:
         at: dt.datetime,
         result: MaterializationResult,
     ) -> None:
-        """Link principal → relation.owns → vehicle when attribute subject is a vehicle Entity."""
+        """Link principal → relation.owns → possessed instance.
+
+        Vehicle contextual CREATE remains covered. Possessive mentions of any
+        type are included. Does not inspect raw_input.
+        """
         from pke.application.ownership import is_vehicle_entity
         from pke.domain.temporal_knowledge import TemporalUnknownReason
 
-        ir_attr = candidate.ir.attribute
-        if ir_attr is None:
-            return
-        vehicle_id = entity_ids.get(ir_attr.subject.text)
-        if vehicle_id is None:
-            return
-        vehicle = uow.entities.get(candidate.user_id, vehicle_id)
-        if vehicle is None or not is_vehicle_entity(vehicle, self._ontology):
-            return
         binding = uow.principal_bindings.get(candidate.user_id)
         if binding is None:
             return
         principal_id = binding.entity_id
-        if principal_id == vehicle_id:
-            return
+        targets: list[str] = []
+        ir_attr = candidate.ir.attribute
+        if ir_attr is not None:
+            targets.append(ir_attr.subject.text)
+        for extra in candidate.ir.additional_attributes:
+            targets.append(extra.subject.text)
+        if candidate.ir.relation is not None:
+            targets.append(candidate.ir.relation.object.text)
+        for extra_r in candidate.ir.additional_relations:
+            targets.append(extra_r.object.text)
+        mention_by_text = {b.mention.text: b.mention for b in candidate.bindings}
         owns_key = "relation.owns"
         owns_id = core_concept_id(owns_key)
-        existing = uow.relations.find_instance(
-            candidate.user_id, principal_id, owns_id, vehicle_id, current_only=True
-        )
-        if existing is not None:
+        seen: set[str] = set()
+        for text in targets:
+            object_id = entity_ids.get(text)
+            if object_id is None or object_id in seen or object_id == principal_id:
+                continue
+            mention = mention_by_text.get(text)
+            entity = uow.entities.get(candidate.user_id, object_id)
+            if entity is None:
+                continue
+            possessive = (
+                mention is not None
+                and mention.reference_kind is MentionReferenceKind.POSSESSIVE
+            )
+            vehicle = is_vehicle_entity(entity, self._ontology)
+            if not possessive and not vehicle:
+                continue
+            seen.add(object_id)
+            existing = uow.relations.find_instance(
+                candidate.user_id, principal_id, owns_id, object_id, current_only=True
+            )
+            if existing is not None:
+                continue
+            relation = Relation(
+                id=new_ulid(),
+                user_id=candidate.user_id,
+                from_id=principal_id,
+                to_id=object_id,
+                concept_id=owns_id,
+                key=owns_key,
+                temporal=TemporalKnowledge.unknown(
+                    "",
+                    unknown_reason=TemporalUnknownReason.NOT_PROVIDED,
+                ),
+                observed_at=at,
+                valid_from=None,
+                valid_to=None,
+                is_current=True,
+                supersedes_id=None,
+                source=source,
+                raw_input_id=raw_id,
+                confidence=Confidence(score=1.0),
+                created_at=at,
+            )
+            uow.relations.add(relation)
+            result.relation_ids.append(relation.id)
+
+    def _flag_orphan_owned(
+        self,
+        candidate: KnowledgeCandidate,
+        entity_ids: dict[str, str],
+        result: MaterializationResult,
+        uow: UnitOfWork,
+    ) -> None:
+        binding = uow.principal_bindings.get(candidate.user_id)
+        if binding is None:
             return
-        relation = Relation(
-            id=new_ulid(),
-            user_id=candidate.user_id,
-            from_id=principal_id,
-            to_id=vehicle_id,
-            concept_id=owns_id,
-            key=owns_key,
-            temporal=TemporalKnowledge.unknown(
-                "",
-                unknown_reason=TemporalUnknownReason.NOT_PROVIDED,
-            ),
-            observed_at=at,
-            valid_from=None,
-            valid_to=None,
-            is_current=True,
-            supersedes_id=None,
-            source=source,
-            raw_input_id=raw_id,
-            confidence=Confidence(score=1.0),
-            created_at=at,
-        )
-        uow.relations.add(relation)
-        result.relation_ids.append(relation.id)
+        owns_id = core_concept_id("relation.owns")
+        for item in candidate.bindings:
+            if item.mention.reference_kind is not MentionReferenceKind.POSSESSIVE:
+                continue
+            eid = entity_ids.get(item.mention.text)
+            if eid is None or eid not in result.created_entity_ids:
+                continue
+            linked = uow.relations.find_instance(
+                candidate.user_id, binding.entity_id, owns_id, eid, current_only=True
+            )
+            if linked is not None:
+                continue
+            try:
+                from pke.debug.semantic_trace import append_trace_stage
+
+                append_trace_stage(
+                    "materialization",
+                    {
+                        "issue": "knowledge.orphan_owned_entity",
+                        "entity_id": eid,
+                        "mention": item.mention.text,
+                    },
+                )
+            except Exception:
+                pass
 
     def _measurement(
         self,
@@ -502,6 +633,21 @@ class KnowledgeMaterializer:
     ) -> None:
         ir_m = candidate.ir.measurement
         assert ir_m is not None
+        self._measurement_record(
+            candidate, source, raw_id, entity_ids, uow, at, result, ir_m
+        )
+
+    def _measurement_record(
+        self,
+        candidate: KnowledgeCandidate,
+        source: Source,
+        raw_id: str,
+        entity_ids: dict[str, str],
+        uow: UnitOfWork,
+        at: dt.datetime,
+        result: MaterializationResult,
+        ir_m: Any,
+    ) -> None:
         entity_id = entity_ids.get(ir_m.subject.text)
         if entity_id is None:
             # Soft skip when co-materializing with Event — do not roll back Event
@@ -570,16 +716,56 @@ class KnowledgeMaterializer:
     ) -> None:
         ir_rel = candidate.ir.relation
         assert ir_rel is not None
-        if candidate.resolved_temporal is None or not candidate.has_persistable_temporal():
-            raise MaterializationDenied("relation sem tempo persistível")
+        self._relation_record(
+            candidate,
+            source,
+            raw_id,
+            entity_ids,
+            uow,
+            at,
+            result,
+            ir_rel,
+            require_persistable=True,
+        )
+
+    def _relation_record(
+        self,
+        candidate: KnowledgeCandidate,
+        source: Source,
+        raw_id: str,
+        entity_ids: dict[str, str],
+        uow: UnitOfWork,
+        at: dt.datetime,
+        result: MaterializationResult,
+        ir_rel: Any,
+        *,
+        require_persistable: bool,
+    ) -> None:
+        temporal = candidate.resolved_temporal
+        if temporal is None or not candidate.has_persistable_temporal():
+            if require_persistable:
+                raise MaterializationDenied("relation sem tempo persistível")
+            temporal = TemporalKnowledge.unknown(
+                ir_rel.time.original_text or "",
+                unknown_reason=TemporalUnknownReason.NOT_PROVIDED,
+                tense_evidence=ir_rel.time.tense_evidence,
+            )
         subject_id = entity_ids.get(ir_rel.subject.text)
         object_id = entity_ids.get(ir_rel.object.text)
         if subject_id is None or object_id is None:
             raise MaterializationDenied("relation sem endpoints resolvidos")
+        from pke.interpretation.semantic.learned_attribute import bind_learned_attribute_dimensions
+        from pke.interpretation.semantic.learned_entity import bind_learned_entity_types
         from pke.interpretation.semantic.learned_relation import bind_learned_relation_types
 
+        stored_key, inverted = stored_relation_query(ir_rel.type.key)
+        if inverted:
+            subject_id, object_id = object_id, subject_id
+        type_ref = ir_rel.type if stored_key == ir_rel.type.key else ConceptRef(key=stored_key)
         bind_learned_relation_types(self._ontology, candidate.ir)
-        concept = self._ontology.resolve_ref(ir_rel.type)
+        bind_learned_entity_types(self._ontology, candidate.ir)
+        bind_learned_attribute_dimensions(self._ontology, candidate.ir)
+        concept = self._ontology.resolve_ref(type_ref)
         if concept.concept_id is None:
             raise MaterializationDenied("relation concept inválido")
         concept_entity = self._ontology.get_by_id(concept.concept_id)
@@ -598,7 +784,7 @@ class KnowledgeMaterializer:
                 )
             if existing is not None:
                 evidence = RelationTerminationEvidence(
-                    temporal=candidate.resolved_temporal,
+                    temporal=temporal,
                     observed_at=at,
                     source=source,
                     raw_input_id=raw_id,
@@ -616,7 +802,7 @@ class KnowledgeMaterializer:
                 uow.relations.save(closed)
                 result.relation_ids.append(existing.id)
             return
-        is_current = _relation_is_current(mode, candidate.resolved_temporal)
+        is_current = _relation_is_current(mode, temporal)
         existing_current = uow.relations.find_instance(
             candidate.user_id, from_id, concept_id, to_id, current_only=True
         )
@@ -625,7 +811,7 @@ class KnowledgeMaterializer:
             uow.relations.save(refreshed)
             result.relation_ids.append(existing_current.id)
             return
-        valid_from = relation_calendar_start(candidate.resolved_temporal)
+        valid_from = relation_calendar_start(temporal)
         relation = Relation(
             id=new_ulid(),
             user_id=candidate.user_id,
@@ -633,7 +819,7 @@ class KnowledgeMaterializer:
             to_id=to_id,
             concept_id=concept_id,
             key=concept_entity.key,
-            temporal=candidate.resolved_temporal,
+            temporal=temporal,
             observed_at=at,
             valid_from=valid_from,
             is_current=is_current,
@@ -644,6 +830,71 @@ class KnowledgeMaterializer:
         )
         uow.relations.add(relation)
         result.relation_ids.append(relation.id)
+
+    def _claim_tally(self, ir: Any, result: MaterializationResult) -> ClaimTally:
+        report = getattr(ir, "claim_report", None)
+        received = int(getattr(report, "received", 0) or 0)
+        rejected = int(getattr(report, "assumed_dropped", 0) or 0)
+        deferred = int(getattr(report, "derived_deferred", 0) or 0) + int(
+            getattr(report, "unsupported", 0) or 0
+        )
+        if received == 0:
+            received = sum(
+                [
+                    1 if ir.event is not None else 0,
+                    1 if ir.state is not None else 0,
+                    1 if ir.relation is not None else 0,
+                    len(ir.additional_relations),
+                    1 if ir.attribute is not None else 0,
+                    len(ir.additional_attributes),
+                    1 if ir.measurement is not None else 0,
+                    len(ir.additional_measurements),
+                    len(ir.entities_mentioned),
+                ]
+            )
+        fact_committed = (
+            len(result.relation_ids)
+            + len(result.attribute_ids)
+            + len(result.measurement_ids)
+            + len(result.state_ids)
+            + len(result.event_ids)
+        )
+        has_fact_slots = any(
+            [
+                ir.event is not None,
+                ir.state is not None,
+                ir.relation is not None,
+                bool(ir.additional_relations),
+                ir.attribute is not None,
+                bool(ir.additional_attributes),
+                ir.measurement is not None,
+                bool(ir.additional_measurements),
+            ]
+        )
+        bound_identity = 0
+        executions = list(getattr(report, "executions", None) or [])
+        if executions and (result.created_entity_ids or result.reused_entity_ids):
+            bound_identity = sum(
+                1
+                for item in executions
+                if getattr(item, "status", None) == "bound"
+                and getattr(item, "kind", None) in {"entity", "classification"}
+            )
+        if int(getattr(report, "received", 0) or 0) > 0:
+            committed = fact_committed + bound_identity
+            if not has_fact_slots:
+                committed += len(result.created_entity_ids)
+        else:
+            committed = fact_committed + len(result.created_entity_ids)
+        valid = max(0, received - rejected - deferred)
+        return ClaimTally(
+            received=received,
+            valid=valid,
+            committed=committed,
+            derived=0,
+            rejected=rejected,
+            deferred=deferred,
+        )
 
     def _subject_id(
         self,

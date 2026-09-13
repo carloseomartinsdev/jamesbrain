@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from pke.interpretation.discourse import DiscourseState
 from pke.resolution.context import PersonalContext
 
 
@@ -17,6 +18,7 @@ class SessionContext(BaseModel):
     # Bounded conversational utterances for Correction Acceptance Guard (I12.4).
     # Not Knowledge Store rows; application may supply prior user turns only.
     recent_utterances: list[str] = Field(default_factory=list)
+    discourse: DiscourseState = Field(default_factory=DiscourseState)
 
     @property
     def user_id(self) -> str:

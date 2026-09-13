@@ -43,6 +43,7 @@ FINAL_AUTHORITY_MAP: dict[str, str] = {
     "ATTRIBUTE_EPISTEMIC_AUTHORITY": "AttributeResolver",
     "MEASUREMENT_QUERY_AUTHORITY": "Measurement query authority",
     "KNOWLEDGE_COMMIT_AUTHORITY": "IngestService / UoW",
+    "KNOWLEDGE_INSPECT_AUTHORITY": "KnowledgeInspector (read-only snapshot projection)",
 }
 
 

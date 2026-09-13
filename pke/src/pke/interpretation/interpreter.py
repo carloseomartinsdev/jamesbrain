@@ -8,6 +8,7 @@ from typing import Protocol
 from pydantic import BaseModel, ConfigDict, Field
 
 from pke.domain.value_objects import UserContext
+from pke.interpretation.discourse import DiscourseState, discourse_prompt_payload
 from pke.interpretation.models import IngestIR, InterpretationResult, QueryIR
 
 
@@ -22,9 +23,20 @@ class InterpretationContext(BaseModel):
     recent_event_ids: list[str] = Field(default_factory=list)
     # Bounded prior user utterances for Correction acceptance (not Knowledge Store rows).
     recent_utterances: list[str] = Field(default_factory=list)
+    discourse: DiscourseState | None = None
+    """Conversation-scoped structured focus. Not knowledge rows."""
     client_request_id: str | None = None
     """Portal/Core idempotency id — used as request-log file name when present."""
     pke_request_id: str | None = None
+
+
+def discourse_payload(ctx: InterpretationContext, *, limit: int = 6) -> dict[str, object]:
+    """Recent utterances + structured focus. Not a knowledge dump."""
+    return discourse_prompt_payload(
+        ctx.discourse,
+        list(ctx.recent_utterances or []),
+        utterance_limit=limit,
+    )
 
 
 class Interpreter(Protocol):

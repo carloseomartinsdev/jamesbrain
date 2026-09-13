@@ -180,6 +180,22 @@ def resolve_measurement_query(
     )
 
 
+def observable_value_groups(
+    resolved: MeasurementResolverResult,
+) -> tuple[ResolvedMeasurementValueGroup, ...]:
+    """Value identities already known to the resolver.
+
+    `groups` is empty for temporally_unknown / some ambiguous outcomes even when
+    `candidate_observations` carry numeric values. Projection must still see those
+    values — this does not change epistemic `status`.
+    """
+    if resolved.groups:
+        return resolved.groups
+    if resolved.candidate_observations:
+        return tuple(_group_by_value(list(resolved.candidate_observations)))
+    return ()
+
+
 def _latest(
     pool: list[Measurement], dimension_key: str, notes: list[str]
 ) -> MeasurementResolverResult:

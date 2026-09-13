@@ -336,8 +336,15 @@ def repair_possessive_attributes(
     *,
     prior_utterances: list[str] | tuple[str, ...] = (),
 ) -> SemanticProposal:
-    """Apply high-precision possessive patterns using the controlled registry."""
+    """Apply high-precision possessive patterns using the controlled registry.
+
+    LANGUAGE/COMPATIBILITY (ADR 0093): skipped when Atomic Claims already exist.
+    """
+    from pke.interpretation.semantic.owned_object import has_explicit_claims
+
     if proposal.correction_semantics:
+        return proposal
+    if has_explicit_claims(proposal):
         return proposal
     raw = _clean_raw(proposal.raw_input or "")
     if not raw:
@@ -348,6 +355,21 @@ def repair_possessive_attributes(
 
     have_noun = _possession_query(folded)
     if have_noun and _noun_dimension(have_noun) is None:
+        from pke.interpretation.semantic.class_reference import is_explicit_instance_or_class
+
+        if is_explicit_instance_or_class(proposal.object):
+            return proposal.model_copy(
+                update={
+                    "utterance_kind": "query",
+                    "primitive_hint": "relation",
+                    "link_semantics": True,
+                    "stable_property_semantics": False,
+                    "change_semantics": False,
+                    "subject": proposal.subject if proposal.subject is not None else _self_subject(),
+                    "relation_expression": proposal.relation_expression or "owns",
+                    "attribute_expression": None,
+                }
+            )
         return proposal.model_copy(
             update={
                 "utterance_kind": "query",

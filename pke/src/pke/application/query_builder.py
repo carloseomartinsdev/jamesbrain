@@ -6,9 +6,10 @@ import datetime as dt
 
 from pke.application.ask_results import AskClarification
 from pke.application.session import SessionContext
+from pke.domain.attributes import AttributeValueKind
 from pke.domain.ontology import ConceptKind, ConceptRef
 from pke.domain.value_objects import UserContext
-from pke.interpretation.models import QueryIR, QuerySpec
+from pke.interpretation.models import MentionReferenceKind, QueryIR, QuerySpec
 from pke.ontology.errors import ConceptKindError, ConceptNotFoundError, OntologyError
 from pke.ontology.registry import OntologyRegistry
 from pke.query.spec import (
@@ -20,18 +21,18 @@ from pke.query.spec import (
     HierarchyMode,
     MeasurementQueryMode,
     MeasurementValueFilter,
-    RelationScope,
     RelationQueryKind,
+    RelationScope,
     ResolvedQuerySpec,
     SortKey,
     TimeRange,
 )
-from pke.domain.attributes import AttributeValueKind
 from pke.resolution.context import ResolutionContext, ResolutionPurpose
 from pke.resolution.entities import EntityResolver, ResolutionStatus
 from pke.resolution.errors import InsufficientTemporalContextError, TemporalError
 from pke.resolution.lookup import EntityLookup
 from pke.resolution.query_temporal import QueryTemporalContext, QueryTemporalResolver
+from pke.ontology.relation_metadata import stored_relation_query
 from pke.resolution.self_ref import is_self_entity_mention
 
 
@@ -63,6 +64,7 @@ class ResolvedQueryBuilder:
         now: dt.datetime,
         principal_entity_id: str | None = None,
         owned_vehicle_entity_ids: list[str] | None = None,
+        owned_entity_ids: list[str] | None = None,
     ) -> ResolvedQuerySpec:
         spec = ir.query
         entity_ids = self._entities(
@@ -72,8 +74,16 @@ class ResolvedQueryBuilder:
             lookup,
             principal_entity_id=principal_entity_id,
             owned_vehicle_entity_ids=owned_vehicle_entity_ids or [],
+            owned_entity_ids=owned_entity_ids or [],
         )
+        object_entity_type_ids = self._object_type_constraints(spec)
         time_range = self._time(spec, user, now)
+        relation_refs, inverted = _normalize_relation_type_refs(spec.relation_types)
+        entity_association = _association(spec.entity_association) if entity_ids else None
+        if inverted:
+            entity_ids, entity_association = _swap_relation_query_endpoints(
+                entity_ids, entity_association
+            )
         attribute_filter = None
         if spec.attribute_value_kind:
             attribute_filter = AttributeValueFilter(
@@ -94,14 +104,15 @@ class ResolvedQueryBuilder:
         return ResolvedQuerySpec(
             user_id=user.user_id,
             entity_ids=entity_ids,
-            entity_association=_association(spec.entity_association) if entity_ids else None,
+            entity_association=entity_association,
             event_type_ids=self._concepts(spec.event_types, ConceptKind.EVENT_TYPE),
             action_ids=self._concepts(spec.actions, ConceptKind.ACTION),
             fact_concept_ids=self._concepts(spec.facts, ConceptKind.ATTRIBUTE),
             domain_ids=self._concepts(spec.domains, ConceptKind.DOMAIN),
             state_dimension_ids=self._concepts(spec.state_dimensions, ConceptKind.STATE_DIMENSION),
             state_value_ids=self._concepts(spec.state_values, ConceptKind.STATE_VALUE),
-            relation_type_ids=self._concepts(spec.relation_types, ConceptKind.RELATION_TYPE),
+            relation_type_ids=self._concepts(relation_refs, ConceptKind.RELATION_TYPE),
+            object_entity_type_ids=object_entity_type_ids,
             relation_scope=RelationScope(spec.relation_scope),
             relation_query_kind=(
                 RelationQueryKind(spec.relation_query_kind)
@@ -140,6 +151,7 @@ class ResolvedQueryBuilder:
         *,
         principal_entity_id: str | None = None,
         owned_vehicle_entity_ids: list[str] | None = None,
+        owned_entity_ids: list[str] | None = None,
     ) -> list[str]:
         if not spec.entities:
             return []
@@ -153,29 +165,74 @@ class ResolvedQueryBuilder:
             purpose=ResolutionPurpose.QUERY,
             principal_entity_id=principal_entity_id,
             owned_vehicle_entity_ids=list(owned_vehicle_entity_ids or []),
+            owned_entity_ids=list(owned_entity_ids or []),
         )
         ids: list[str] = []
+        try:
+            from pke.application.discourse import binding_allowed
+
+            for mention in spec.entities:
+                if mention.reference_kind is MentionReferenceKind.CLASS:
+                    continue
+                if mention.known_entity_id and not binding_allowed(
+                    session.discourse, mention.known_entity_id
+                ):
+                    raise QueryBuildError(
+                        "discourse.invalid_binding",
+                        "known_entity_id ausente do discourse state",
+                    )
+                resolution = resolver.resolve(mention, context)
+                if resolution.status is ResolutionStatus.AMBIGUOUS:
+                    raise QueryBuildError(
+                        "entity.ambiguous",
+                        "menção ambígua",
+                        clarification=AskClarification(
+                            clarification_key="clarify.entity.which_one",
+                            reason="ambiguous_entity",
+                            blocking=True,
+                            candidate_entity_ids=[c.entity_id for c in resolution.candidates],
+                        ),
+                    )
+                if resolution.status is ResolutionStatus.CREATE_CANDIDATE:
+                    raise QueryBuildError("entity.create_forbidden", "consulta não cria entidade")
+                if resolution.status is not ResolutionStatus.RESOLVED or not resolution.entity_id:
+                    if (
+                        mention.reference_kind is MentionReferenceKind.POSSESSIVE
+                        and resolution.clarification_reason == "possessive_no_match"
+                    ):
+                        raise QueryBuildError(
+                            "entity.no_match",
+                            "nenhuma entidade corresponde à referência possessiva",
+                        )
+                    raise QueryBuildError("entity.unresolved", "entidade não encontrada")
+                ids.append(resolution.entity_id)
+            if spec.entity_association is None:
+                raise QueryBuildError("entity.association_required", "entity_ids exige association")
+            return ids
+        finally:
+            try:
+                from pke.debug.semantic_trace import flush_entity_resolution_stage
+
+                flush_entity_resolution_stage()
+            except Exception:
+                pass
+
+    def _object_type_constraints(self, spec: QuerySpec) -> list[str]:
+        if spec.intent != "relation":
+            return []
+        refs: list[ConceptRef] = []
         for mention in spec.entities:
-            resolution = resolver.resolve(mention, context)
-            if resolution.status is ResolutionStatus.AMBIGUOUS:
+            if mention.reference_kind is not MentionReferenceKind.CLASS:
+                continue
+            if mention.type_hint is None:
                 raise QueryBuildError(
-                    "entity.ambiguous",
-                    "menção ambígua",
-                    clarification=AskClarification(
-                        clarification_key="clarify.entity.which_one",
-                        reason="ambiguous_entity",
-                        blocking=True,
-                        candidate_entity_ids=[c.entity_id for c in resolution.candidates],
-                    ),
+                    "entity.class_unresolved",
+                    "restrição de classe sem tipo",
                 )
-            if resolution.status is ResolutionStatus.CREATE_CANDIDATE:
-                raise QueryBuildError("entity.create_forbidden", "consulta não cria entidade")
-            if resolution.status is not ResolutionStatus.RESOLVED or not resolution.entity_id:
-                raise QueryBuildError("entity.unresolved", "entidade não encontrada")
-            ids.append(resolution.entity_id)
-        if spec.entity_association is None:
-            raise QueryBuildError("entity.association_required", "entity_ids exige association")
-        return ids
+            refs.append(mention.type_hint)
+        if not refs:
+            return []
+        return self._concepts(refs, ConceptKind.ENTITY_TYPE)
 
     def _time(self, spec: QuerySpec, user: UserContext, now) -> TimeRange | None:
         if spec.time is None:
@@ -211,6 +268,12 @@ class ResolvedQueryBuilder:
 
                     if ensure_if_learned(self._ontology, ref.key):
                         publish_relation_type(ref.key)
+                if kind is ConceptKind.ENTITY_TYPE:
+                    from pke.interpretation.semantic.learned_entity import publish_entity_type
+                    from pke.ontology.learned import ensure_if_learned_entity
+
+                    if ensure_if_learned_entity(self._ontology, ref.key):
+                        publish_entity_type(ref.key)
                 resolved = self._ontology.resolve_ref(ref, expected_kind=kind)
             except ConceptNotFoundError as exc:
                 raise QueryBuildError("ontology.unknown", str(exc)) from exc
@@ -227,3 +290,37 @@ def _association(value: str | None) -> EntityAssociation | None:
     if value is None:
         return None
     return EntityAssociation(value)
+
+
+def _normalize_relation_type_refs(
+    refs: list[ConceptRef],
+) -> tuple[list[ConceptRef], bool]:
+    if not refs:
+        return [], False
+    out: list[ConceptRef] = []
+    inverted_flags: list[bool] = []
+    for ref in refs:
+        stored, inverted = stored_relation_query(ref.key)
+        inverted_flags.append(inverted)
+        if stored == ref.key:
+            out.append(ref)
+        else:
+            out.append(ConceptRef(key=stored))
+    swapped = bool(inverted_flags) and all(inverted_flags)
+    return out, swapped
+
+
+def _swap_relation_query_endpoints(
+    entity_ids: list[str],
+    association: EntityAssociation | None,
+) -> tuple[list[str], EntityAssociation | None]:
+    ids = list(entity_ids)
+    if len(ids) >= 2:
+        ids = [ids[1], ids[0], *ids[2:]]
+    if association is EntityAssociation.RELATION_SUBJECT:
+        association = EntityAssociation.RELATION_OBJECT
+    elif association is EntityAssociation.RELATION_OBJECT:
+        association = EntityAssociation.RELATION_SUBJECT
+    elif association is EntityAssociation.SUBJECT:
+        association = EntityAssociation.RELATION_OBJECT
+    return ids, association

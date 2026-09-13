@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from decimal import Decimal
 from typing import Any
 
 from pke.application.ask_results import AskClarification, AskResult, AskStatus
@@ -20,7 +19,16 @@ from pke.product.api.v1.dtos import (
     ApiOperationOutcome,
     ApiResponseType,
 )
-from pke.product.conversation.engine_gateway import EngineTurn, is_retryable_provider_failure
+from pke.product.conversation.engine_gateway import (
+    EngineTurn,
+    ask_trace_result,
+    is_retryable_provider_failure,
+)
+from pke.product.conversation.result_projection import (
+    compact_projection,
+    project_ask,
+    project_query_result,
+)
 from pke.product.ids import clarification_id, message_id
 from pke.query.results import QueryResult
 
@@ -77,6 +85,7 @@ def present_turn(
             type=ApiResponseType.UNSUPPORTED,
             status=ApiMessageStatus.COMPLETED,
             text="Não consegui interpretar isso com segurança suficiente.",
+            data={"status": "unsupported", "kind": "interpretation"},
             operation=ApiOperation(
                 kind=ApiOperationKind.NONE, outcome=ApiOperationOutcome.UNSUPPORTED
             ),
@@ -115,6 +124,23 @@ def present_turn(
     )
 
 
+def _ingest_write_data(
+    result: IngestResult,
+    *,
+    kind: str,
+    correction: bool | None = None,
+) -> dict[str, Any]:
+    data: dict[str, Any] = {
+        "status": result.status.value,
+        "kind": kind,
+        "claims": result.claims.model_dump(mode="json"),
+    }
+    if correction is not None:
+        data["correction"] = correction
+    _log_write_projection(result, data)
+    return data
+
+
 def _present_ingest(
     result: IngestResult,
     *,
@@ -137,14 +163,47 @@ def _present_ingest(
             if correction
             else ApiOperationKind.KNOWLEDGE_WRITE
         )
-        text = "Certo. Atualizei esse registro." if correction else "Certo. Registrei essa informação."
+        text = "Certo. Atualizei esse registro." if correction else "Entendi."
         return ApiMessageResponse(
             conversation_id=conversation_id,
             message_id=message_id(),
             type=ApiResponseType.ACKNOWLEDGEMENT,
             status=ApiMessageStatus.COMPLETED,
             text=text,
+            data=_ingest_write_data(result, kind="acknowledgement", correction=correction),
             operation=ApiOperation(kind=kind, outcome=ApiOperationOutcome.COMMITTED),
+            client_request_id=client_request_id,
+            request_id=request_id,
+            debug=debug,
+        )
+    if result.status is IngestStatus.PARTIAL:
+        return ApiMessageResponse(
+            conversation_id=conversation_id,
+            message_id=message_id(),
+            type=ApiResponseType.ACKNOWLEDGEMENT,
+            status=ApiMessageStatus.COMPLETED,
+            text="Entendi parte disso, mas não consegui guardar tudo.",
+            data=_ingest_write_data(result, kind="acknowledgement"),
+            operation=ApiOperation(
+                kind=ApiOperationKind.KNOWLEDGE_WRITE,
+                outcome=ApiOperationOutcome.PARTIAL,
+            ),
+            client_request_id=client_request_id,
+            request_id=request_id,
+            debug=debug,
+        )
+    if result.status is IngestStatus.DEFERRED:
+        return ApiMessageResponse(
+            conversation_id=conversation_id,
+            message_id=message_id(),
+            type=ApiResponseType.ACKNOWLEDGEMENT,
+            status=ApiMessageStatus.COMPLETED,
+            text="Entendi o que você quis dizer, mas ainda não consigo guardar essa informação corretamente.",
+            data=_ingest_write_data(result, kind="acknowledgement"),
+            operation=ApiOperation(
+                kind=ApiOperationKind.KNOWLEDGE_WRITE,
+                outcome=ApiOperationOutcome.DEFERRED,
+            ),
             client_request_id=client_request_id,
             request_id=request_id,
             debug=debug,
@@ -158,6 +217,7 @@ def _present_ingest(
             status=ApiMessageStatus.CLARIFICATION_REQUIRED,
             text=clarification_text(result, clarification),
             clarification=clarification,
+            data=_clarification_data(clarification, result.clarification.question_key if result.clarification else None),
             operation=ApiOperation(
                 kind=ApiOperationKind.CLARIFICATION,
                 outcome=ApiOperationOutcome.NEEDS_CLARIFICATION,
@@ -172,7 +232,8 @@ def _present_ingest(
             message_id=message_id(),
             type=ApiResponseType.UNSUPPORTED,
             status=ApiMessageStatus.COMPLETED,
-            text="Não consegui interpretar isso com segurança suficiente para registrar.",
+            text="Entendi o que você quis dizer, mas ainda não consigo guardar essa informação corretamente.",
+            data=_ingest_write_data(result, kind="write"),
             operation=ApiOperation(
                 kind=ApiOperationKind.KNOWLEDGE_WRITE,
                 outcome=ApiOperationOutcome.UNSUPPORTED,
@@ -192,6 +253,7 @@ def _present_ingest(
             type=ApiResponseType.UNSUPPORTED,
             status=ApiMessageStatus.COMPLETED,
             text="Ainda não consigo corrigir isso com segurança.",
+            data={"status": "unsupported", "kind": "correction"},
             operation=ApiOperation(
                 kind=ApiOperationKind.KNOWLEDGE_CORRECTION,
                 outcome=ApiOperationOutcome.UNSUPPORTED,
@@ -216,6 +278,7 @@ def _present_ingest(
             status=ApiMessageStatus.CLARIFICATION_REQUIRED,
             text="Não identifiquei o que você quer corrigir. Pode detalhar?",
             clarification=clarification,
+            data=_clarification_data(clarification, "clarify.correction.target"),
             operation=ApiOperation(
                 kind=ApiOperationKind.CLARIFICATION,
                 outcome=ApiOperationOutcome.NEEDS_CLARIFICATION,
@@ -230,6 +293,7 @@ def _present_ingest(
         type=ApiResponseType.UNSUPPORTED,
         status=ApiMessageStatus.COMPLETED,
         text="Ainda não consigo registrar isso com segurança.",
+        data={"status": "unsupported", "kind": "write"},
         operation=ApiOperation(
             kind=ApiOperationKind.KNOWLEDGE_WRITE, outcome=ApiOperationOutcome.UNSUPPORTED
         ),
@@ -256,8 +320,18 @@ def _present_ask(
             message_id=message_id(),
             type=ApiResponseType.CLARIFICATION,
             status=ApiMessageStatus.CLARIFICATION_REQUIRED,
-            text=ask_clarification_text(result.clarification),
+            text=ask_clarification_text(
+                result.clarification,
+                labels=[
+                    entity_label(user_id, eid) or eid
+                    for eid in (result.clarification.candidate_entity_ids if result.clarification else [])
+                ],
+            ),
             clarification=clarification,
+            data=_clarification_data(
+                clarification,
+                result.clarification.clarification_key if result.clarification else None,
+            ),
             operation=ApiOperation(
                 kind=ApiOperationKind.CLARIFICATION,
                 outcome=ApiOperationOutcome.NEEDS_CLARIFICATION,
@@ -267,7 +341,15 @@ def _present_ask(
             debug=debug,
         )
     if result.status is AskStatus.ANSWERED:
-        text, data = render_query(result.query_result)
+        text, data = project_ask(
+            result, entity_label=entity_label, user_id=user_id
+        )
+        _log_response_projection(
+            result,
+            data,
+            client_request_id=client_request_id,
+            request_id=request_id,
+        )
         return ApiMessageResponse(
             conversation_id=conversation_id,
             message_id=message_id(),
@@ -283,12 +365,22 @@ def _present_ask(
             debug=debug,
         )
     if result.status is AskStatus.NO_RESULTS:
+        text, data = project_ask(
+            result, entity_label=entity_label, user_id=user_id
+        )
+        _log_response_projection(
+            result,
+            data,
+            client_request_id=client_request_id,
+            request_id=request_id,
+        )
         return ApiMessageResponse(
             conversation_id=conversation_id,
             message_id=message_id(),
             type=ApiResponseType.ANSWER,
             status=ApiMessageStatus.COMPLETED,
-            text="Não encontrei um registro sobre isso.",
+            text=text,
+            data=data,
             operation=ApiOperation(
                 kind=ApiOperationKind.KNOWLEDGE_QUERY, outcome=ApiOperationOutcome.ANSWERED
             ),
@@ -303,6 +395,7 @@ def _present_ask(
             type=ApiResponseType.UNSUPPORTED,
             status=ApiMessageStatus.COMPLETED,
             text="Ainda não consigo responder isso com segurança.",
+            data={"status": "unsupported", "kind": "query"},
             operation=ApiOperation(
                 kind=ApiOperationKind.KNOWLEDGE_QUERY,
                 outcome=ApiOperationOutcome.UNSUPPORTED,
@@ -317,6 +410,7 @@ def _present_ask(
         type=ApiResponseType.UNSUPPORTED,
         status=ApiMessageStatus.COMPLETED,
         text="Ainda não consigo responder isso com segurança.",
+        data={"status": "unsupported", "kind": "query"},
         operation=ApiOperation(
             kind=ApiOperationKind.KNOWLEDGE_QUERY, outcome=ApiOperationOutcome.UNSUPPORTED
         ),
@@ -326,112 +420,95 @@ def _present_ask(
     )
 
 
-def render_query(query_result: QueryResult | None) -> tuple[str, dict[str, Any] | None]:
-    if query_result is None:
-        return "Não encontrei um registro sobre isso.", None
-    if query_result.relation_answer is not None:
-        mapping = {"yes": "Sim.", "no": "Não.", "unknown": "Não tenho certeza o suficiente para afirmar."}
-        return mapping.get(query_result.relation_answer, "Sim."), {
-            "kind": "fact_summary",
-            "items": [{"label": "relação", "value": query_result.relation_answer}],
-        }
-    if query_result.current_relations:
-        labels = [
-            item.object_label
-            for item in query_result.current_relations
-            if item.object_label
-        ]
-        if not labels:
-            text = f"Encontrei {len(query_result.current_relations)} registro(s)."
-        elif len(labels) == 1:
-            text = f"Encontrei {labels[0]}."
-        else:
-            text = "Encontrei " + ", ".join(labels[:-1]) + " e " + labels[-1] + "."
-        return text, {
-            "kind": "fact_summary",
-            "items": [{"label": "relação", "value": name} for name in labels]
-            or [{"label": "registros", "value": str(len(query_result.current_relations))}],
-        }
-    if query_result.attribute_proposition_answer is not None:
-        mapping = {
-            "yes": "Sim.",
-            "no": "Não.",
-            "unknown": "Não encontrei um valor definitivo.",
-            "ambiguous": "Encontrei mais de um valor possível.",
-            "temporally_unknown": "Encontrei um registro, mas o momento não está definido.",
-        }
-        return mapping.get(query_result.attribute_proposition_answer, "Sim."), {
-            "kind": "fact_summary",
-            "items": [{"label": "atributo", "value": query_result.attribute_proposition_answer}],
-        }
-    if query_result.attribute_values:
-        items = []
-        for item in query_result.attribute_values:
-            label = item.text_value or (
-                str(item.numeric_value) if item.numeric_value is not None else None
-            )
-            if item.year_value is not None:
-                label = str(item.year_value)
-            dim_label = item.dimension_key or query_result.attribute_dimension_key or "valor"
-            items.append({"label": dim_label, "value": label})
-        if len(items) == 1:
-            text = "Encontrei " + (items[0]["value"] or "um registro") + "."
-        else:
-            parts = [
-                f"{row['label']} {row['value']}"
-                for row in items
-                if row.get("value")
-            ]
-            text = "Encontrei " + ", ".join(parts) + "." if parts else f"Encontrei {len(items)} valores."
-        return text, {"kind": "fact_summary", "items": items}
-    if query_result.measurement_values:
-        items = [
+def render_query(
+    query_result: QueryResult | None,
+    *,
+    entity_label: EntityLabelFn | None = None,
+    user_id: str = "",
+) -> tuple[str, dict[str, Any] | None]:
+    return project_query_result(
+        query_result, entity_label=entity_label, user_id=user_id
+    )
+
+
+def _log_write_projection(result: IngestResult, data: dict[str, Any]) -> None:
+    try:
+        from pke.debug.request_log import append_stage
+        from pke.debug.trace_context import current_trace
+
+        ids = current_trace()
+        file_id = ids.file_id()
+        if not file_id:
+            return
+        append_stage(
+            file_id,
+            "response_projection",
             {
-                "label": query_result.measurement_dimension_key or "medição",
-                "value": _fmt_number(item.numeric_value),
-                "unit": item.unit or item.currency_code,
-            }
-            for item in query_result.measurement_values
-        ]
-        if len(items) == 1:
-            unit = f" {items[0]['unit']}" if items[0]["unit"] else ""
-            text = f"Encontrei {items[0]['value']}{unit}."
-        else:
-            text = f"Encontrei {len(items)} medições."
-        return text, {"kind": "measurement_list", "items": items}
-    if query_result.measurement_proposition_answer is not None:
-        mapping = {
-            "yes": "Sim.",
-            "unknown": "Não encontrei essa medição.",
-            "ambiguous": "Encontrei mais de uma medição possível.",
-            "temporally_unknown": "Encontrei uma medição, mas o momento não está definido.",
+                "source_status": result.status.value,
+                "source_kind": "ingest",
+                **compact_projection(data),
+            },
+            client_request_id=ids.client_request_id,
+            request_id=ids.pke_request_id,
+            conversation_id=ids.conversation_id,
+            user_message_id=ids.user_message_id,
+            status=data.get("status"),
+        )
+    except Exception:
+        return
+
+
+def _log_response_projection(
+    ask: AskResult,
+    data: dict[str, Any],
+    *,
+    client_request_id: str | None,
+    request_id: str | None,
+) -> None:
+    try:
+        from pke.debug.request_log import append_stage
+        from pke.debug.trace_context import current_trace
+
+        ids = current_trace()
+        source_kind, source = ask_trace_result(ask)
+        body = {
+            "source_status": ask.status.value,
+            "source_kind": source_kind,
+            **compact_projection(data),
         }
-        return mapping.get(query_result.measurement_proposition_answer, "Sim."), {
-            "kind": "measurement_list",
-            "items": [],
-        }
-    if query_result.current_state_value:
-        return f"O estado atual é {query_result.current_state_value}.", {
-            "kind": "fact_summary",
-            "items": [{"label": "estado", "value": query_result.current_state_value}],
-        }
-    if query_result.aggregate is not None and query_result.aggregate.value is not None:
-        value = query_result.aggregate.value
-        currency = query_result.aggregate.currency
-        if currency:
-            text = f"Encontrei um total de {_fmt_money(value, currency)}."
-        else:
-            text = f"Encontrei um total de {_fmt_number(value)}."
-        return text, {
-            "kind": "fact_summary",
-            "items": [{"label": "total", "value": str(value), "currency": currency}],
-        }
-    if query_result.items:
-        return f"Encontrei {query_result.matched_count} registro(s).", {
-            "kind": "fact_summary",
-            "items": [{"label": "registros", "value": str(query_result.matched_count)}],
-        }
-    return "Não encontrei um registro sobre isso.", None
+        if source.get("numeric_value") is not None:
+            body["source_value"] = source["numeric_value"]
+        elif source.get("value") is not None:
+            body["source_value"] = source["value"]
+        if source.get("unit"):
+            body["source_unit"] = source["unit"]
+        append_stage(
+            client_request_id or request_id or ids.file_id(),
+            "response_projection",
+            body,
+            client_request_id=client_request_id or ids.client_request_id,
+            request_id=request_id or ids.pke_request_id,
+            conversation_id=ids.conversation_id,
+            user_message_id=ids.user_message_id,
+            status=data.get("status"),
+        )
+    except Exception:
+        return
+
+
+def _clarification_data(clarification: ApiClarification | None, reason: str | None) -> dict[str, Any]:
+    candidates: list[str] = []
+    if clarification is not None:
+        candidates = [opt.label for opt in clarification.options if opt.label]
+    payload: dict[str, Any] = {
+        "status": "needs_clarification",
+        "kind": "clarification",
+        "reason": reason or "generic",
+        "candidates": candidates,
+    }
+    if reason and "insufficient" in reason:
+        payload["status"] = "insufficient"
+    return payload
 
 
 def clarification_text(result: IngestResult, clarification: ApiClarification) -> str:
@@ -449,7 +526,15 @@ def clarification_text(result: IngestResult, clarification: ApiClarification) ->
     return "Pode detalhar um pouco mais?"
 
 
-def ask_clarification_text(clarification: AskClarification | None) -> str:
+def ask_clarification_text(
+    clarification: AskClarification | None,
+    *,
+    labels: list[str] | None = None,
+) -> str:
+    names = [item for item in (labels or []) if item]
+    if len(names) >= 2:
+        joined = " ou ".join(names)
+        return f"Você está falando do {joined}?"
     if clarification is None:
         return "Pode detalhar um pouco mais?"
     return _QUESTION_TEXT.get(clarification.clarification_key, "Pode detalhar um pouco mais?")
@@ -504,6 +589,7 @@ def _error(
         status=ApiMessageStatus.FAILED,
         text=message,
         error=ApiErrorBody(code=code, message=message),
+        data={"status": "error", "kind": "error", "code": code},
         operation=ApiOperation(kind=ApiOperationKind.NONE, outcome=ApiOperationOutcome.FAILED),
         client_request_id=client_request_id,
         request_id=request_id,
@@ -511,17 +597,3 @@ def _error(
     )
 
 
-def _fmt_number(value: Decimal | int | float | str) -> str:
-    amount = Decimal(str(value))
-    if amount == amount.to_integral():
-        return f"{int(amount)}"
-    text = format(amount, "f").rstrip("0").rstrip(".")
-    return text.replace(".", ",")
-
-
-def _fmt_money(value: Decimal | int | float | str, currency: str) -> str:
-    amount = Decimal(str(value))
-    formatted = f"{amount:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    if currency.upper() == "BRL":
-        return f"R$ {formatted}"
-    return f"{formatted} {currency}"

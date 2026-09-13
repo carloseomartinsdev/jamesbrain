@@ -12,7 +12,7 @@ from pke.domain.relation_lifecycle import (
     termination_calendar_known,
 )
 from pke.domain.relations import Relation
-from pke.ontology.relation_metadata import SYMMETRIC_RELATION_KEYS
+from pke.ontology.relation_metadata import is_order_insensitive
 from pke.query.results import TemporalCompleteness
 from pke.query.spec import TimeRange
 from pke.temporal.membership import (
@@ -52,7 +52,7 @@ class RelationQueryAnswer:
 def _endpoint_match(relation: Relation, entity_id: str) -> bool:
     if relation.from_id == entity_id or relation.to_id == entity_id:
         return True
-    if relation.key in SYMMETRIC_RELATION_KEYS:
+    if is_order_insensitive(relation.key):
         return relation.from_id == entity_id or relation.to_id == entity_id
     return False
 
@@ -73,13 +73,13 @@ def _matches_triple(
         return False
     if subject_id is not None:
         if relation.from_id != subject_id:
-            if relation.key in SYMMETRIC_RELATION_KEYS and relation.to_id == subject_id:
+            if is_order_insensitive(relation.key) and relation.to_id == subject_id:
                 pass
             else:
                 return False
     if object_id is not None:
         if relation.to_id != object_id:
-            if relation.key in SYMMETRIC_RELATION_KEYS and relation.from_id == object_id:
+            if is_order_insensitive(relation.key) and relation.from_id == object_id:
                 pass
             else:
                 return False

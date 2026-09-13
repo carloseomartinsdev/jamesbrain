@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from pke.interpretation.interpreter import InterpretationContext
+from pke.interpretation.interpreter import InterpretationContext, discourse_payload
 from pke.interpretation.ontology_view import InterpreterOntologyView
 from pke.interpretation.prompts_v4 import (
     FEW_SHOT_CORRECTION_REPLACE,
@@ -43,6 +43,7 @@ Princípios:
 - Descreva SIGNIFICADO. Não adivinhe keys canônicas (relation.employed_by, action.replace).
 - Use expressões naturais: relation_expression, state_expression, action_expression, measurement_expression.
 - Use kind_hint em entidades: person|organization|place|appliance|vehicle|document|medication|thing.
+- Use reference_kind: named (instância) | contextual | possessive | class (restrição de tipo, não instância).
 - Omita campos desconhecidos ou use null — não invente fatos.
 - Proposta parcial honesta é melhor que certeza fabricada.
 - Nunca invente IDs persistentes de assertion (correction_target_assertion_id). Se não souber, omita.
@@ -85,6 +86,26 @@ Multi-primitive (assertions independentes e explícitas):
 - Uma utterance pode afirmar vários primitives SOMENTE se as proposições estiverem explícitas.
 - NÃO derive State/Attribute/Relation sem evidência.
 
+Decomposição multi-claim (obrigatório):
+- Do not stop after identifying the primary primitive (primitive_hint).
+- Preserve all independently useful factual claims explicitly conveyed by the utterance.
+- Do not add plausible world knowledge that was not conveyed (no ASSUMED facts).
+- Do not derive ontology hierarchy yourself (cat⊂animal); that belongs to the knowledge engine.
+- Fill claims[] with atomic units: entity, classification, relation, attribute, intrinsic_property, measurement, state, event.
+- origin=explicit. Do not emit origin=assumed. Do not emit derived taxonomy.
+- Classification ≠ Attribute (type/class vs property). "é um X" → classification class_hint, not attribute.species.
+- Intrinsic instance name → entity text / intrinsic_property name. Do not set identity = model/brand.
+- Emit conceptual lemmas independent of language (cat, female, owns, blue, doctor) — not surface words as ontology.
+- After this proposal the Engine will not re-read raw_input to discover claims.
+
+Owned object + copular description (obrigatório; domain-independent):
+- reference_kind=possessive + class_hint=T is an owned instance, not a second entity and not a class used as a proper name.
+- Separate: (1) identity/classification of the object, (2) relation owns from self, (3) descriptive properties (model, brand, name, color, size, …).
+- Do not turn descriptive values into standalone named entities unless they are independently referenced entities.
+- class_hint = the type (automobile, computer). Model/brand/color are attributes. Do not put the model in class_hint or as another physical object.
+- Preserve all explicit claims.
+- Examples (not a catalog): "my laptop is a ThinkPad" → owned computer + model ThinkPad; "my bike is red" → owned bicycle + color red; "my company is called Acme" → owned/associated organization + intrinsic name Acme.
+
 Regra Event↔Measurement (quando ambas proposições coexistem na utterance):
 - Ocorrência/ação explícita afirmada + leitura quantitativa → emita Event E Measurement como assertions aditivas independentes.
 - Measurement NÃO substitui nem elimina Event explícito; Event NÃO substitui Measurement.
@@ -119,7 +140,37 @@ Polysemia:
 - Não marque change_semantics de componente físico sem evidência
 
 Tempo: preserve temporal.original_text e occurrence_aspect; NÃO invente calendário exato a partir de "ano passado"/"recentemente".
+Use relation_to_reference e selection (previous/first) — não deixe o PKE interpretar "antes"/"primeira".
+Resolva elipse/pronome com recent_user_utterances e discourse.structured (discurso, não dump de memória).
 Consultas → ir_kind=semantic_query; utterance_kind=query.
+
+Fronteira linguística (obrigatório):
+- Você interpreta idioma. O PKE NÃO vai reler a frase para descobrir possessivo, elipse, "antes" ou "qual?".
+- Resolva pronomes, possessivos, elipses e continuações usando recent_user_utterances E discourse.structured (foco da conversa, não dump de conhecimento).
+- Subject do falante: {text:"self", kind_hint:"person", reference_kind:"contextual"} (não dependa da palavra "eu").
+- Possessivo: reference_kind=possessive e o substantivo possuído em text (ex. "carro"), não deixe o PKE descobrir "meu".
+- "qual?" / "e o carro?" com contexto anterior → emita a query COMPLETA (primitive, subject, relation/attribute).
+- Identidade do objeto possuído ("qual o meu X?") → primitive_hint=attribute, attribute_expression="*" (snapshot; não trate como dimensão "marca"/"nome").
+- Tempo: NÃO deixe significado só em temporal.original_text. Use relation_to_reference=before|after e selection=current|previous|first|last.
+- "antes" / previous state → selection=previous (ou relation_to_reference=before). "primeira" → selection=first.
+- Sinônimos linguísticos ficam nesta camada; o PKE canonicaliza conceitos (vehicle→automobile, cor→color).
+
+Discurso entre turnos (obrigatório):
+- Use recent discourse and structured conversation focus to resolve omitted, pronominal, possessive and elliptical references.
+- recent_user_utterances = linguistic form. discourse.structured = entities/classes/relations the Engine already resolved.
+- When the current utterance semantically continues the previous topic, produce a complete Semantic IR using the active discourse referent. Copy known_entity_id ONLY from discourse.structured.allowed_entity_ids. Never invent IDs.
+- When the utterance introduces an explicit new subject/topic, do not inherit an incompatible previous referent. Explicit current-turn semantics outrank inherited focus.
+- When multiple incompatible referents remain equally plausible, set discourse_decision=ambiguous rather than selecting one arbitrarily.
+- A set of compatible referents (several resolved instances of the same focus) is a valid subject, not ambiguity.
+- Prefer structured IDs over re-resolving by name. Discourse focus is not world knowledge.
+- Attribute/measurement writes that continue the active referent must copy known_entity_id from allowed_entity_ids onto the subject. Do not persist a pronoun token as an entity.
+- If discourse.structured.pending_intent is set, a subject-only reply completes that pending operation (keep its attribute/query). Do not drop the pending attribute.
+- Incompatible attribute vs current focus → discourse_decision=ambiguous. Do not invent the dimension on the last focus.
+
+Person role vs identity (language-independent):
+- Possessive role + identity naming (called/named/name) of a person → ONE person with that name + profession property + role/relation to self. Do not emit relation named between two entities. Do not persist the role noun as a second person.
+- Thing "called X" → ONE owned instance named X (class_hint of the possessed type). Identity is the instance name, not relation.named.
+- Graph primitives: entity, classification, property, relation, event, measurement. Descriptive values (model, color, count) are properties, not entities. "X is my accountant" is profession+relation to self; "X is an accountant" is profession/classification without requiring that relation.
 
 Consultas de atributo do falante (obrigatório quando a pergunta for inequívoca):
 - "Qual é o meu nome?" / "Como me chamo?" / "Qual meu nome?"
@@ -131,6 +182,29 @@ Consultas de atributo do falante (obrigatório quando a pergunta for inequívoca
   → subject={text:"eu", kind_hint:"person", reference_kind:"contextual"}
 - NÃO omita attribute_expression nem stable_property_semantics nesses casos.
 - NÃO trate "Qual é o nome do João?" / "nome do meu carro" como self.name.
+
+Class vs instance (obrigatório):
+- Distinga referência a uma instância específica de restrição por classe/tipo de entidade.
+- Expressão nomeada, identificável ou contextual → instância: reference_kind=named|contextual|possessive.
+- Substantivo genérico/categoria usado para perguntar se existe alguma entidade daquele tipo → classe: reference_kind=class.
+- NÃO converta uma restrição de classe/tipo em referência named ou contextual.
+- kind_hint continua grosso (person|thing|vehicle|…). class_hint é o lema da classe, independente de idioma (não copie o substantivo da frase se puder dar o lema).
+- O PKE canonicaliza o lema; você NÃO precisa da key ontológica (entity.cat).
+- Posse ("I have" / "eu tenho" / "tengo") → relation_expression="owns". NÃO copie a oração inteira para relation_expression.
+- Identidade dada ("named Luna", "chamada luna") vai no object da instância, não na relation_expression.
+
+Exemplos da distinção (ensinam CLASS vs INSTANCE; não são vocabulário fixo):
+- "Do I have Luna?" → object instância named "Luna"
+- "Do I have a cat?" → object {text da menção, reference_kind:"class", class_hint:"cat"}
+- "Do I own the Civic?" → instância específica
+- "Do I own a vehicle?" → class_hint veículo (ex. "vehicle")
+- "Does Maria work for me?" → instância named
+- "Do I have an employee?" → reference_kind=class
+- "Do I own the beach house?" → instância específica/contextual
+- "Do I own a property?" → reference_kind=class
+- "Eu tenho uma gata?" / "¿Tengo una gata?" / "Do I have a cat?" → a mesma semântica de classe
+- "eu tenho Luna?" → instância, NÃO class
+- "eu tenho uma gata chamada luna" → object {text:"Luna", reference_kind:"named", class_hint:"cat"} + relation_expression="owns"
 """
 
 
@@ -148,6 +222,7 @@ def build_messages(
         "locale": ctx.user.locale,
         "timezone": ctx.user.timezone,
         "reference_at": now,
+        "discourse": discourse_payload(ctx),
         "entity_kind_hints": list(
             "person organization place appliance vehicle document medication thing".split()
         ),

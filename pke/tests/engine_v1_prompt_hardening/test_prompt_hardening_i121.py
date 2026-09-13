@@ -144,7 +144,8 @@ def test_prompt_size_delta_reported() -> None:
     after = len(prompts_v4.SYSTEM_PROMPT) + len(prompts_v4.PROPOSAL_SHAPE)
     # Growth expected but bounded (localized hardening, not rewrite explosion)
     assert after > before
-    assert after < before * 4
+    # v4 accumulated 0086–0090 (multi-claim, owned-object); still not a rewrite explosion.
+    assert after < before * 5
     # also rendered message size
     ctx = InterpretationContext(
         user=UserContext(user_id="u", timezone="UTC", now=dt.datetime(2026, 9, 2, tzinfo=dt.UTC))
@@ -155,7 +156,7 @@ def test_prompt_size_delta_reported() -> None:
     s3 = sum(len(m.content) for m in m3)
     s4 = sum(len(m.content) for m in m4)
     assert s4 > s3
-    assert s4 < s3 * 4
+    assert s4 < s3 * 5
 
 
 def test_i12_corpus_still_present() -> None:

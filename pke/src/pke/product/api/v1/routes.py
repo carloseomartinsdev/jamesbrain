@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header, status
+from fastapi import APIRouter, Depends, Header, Query, status
 from fastapi.responses import JSONResponse
 
 from pke import __version__ as PKE_VERSION
@@ -26,6 +26,16 @@ from pke.product.api.v1.dtos import (
 from pke.product.api.v1.errors import ApiHttpError
 from pke.ontology.registry import OntologyRegistry
 from pke.product.auth import AuthError, AuthUser, ProductAuthResolver
+from pke.product.knowledge.dtos import (
+    KnowledgeEntityResponse,
+    KnowledgeGraphResponse,
+    KnowledgeSearchResponse,
+)
+from pke.product.knowledge.inspector import (
+    KnowledgeInspector,
+    KnowledgeInvalidId,
+    KnowledgeNotFound,
+)
 from pke.product.conversation.orchestrator import (
     ClarificationConflict,
     ClarificationNotFound,
@@ -54,6 +64,10 @@ def get_orchestrator() -> ConversationOrchestrator:
 
 def get_ontology() -> OntologyRegistry:
     raise RuntimeError("ontology não configurada")
+
+
+def get_knowledge_inspector() -> KnowledgeInspector:
+    raise RuntimeError("knowledge inspector não configurado")
 
 
 def get_auth(
@@ -302,6 +316,58 @@ def answer_clarification(
     except ValueError as exc:
         raise ApiHttpError(422, "INVALID_PAYLOAD", "Informe uma opção ou um texto.") from exc
     return _with_http_status(response)
+
+
+@router.get("/knowledge/graph", response_model=KnowledgeGraphResponse)
+def knowledge_graph(
+    user: Annotated[AuthUser, Depends(get_auth)],
+    inspector: Annotated[KnowledgeInspector, Depends(get_knowledge_inspector)],
+    root_entity_id: Annotated[str | None, Query(max_length=128)] = None,
+    depth: Annotated[int, Query(ge=1, le=3)] = 2,
+    current_only: bool = True,
+    expand_entity_id: Annotated[str | None, Query(max_length=128)] = None,
+) -> KnowledgeGraphResponse:
+    try:
+        return inspector.graph(
+            user.id,
+            root_entity_id=root_entity_id,
+            depth=depth,
+            current_only=current_only,
+            expand_entity_id=expand_entity_id,
+        )
+    except KnowledgeInvalidId as exc:
+        raise ApiHttpError(422, "INVALID_PAYLOAD", "Identificador inválido.") from exc
+    except KnowledgeNotFound as exc:
+        raise ApiHttpError(404, "ENTITY_NOT_FOUND", "Entidade não encontrada.") from exc
+
+
+@router.get("/knowledge/entities/{entity_id}", response_model=KnowledgeEntityResponse)
+def knowledge_entity(
+    entity_id: str,
+    user: Annotated[AuthUser, Depends(get_auth)],
+    inspector: Annotated[KnowledgeInspector, Depends(get_knowledge_inspector)],
+    current_only: bool = True,
+) -> KnowledgeEntityResponse:
+    try:
+        return inspector.entity(user.id, entity_id, current_only=current_only)
+    except KnowledgeInvalidId as exc:
+        raise ApiHttpError(422, "INVALID_PAYLOAD", "Identificador inválido.") from exc
+    except KnowledgeNotFound as exc:
+        raise ApiHttpError(404, "ENTITY_NOT_FOUND", "Entidade não encontrada.") from exc
+
+
+@router.get("/knowledge/search", response_model=KnowledgeSearchResponse)
+def knowledge_search(
+    user: Annotated[AuthUser, Depends(get_auth)],
+    inspector: Annotated[KnowledgeInspector, Depends(get_knowledge_inspector)],
+    q: Annotated[str, Query(max_length=200)] = "",
+    type: Annotated[str | None, Query(max_length=128)] = None,
+    limit: Annotated[int, Query(ge=1, le=50)] = 50,
+) -> KnowledgeSearchResponse:
+    try:
+        return inspector.search(user.id, q, type_key=type, limit=limit)
+    except KnowledgeInvalidId as exc:
+        raise ApiHttpError(422, "INVALID_PAYLOAD", "Identificador inválido.") from exc
 
 
 def _with_http_status(response: ApiMessageResponse) -> ApiMessageResponse | JSONResponse:

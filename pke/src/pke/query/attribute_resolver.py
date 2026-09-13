@@ -12,7 +12,7 @@ from enum import StrEnum
 from typing import Any, Literal
 
 from pke.domain.attributes import AttributeValueKind, EntityAttribute
-from pke.query.spec import AttributeQueryMode, AttributeValueFilter, TimeRange
+from pke.query.spec import AttributeQueryMode, AttributeValueFilter, FactVersionPolicy, SortKey, TimeRange
 from pke.temporal.membership import (
     TemporalMembership,
     derive_temporal_membership_role,
@@ -154,6 +154,9 @@ def resolve_attribute_query(
     mode: AttributeQueryMode,
     value_filter: AttributeValueFilter | None = None,
     time_range: TimeRange | None = None,
+    version_policy: FactVersionPolicy = FactVersionPolicy.CURRENT,
+    sort: SortKey | None = None,
+    limit: int | None = None,
 ) -> AttributeResolverResult:
     """Epistemic Attribute resolution over candidate assertions.
 
@@ -168,7 +171,15 @@ def resolve_attribute_query(
     if mode is AttributeQueryMode.PROPOSITION:
         return _proposition(pool, dimension_key, value_filter, time_range, notes)
 
-    return _value_lookup(pool, dimension_key, time_range, notes)
+    return _value_lookup(
+        pool,
+        dimension_key,
+        time_range,
+        notes,
+        version_policy=version_policy,
+        sort=sort,
+        limit=limit,
+    )
 
 
 def _value_lookup(
@@ -176,6 +187,10 @@ def _value_lookup(
     dimension_key: str,
     time_range: TimeRange | None,
     notes: list[str],
+    *,
+    version_policy: FactVersionPolicy = FactVersionPolicy.CURRENT,
+    sort: SortKey | None = None,
+    limit: int | None = None,
 ) -> AttributeResolverResult:
     if not pool:
         return AttributeResolverResult(
@@ -203,6 +218,11 @@ def _value_lookup(
         working = matched
     else:
         working = pool
+
+    if version_policy is FactVersionPolicy.HISTORY:
+        return _historical_value_lookup(
+            working, dimension_key, notes, sort=sort, limit=limit, had_unknown=had_unknown
+        )
 
     current = [a for a in working if a.is_current]
     if current:
@@ -234,6 +254,45 @@ def _value_lookup(
         dimension_key=dimension_key,
         candidate_assertions=tuple(working),
         temporal_membership_unknown=True,
+        notes=tuple(notes),
+    )
+
+
+def _historical_value_lookup(
+    working: list[EntityAttribute],
+    dimension_key: str,
+    notes: list[str],
+    *,
+    sort: SortKey | None,
+    limit: int | None,
+    had_unknown: bool,
+) -> AttributeResolverResult:
+    """Previous/first values from closed assertions — temporal order, not created_at."""
+    from pke.temporal.membership import sort_key as temporal_sort_key
+
+    historical = [a for a in working if not a.is_current]
+    if not historical:
+        return AttributeResolverResult(
+            status=AttributeResolutionStatus.UNKNOWN,
+            dimension_key=dimension_key,
+            notes=("no_previous_value",),
+        )
+    reverse = sort is not SortKey.EVENT_TIME_ASC
+    ranked = sorted(historical, key=lambda a: (temporal_sort_key(a.temporal), a.id), reverse=reverse)
+    selected = ranked[: limit or len(ranked)]
+    groups = _group_by_value(selected)
+    notes.append("historical_value_lookup")
+    status = (
+        AttributeResolutionStatus.KNOWN_SINGLE
+        if len(groups) == 1
+        else AttributeResolutionStatus.KNOWN_MULTIPLE
+    )
+    return AttributeResolverResult(
+        status=status,
+        dimension_key=dimension_key,
+        groups=tuple(groups),
+        candidate_assertions=tuple(selected),
+        temporal_membership_unknown=had_unknown,
         notes=tuple(notes),
     )
 

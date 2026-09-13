@@ -13,6 +13,8 @@ from jamescore.capabilities.social import SocialCapability
 from jamescore.clients.pke import PkeClient
 from jamescore.identity.principal import AuthenticatedPrincipal
 from jamescore.observability.log import log_turn
+from jamescore.presentation.contract import ConversationSnippet
+from jamescore.presentation.presenter import ResponsePresenter
 from jamescore.tooling.registry import ToolRegistry
 
 
@@ -39,12 +41,14 @@ class Orchestrator:
         social: SocialCapability | None = None,
         tooling: ToolRegistry | None = None,
         future: FutureCapabilityRegistry | None = None,
+        presenter: ResponsePresenter | None = None,
     ) -> None:
         self._store = store
         self._pke = pke
         self._social = social or SocialCapability()
         self._tooling = tooling or ToolRegistry()
         self._future = future or FutureCapabilityRegistry()
+        self._presenter = presenter or ResponsePresenter(None, enabled=False)
 
     def health(self) -> dict[str, Any]:
         pke = self._pke.health()
@@ -66,6 +70,7 @@ class Orchestrator:
                 "note": "Tool Registry belongs to jamesCore; Tools are external. Empty in J1.1.",
             },
             "future_capabilities": {"registered": self._future.registered_count()},
+            "presenter": self._presenter.health_snapshot(),
         }
 
     def catalog(self) -> dict[str, Any]:
@@ -80,6 +85,65 @@ class Orchestrator:
                 },
             }
         return {"ok": True, "catalog": body}
+
+    def knowledge_graph(
+        self,
+        principal: AuthenticatedPrincipal,
+        *,
+        root_entity_id: str | None = None,
+        depth: int = 2,
+        current_only: bool = True,
+        expand_entity_id: str | None = None,
+    ) -> dict[str, Any]:
+        result = self._pke.knowledge_graph(
+            principal,
+            root_entity_id=root_entity_id,
+            depth=depth,
+            current_only=current_only,
+            expand_entity_id=expand_entity_id,
+        )
+        return self._knowledge_result(result, "Não foi possível carregar o grafo de conhecimento.")
+
+    def knowledge_entity(
+        self,
+        principal: AuthenticatedPrincipal,
+        entity_id: str,
+        *,
+        current_only: bool = True,
+    ) -> dict[str, Any]:
+        result = self._pke.knowledge_entity(principal, entity_id, current_only=current_only)
+        return self._knowledge_result(result, "Entidade não encontrada.")
+
+    def knowledge_search(
+        self,
+        principal: AuthenticatedPrincipal,
+        q: str,
+        *,
+        type_key: str | None = None,
+        limit: int = 50,
+    ) -> dict[str, Any]:
+        result = self._pke.knowledge_search(principal, q, type_key=type_key, limit=limit)
+        return self._knowledge_result(result, "Não foi possível buscar no conhecimento.")
+
+    def _knowledge_result(self, result: dict[str, Any], fallback: str) -> dict[str, Any]:
+        body = result.get("body") if isinstance(result.get("body"), dict) else {}
+        if not result.get("ok"):
+            err = body.get("error") if isinstance(body.get("error"), dict) else {}
+            detail = body.get("detail") if isinstance(body.get("detail"), dict) else {}
+            return {
+                "ok": False,
+                "http": int(result.get("http") or 503),
+                "error": {
+                    "code": (
+                        err.get("code")
+                        or detail.get("code")
+                        or result.get("error_code")
+                        or "PKE_UNAVAILABLE"
+                    ),
+                    "message": err.get("message") or detail.get("message") or fallback,
+                },
+            }
+        return {"ok": True, "body": body}
 
     def create_conversation(self, principal: AuthenticatedPrincipal, title: str | None = None) -> dict[str, Any]:
         rec = self._store.create(principal.sub, title)
@@ -133,6 +197,7 @@ class Orchestrator:
             forward = text
 
         pke_env = self._call_pke_send(principal, rec, forward, trace)
+        pke_env = self._present_capability(pke_env, forward, rec)
         if pke_env.outcome == "technical_error":
             return pke_env
 
@@ -172,6 +237,7 @@ class Orchestrator:
         env = self._map_pke_result(result, rec, trace, path="POST /api/v1/clarifications/{id}/answer")
         if not env.client_request_id:
             env = env.model_copy(update={"client_request_id": rid})
+        env = self._present_capability(env, text or option_id, rec)
         if rec is not None and env.outcome != "technical_error":
             shown = option_id or text
             self._store.append_message(rec.id, "user", shown, type_="clarification_answer")
@@ -236,9 +302,9 @@ class Orchestrator:
         if not result.get("ok"):
             code = result.get("error_code") or "PKE_UNAVAILABLE"
             if code in {"PKE_TIMEOUT", "PKE_UNAVAILABLE", "PKE_ERROR", "PROVIDER_UNAVAILABLE"}:
-                msg = "Não foi possível processar sua mensagem agora."
+                msg = "Não consegui consultar isso agora."
                 if code == "PKE_TIMEOUT":
-                    msg = "O PKE demorou demais para responder."
+                    msg = "Não consegui consultar isso agora."
                 return self._envelope(
                     outcome="technical_error",
                     rec=rec,
@@ -315,6 +381,46 @@ class Orchestrator:
             request_id=body.get("request_id"),
             trace=self._trace(trace, source="pke", path=path, pke=result),
         )
+
+    def _present_capability(
+        self,
+        env: PublicEnvelope,
+        user_message: str,
+        rec: ConversationRecord | None,
+    ) -> PublicEnvelope:
+        presented = self._presenter.present_envelope(
+            user_message=user_message,
+            fallback_text=env.text,
+            type_=env.type,
+            outcome=env.outcome,
+            operation=env.operation,
+            data=env.data,
+            clarification=env.clarification,
+            error=env.error,
+            conversation_context=self._recent_context(rec),
+            request_id=env.request_id or env.client_request_id,
+            client_request_id=env.client_request_id,
+            conversation_id=rec.id if rec else None,
+            user_message_id=env.user_message_id,
+        )
+        updates: dict[str, Any] = {"text": presented.text}
+        if env.trace is not None:
+            updates["trace"] = {**env.trace, "presenter": presented.trace()}
+        return env.model_copy(update=updates)
+
+    def _recent_context(self, rec: ConversationRecord | None) -> list[ConversationSnippet]:
+        if rec is None:
+            return []
+        snippets: list[ConversationSnippet] = []
+        for item in self._store.list_messages(rec.id)[-6:]:
+            role = str(item.get("role") or "")
+            text = str(item.get("text") or "").strip()
+            if role not in {"user", "assistant"} or not text:
+                continue
+            if len(text) > 180:
+                text = text[:177].rstrip() + "…"
+            snippets.append(ConversationSnippet(role=role, text=text))
+        return snippets[-4:]
 
     def _envelope(
         self,

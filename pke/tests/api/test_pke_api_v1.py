@@ -75,7 +75,7 @@ def test_post_message_creates_conversation_and_acknowledges(
     assert body["status"] == "completed"
     assert body["operation"]["kind"] == "knowledge_write"
     assert body["operation"]["outcome"] == "committed"
-    assert "Registrei" in body["text"]
+    assert "Entendi" in body["text"]
     assert body["conversation_id"].startswith("conv_")
     assert body["message_id"].startswith("msg_")
     assert body["client_request_id"] == "rid-1"

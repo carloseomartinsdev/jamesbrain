@@ -15,10 +15,12 @@ from pke.product.api.v1.errors import ApiErrorEnvelope, ApiHttpError
 from pke.product.api.v1.routes import (
     get_auth_resolver,
     get_auth_service,
+    get_knowledge_inspector,
     get_ontology,
     get_orchestrator,
     router,
 )
+from pke.product.knowledge.inspector import KnowledgeInspector
 from pke.product.runtime import ProductRuntime
 
 
@@ -42,6 +44,9 @@ def create_app(runtime: ProductRuntime | None = None) -> FastAPI:
     app.dependency_overrides[get_auth_resolver] = lambda: runtime.auth_resolver
     app.dependency_overrides[get_auth_service] = lambda: runtime.auth_service
     app.dependency_overrides[get_ontology] = lambda: runtime.ontology
+    app.dependency_overrides[get_knowledge_inspector] = lambda: KnowledgeInspector(
+        runtime.knowledge, runtime.ontology
+    )
     app.include_router(router)
 
     @app.exception_handler(ApiHttpError)

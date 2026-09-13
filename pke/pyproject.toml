@@ -35,7 +35,7 @@ pke = ["catalog/trained/*.json", "catalog/trained/*.md"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["tests/unit", "tests/integration", "tests/golden", "tests/api", "tests/web", "tests/product", "tests/debug"]
+testpaths = ["tests/unit", "tests/integration", "tests/golden", "tests/api", "tests/web", "tests/product", "tests/debug", "tests/language_independence"]
 markers = [
     "live: chama a API DeepSeek real (requer DEEPSEEK_API_KEY; não roda no pytest padrão)",
 ]

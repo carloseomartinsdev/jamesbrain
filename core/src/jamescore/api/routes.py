@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 
 from jamescore import __version__
@@ -53,6 +53,63 @@ def catalog(orch: Orchestrator = Depends(get_orchestrator)):
             },
         )
     return result["catalog"]
+
+
+def _knowledge_http(result: dict) -> dict:
+    if result.get("ok"):
+        return result["body"]
+    err = result.get("error") if isinstance(result.get("error"), dict) else {}
+    status = int(result.get("http") or 503)
+    if status < 400:
+        status = 503
+    raise HTTPException(
+        status_code=status,
+        detail={
+            "code": err.get("code") or "PKE_UNAVAILABLE",
+            "message": err.get("message") or "Conhecimento do PKE indisponível.",
+        },
+    )
+
+
+@router.get("/v1/knowledge/graph")
+def knowledge_graph(
+    principal: AuthenticatedPrincipal = Depends(require_principal),
+    orch: Orchestrator = Depends(get_orchestrator),
+    root_entity_id: Annotated[str | None, Query(max_length=128)] = None,
+    depth: Annotated[int, Query(ge=1, le=3)] = 2,
+    current_only: bool = True,
+    expand_entity_id: Annotated[str | None, Query(max_length=128)] = None,
+) -> dict:
+    return _knowledge_http(
+        orch.knowledge_graph(
+            principal,
+            root_entity_id=root_entity_id,
+            depth=depth,
+            current_only=current_only,
+            expand_entity_id=expand_entity_id,
+        )
+    )
+
+
+@router.get("/v1/knowledge/entities/{entity_id}")
+def knowledge_entity(
+    entity_id: str,
+    principal: AuthenticatedPrincipal = Depends(require_principal),
+    orch: Orchestrator = Depends(get_orchestrator),
+    current_only: bool = True,
+) -> dict:
+    return _knowledge_http(orch.knowledge_entity(principal, entity_id, current_only=current_only))
+
+
+@router.get("/v1/knowledge/search")
+def knowledge_search(
+    principal: AuthenticatedPrincipal = Depends(require_principal),
+    orch: Orchestrator = Depends(get_orchestrator),
+    q: Annotated[str, Query(max_length=200)] = "",
+    type: Annotated[str | None, Query(max_length=128)] = None,
+    limit: Annotated[int, Query(ge=1, le=50)] = 50,
+) -> dict:
+    return _knowledge_http(orch.knowledge_search(principal, q, type_key=type, limit=limit))
 
 
 @router.post("/v1/conversations")

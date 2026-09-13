@@ -127,6 +127,7 @@ def _wire_mention(mention: SemanticEntityMention, *, role_override: str | None =
         role=role,
         reference_kind=mention.reference_kind,
         confidence=mention.confidence,
+        known_entity_id=mention.known_entity_id,
     )
 
 
@@ -273,12 +274,14 @@ def _correction_wire(result: ResolutionResult) -> WireIngestIR | None:
     if proposal.subject is not None and proposal.subject.reference_kind not in {
         "contextual",
         "possessive",
+        "class",
     }:
         subject_entity_text = proposal.subject.text
     object_entity_text = None
     if proposal.object is not None and proposal.object.reference_kind not in {
         "contextual",
         "possessive",
+        "class",
     }:
         object_entity_text = proposal.object.text
     target = WireIrCorrectionTarget(
@@ -397,7 +400,20 @@ def resolution_to_wire_ingest(result: ResolutionResult) -> WireIngestIR | None:
     proposal = result.proposal
     if _is_correction_proposal(proposal):
         return _correction_wire(result)
+    wire = _primary_resolution_to_wire(result)
+    from pke.interpretation.semantic.claims import overlay_semantic_claims
 
+    return overlay_semantic_claims(
+        result,
+        wire,
+        wire_mention=_wire_mention,
+        wire_time=_wire_time(proposal.temporal),
+        measurement_from_proposal=_measurement_wire,
+    )
+
+
+def _primary_resolution_to_wire(result: ResolutionResult) -> WireIngestIR | None:
+    proposal = result.proposal
     concepts = result.concepts
     primitive = result.primitive
     time = _wire_time(proposal.temporal)
@@ -587,6 +603,10 @@ def proposal_to_canonical_ir(
     try:
         envelope = WireEnvelope(ir_kind="ingest", ir=wire.model_dump())
         ir = wire_to_canonical(envelope)
+        from pke.interpretation.models import IngestIR
+
+        if isinstance(ir, IngestIR) and proposal.discourse_decision is not None:
+            ir = ir.model_copy(update={"discourse_decision": proposal.discourse_decision})
         return SemanticResolutionOutcome(
             result=result,
             ir=ir,

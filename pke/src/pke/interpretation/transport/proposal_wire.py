@@ -7,15 +7,24 @@ from typing import Annotated, Any, Literal
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
 from pke.interpretation.semantic.llm_vocab import (
+    coerce_class_hint,
+    coerce_discourse_decision,
     coerce_kind_hint,
     coerce_lifecycle_cue,
     coerce_occurrence_aspect,
     coerce_primitive_hint,
     coerce_reference_kind,
+    coerce_relation_to_reference,
     coerce_relative_day,
+    coerce_temporal_selection,
     coerce_utterance_kind,
 )
-from pke.interpretation.semantic.models import SemanticEntityMention, SemanticProposal, SemanticTime
+from pke.interpretation.semantic.models import (
+    SemanticClaim,
+    SemanticEntityMention,
+    SemanticProposal,
+    SemanticTime,
+)
 from pke.interpretation.transport.wire import WireEntityMention, WireQueryIR, WireQuerySpec
 
 
@@ -40,10 +49,31 @@ class WireSemanticEntity(BaseModel):
     ] = None
     role_hint: str | None = None
     reference_kind: Annotated[
-        Literal["named", "contextual", "possessive"],
+        Literal["named", "contextual", "possessive", "class"],
         BeforeValidator(coerce_reference_kind),
     ] = "named"
+    class_hint: Annotated[str | None, BeforeValidator(coerce_class_hint)] = None
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    known_entity_id: str | None = None
+
+
+class WireSemanticClaim(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    kind: str
+    subject: WireSemanticEntity | None = None
+    object: WireSemanticEntity | None = None
+    predicate: str | None = None
+    predicate_key: str | None = None
+    class_hint: Annotated[str | None, BeforeValidator(coerce_class_hint)] = None
+    dimension: str | None = None
+    value_text: str | None = None
+    value_key: str | None = None
+    numeric_value: str | None = None
+    unit: str | None = None
+    currency_code: str | None = None
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    origin: str = "explicit"
 
 
 class WireSemanticTime(BaseModel):
@@ -58,7 +88,14 @@ class WireSemanticTime(BaseModel):
         Literal["happened", "ongoing", "planned", "habitual"] | None,
         BeforeValidator(coerce_occurrence_aspect),
     ] = None
-    relation_to_reference: Literal["before", "after", "during", "habitual"] | None = None
+    relation_to_reference: Annotated[
+        Literal["before", "after", "during", "habitual"] | None,
+        BeforeValidator(coerce_relation_to_reference),
+    ] = None
+    selection: Annotated[
+        Literal["current", "previous", "first", "last"] | None,
+        BeforeValidator(coerce_temporal_selection),
+    ] = None
     tense_evidence: str | None = None
     partial_month: int | None = Field(default=None, ge=1, le=12)
     partial_year: int | None = None
@@ -124,6 +161,11 @@ class WireSemanticProposal(BaseModel):
     correction_target_action_key: str | None = None
     correction_target_assertion_id: str | None = None
     correction_conversation_assertion_id: str | None = None
+    claims: list[WireSemanticClaim] = Field(default_factory=list)
+    discourse_decision: Annotated[
+        Literal["continue", "new_topic", "ambiguous", "none"] | None,
+        BeforeValidator(coerce_discourse_decision),
+    ] = None
 
 
 class WireSemanticQuery(BaseModel):
@@ -171,7 +213,9 @@ class WireSemanticEnvelope(BaseModel):
                 kind_hint=w.kind_hint,
                 role_hint=w.role_hint,
                 reference_kind=w.reference_kind,
+                class_hint=w.class_hint,
                 confidence=w.confidence,
+                known_entity_id=w.known_entity_id,
             )
 
         return SemanticProposal(
@@ -218,6 +262,26 @@ class WireSemanticEnvelope(BaseModel):
             correction_target_action_key=wire.correction_target_action_key,
             correction_target_assertion_id=wire.correction_target_assertion_id,
             correction_conversation_assertion_id=wire.correction_conversation_assertion_id,
+            discourse_decision=wire.discourse_decision,
+            claims=[
+                SemanticClaim(
+                    kind=c.kind,  # type: ignore[arg-type]
+                    subject=ent(c.subject),
+                    object=ent(c.object),
+                    predicate=c.predicate,
+                    predicate_key=c.predicate_key,
+                    class_hint=c.class_hint,
+                    dimension=c.dimension,
+                    value_text=c.value_text,
+                    value_key=c.value_key,
+                    numeric_value=c.numeric_value,
+                    unit=c.unit,
+                    currency_code=c.currency_code,
+                    confidence=c.confidence,
+                    origin=c.origin,  # type: ignore[arg-type]
+                )
+                for c in wire.claims
+            ],
         )
 
     def parsed_query_proposal(self) -> SemanticProposal:
@@ -244,6 +308,7 @@ class WireSemanticEnvelope(BaseModel):
                 kind_hint=e.kind_hint,
                 role_hint=e.role_hint,
                 reference_kind=e.reference_kind,
+                class_hint=e.class_hint,
                 confidence=e.confidence,
             )
             for e in wire_q.entities

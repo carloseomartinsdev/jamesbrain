@@ -57,6 +57,7 @@ def _mention(sem: SemanticEntityMention, *, role_key: str | None = None) -> Enti
         role=role,
         reference_kind=sem.reference_kind,
         confidence=sem.confidence,
+        known_entity_id=sem.known_entity_id,
     )
 
 
@@ -136,7 +137,7 @@ def _temporal_query(proposal: SemanticProposal) -> IrQueryTime | None:
     # NOW before relative_day=today — fixtures may wrongly pair agora + relative_day=today
     if _proposal_expresses_now(proposal):
         return IrQueryTime(
-            original_text=temporal.original_text or "agora",
+            original_text=temporal.original_text or "now",
             relative_period=RelativePeriod.NOW,
         )
     if temporal.partial_month is not None:
@@ -161,12 +162,12 @@ def _temporal_query(proposal: SemanticProposal) -> IrQueryTime | None:
         )
     if temporal.relative_day == "yesterday":
         return IrQueryTime(
-            original_text=temporal.original_text or "ontem",
+            original_text=temporal.original_text or "yesterday",
             relative_period=RelativePeriod.YESTERDAY,
         )
     if temporal.relative_day == "today":
         return IrQueryTime(
-            original_text=temporal.original_text or "hoje",
+            original_text=temporal.original_text or "today",
             relative_period=RelativePeriod.TODAY,
         )
     if temporal.original_text.strip():
@@ -308,6 +309,7 @@ def resolve_query_proposal(proposal: SemanticProposal) -> SemanticQueryOutcome:
         )
 
     if primitive is PrimitiveKind.RELATION:
+        from pke.interpretation.semantic.class_reference import is_class_reference
         from pke.interpretation.semantic.likes_query_repair import is_relation_object_placeholder
 
         if not concepts.relation_type or not proposal.subject:
@@ -320,6 +322,32 @@ def resolve_query_proposal(proposal: SemanticProposal) -> SemanticQueryOutcome:
             )
         subj = _mention(proposal.subject, role_key="role.subject")
         has_object = not is_relation_object_placeholder(proposal.object)
+        if has_object and is_class_reference(proposal.object):
+            obj = _mention(proposal.object, role_key="role.object")
+            if obj.type_hint is None:
+                return SemanticQueryOutcome(
+                    proposal=proposal,
+                    query_ir=None,
+                    status=QueryResolutionStatus.INSUFFICIENT,
+                    primitive=primitive,
+                    notes=("class_constraint_unresolved",),
+                )
+            return SemanticQueryOutcome(
+                proposal=proposal,
+                query_ir=QueryIR(
+                    raw_input=proposal.raw_input,
+                    query=QuerySpec(
+                        intent="relation",
+                        entities=[subj, obj],
+                        entity_association="relation_subject",
+                        relation_types=[ConceptRef(key=concepts.relation_type)],
+                        relation_query_kind="current_boolean",
+                    ),
+                ),
+                status=QueryResolutionStatus.RESOLVED,
+                primitive=primitive,
+                notes=tuple(concepts.notes) + ("relation_class_constraint",),
+            )
         if has_object:
             obj = _mention(proposal.object, role_key="role.object")
             return SemanticQueryOutcome(
@@ -524,7 +552,25 @@ def _resolve_measurement_query(
     )
 
 
-def _attribute_query_mode(proposal: SemanticProposal) -> str:
+def _attribute_history_fields(proposal: SemanticProposal) -> dict[str, object]:
+    """Map structured temporal selection → QuerySpec history fields. No NL parsing."""
+    selection = proposal.temporal.selection
+    before = proposal.temporal.relation_to_reference == "before"
+    if selection == "first":
+        return {"version_policy": "history", "sort": "event_time_asc", "limit": 1}
+    if selection == "previous" or before:
+        return {"version_policy": "history", "sort": "event_time_desc", "limit": 1}
+    if selection == "last":
+        return {"version_policy": "history", "sort": "event_time_desc", "limit": 1}
+    return {}
+
+
+def _attribute_query_mode(proposal: SemanticProposal, *, valued: object | None) -> str:
+    """Prefer structured query slots. Linguistic interrogatives are Interpreter-owned."""
+    if proposal.temporal.selection in {"previous", "first", "last"}:
+        return "value_lookup"
+    if proposal.temporal.relation_to_reference == "before":
+        return "value_lookup"
     surface = " ".join(
         filter(
             None,
@@ -534,12 +580,15 @@ def _attribute_query_mode(proposal: SemanticProposal) -> str:
             ],
         )
     ).lower()
+    # Compatibility: historical existence still recognized when IR has no selection.
     if re.search(r"\bj[aá]\s+foi\b|\balready\s+was\b|\bhas\s+been\b", surface):
         return "historical_existence"
     if re.search(r"\bera\b|\bwas\b", surface) and re.search(
         r"\bem\s+\d{4}\b|\bin\s+\d{4}\b", surface
     ):
         return "historical_existence"
+    if proposal.utterance_kind == "query":
+        return "proposition" if valued is not None else "value_lookup"
     if re.search(
         r"\bqual\b|\bquanto\b|\bquantos\b|\bquanta\b|\bwhat\b|\bhow\s+much\b|\bcomo\b",
         surface,
@@ -602,8 +651,9 @@ def _resolve_attribute_query(
             notes=("attribute_entity_missing",),
         )
 
-    mode = _attribute_query_mode(proposal)
     valued = resolve_attribute_value(proposal)
+    mode = _attribute_query_mode(proposal, valued=valued)
+    history = _attribute_history_fields(proposal)
     # VALUE_LOOKUP must not treat dimension word as value ("cor" ≠ color text value)
     value_fields: dict = {}
     if mode in {"proposition", "historical_existence"} and valued is not None:
@@ -641,6 +691,7 @@ def _resolve_attribute_query(
                 attribute_dimension_key=dimension,
                 attribute_query_mode=mode,  # type: ignore[arg-type]
                 time=time,
+                **history,
                 **value_fields,
             ),
         ),
@@ -655,4 +706,15 @@ def proposal_to_query_ir(proposal: SemanticProposal) -> SemanticQueryOutcome:
 
     proposal = apply_e1_self_repairs(proposal)
     query_proposal = proposal.model_copy(update={"utterance_kind": "query"})
-    return resolve_query_proposal(query_proposal)
+    outcome = resolve_query_proposal(query_proposal)
+    if outcome.query_ir is None or proposal.discourse_decision is None:
+        return outcome
+    return SemanticQueryOutcome(
+        proposal=outcome.proposal,
+        query_ir=outcome.query_ir.model_copy(
+            update={"discourse_decision": proposal.discourse_decision}
+        ),
+        status=outcome.status,
+        primitive=outcome.primitive,
+        notes=outcome.notes,
+    )

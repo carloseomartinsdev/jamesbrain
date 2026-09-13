@@ -133,6 +133,12 @@ def test_pc6_installation_yesterday_no_replace() -> None:
 
 
 def test_pi1_relation_unresolved_not_materialized() -> None:
+    """Complete link with no CORE alias becomes relation.learned.* (ADR learned relations).
+
+    I11.8 originally expected ir is None for unmatched "trabalha". That contradicted
+    the living unmatched-link contract (`test_unmatched_link_learns_extended_type`).
+    Incomplete links still do not materialize — see PI3 and missing-endpoint paths.
+    """
     proposal = SemanticProposal(
         raw_input="João — Acme",
         subject=SemanticEntityMention(text="João", kind_hint="person"),
@@ -142,7 +148,9 @@ def test_pi1_relation_unresolved_not_materialized() -> None:
         primitive_hint="relation",
     )
     outcome = proposal_to_canonical_ir(proposal)
-    assert outcome.ir is None
+    assert outcome.ir is not None
+    assert outcome.ir.relation is not None
+    assert outcome.ir.relation.type.key == "relation.learned.trabalha"
 
 
 def test_pi2_state_invalid_value_not_materialized() -> None:

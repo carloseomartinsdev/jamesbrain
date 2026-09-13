@@ -142,6 +142,16 @@ class DeepSeekInterpreter:
         self._trace_client_request_id = ctx.client_request_id
         self._trace_pke_request_id = ctx.pke_request_id
         self._trace_user_text = raw
+        try:
+            from pke.debug.trace_context import update_trace
+
+            update_trace(
+                client_request_id=ctx.client_request_id,
+                pke_request_id=ctx.pke_request_id,
+                interpreter_request_id=request_id,
+            )
+        except Exception:
+            pass
         base_messages = build_messages(
             raw,
             ctx,
@@ -376,22 +386,29 @@ class DeepSeekInterpreter:
         )
 
     def _trace_stage(self, stage: str, body: object = "", **meta: object) -> None:
-        from pke.debug.request_log import append_stage
+        try:
+            from pke.debug.request_log import append_stage
+            from pke.debug.trace_context import current_trace
 
-        if not isinstance(body, str):
-            from pke.debug.request_log import dump_model
+            if not isinstance(body, str):
+                from pke.debug.request_log import dump_model
 
-            body = dump_model(body)
-        append_stage(
-            self._trace_file_id,
-            stage,
-            body,
-            client_request_id=self._trace_client_request_id,
-            pke_request_id=self._trace_pke_request_id,
-            interpreter_request_id=self.last_interpreter_request_id,
-            user_text=self._trace_user_text,
-            **meta,
-        )
+                body = dump_model(body)
+            ids = current_trace()
+            append_stage(
+                self._trace_file_id,
+                stage,
+                body,
+                client_request_id=self._trace_client_request_id or ids.client_request_id,
+                pke_request_id=self._trace_pke_request_id or ids.pke_request_id,
+                interpreter_request_id=self.last_interpreter_request_id,
+                conversation_id=ids.conversation_id,
+                user_message_id=ids.user_message_id,
+                user_text=self._trace_user_text,
+                **meta,
+            )
+        except Exception:
+            return
 
     def _parse_response(
         self,
@@ -449,17 +466,27 @@ class DeepSeekInterpreter:
                     else envelope.parsed_proposal()
                 )
                 self._trace_stage("proposal", proposal, ir_kind=envelope.ir_kind)
-                from pke.interpretation.semantic.self_repair import apply_e1_self_repairs
+                from pke.interpretation.semantic.self_repair import (
+                    apply_e1_self_repairs,
+                    last_applied_repairs,
+                )
 
                 proposal = apply_e1_self_repairs(
                     proposal, prior_utterances=self._prior_utterances
                 )
+                applied = list(last_applied_repairs())
                 self._trace_stage(
                     "repair",
                     proposal,
                     utterance_kind=proposal.utterance_kind,
                     primitive_hint=proposal.primitive_hint,
+                    repairs_applied=applied or None,
                 )
+                from pke.debug.semantic_trace import claims_trace_body
+
+                claims_body = claims_trace_body(proposal)
+                if claims_body is not None:
+                    self._trace_stage("claims", claims_body)
                 assessment = assess_semantic_proposal(proposal)
                 self.last_semantic_assessment = assessment
                 self._trace_stage(

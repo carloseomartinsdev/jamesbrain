@@ -109,6 +109,8 @@ class KnowledgeValidator:
                 refs.append(("state.dimension", ir.state.dimension))
         if ir.relation:
             refs.append(("relation.type", ir.relation.type))
+        for extra_r in ir.additional_relations:
+            refs.append(("relation.type", extra_r.type))
         if ir.obligation:
             refs.append(("obligation.type", ir.obligation.type))
         for fact in _facts(candidate):
@@ -194,13 +196,13 @@ class KnowledgeValidator:
                     MentionReferenceKind.CONTEXTUAL,
                     MentionReferenceKind.POSSESSIVE,
                 }:
-                    if self._allow_contextual_vehicle_create(binding):
+                    if self._allow_owned_object_create(binding):
                         self._check(result, "entity.create_candidate")
                         self._warn(
                             result,
                             "entity.create_candidate",
                             "entity.create_pending",
-                            "veículo contextual será criado no commit (E1.2 ownership)",
+                            "objeto possuído será criado no commit",
                             field=binding.mention.text,
                         )
                     else:
@@ -250,6 +252,18 @@ class KnowledgeValidator:
                     )
                 else:
                     self._check(result, "entity.isolation")
+
+    def _allow_owned_object_create(self, binding) -> bool:
+        """Possessive write may CREATE any typed instance; contextual CREATE stays vehicle-scoped."""
+        from pke.reasoning.candidate import MentionBinding
+
+        assert isinstance(binding, MentionBinding)
+        type_id = binding.resolution.create_type_id
+        if type_id is None:
+            return False
+        if binding.mention.reference_kind is MentionReferenceKind.POSSESSIVE:
+            return True
+        return self._allow_contextual_vehicle_create(binding)
 
     def _allow_contextual_vehicle_create(self, binding) -> bool:
         """E1.2: first 'meu carro' may CREATE vehicle Entity (then relation.owns)."""

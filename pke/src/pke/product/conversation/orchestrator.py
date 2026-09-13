@@ -387,7 +387,7 @@ class ConversationOrchestrator:
                 message_id=message_id(),
                 type=ApiResponseType.ACKNOWLEDGEMENT,
                 status=ApiMessageStatus.COMPLETED,
-                text="Certo. Registrei essa informação.",
+                text="Entendi.",
                 operation=ApiOperation(
                     kind=ApiOperationKind.KNOWLEDGE_WRITE,
                     outcome=ApiOperationOutcome.COMMITTED,
@@ -455,6 +455,7 @@ class ConversationOrchestrator:
             session,
             client_request_id=client_request_id,
             pke_request_id=req_id,
+            conversation_id=conversation_id,
         )
         self._store.save_engine_session(user.id, conversation_id, session)
         duration_ms = int((time.perf_counter() - started) * 1000)

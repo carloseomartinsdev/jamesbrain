@@ -3,6 +3,9 @@
 File name = `{YmdHis}_{client_request_id}.log` (fallback id: interpreter request).
 Enabled in PKE_AUTH_MODE=dev unless PKE_REQUEST_LOG=0.
 Tests only write when PKE_REQUEST_LOG_DIR is set.
+
+Truncation is explicit (never silent): truncated / original_size / logged_size.
+A failure to write a stage must not abort the operation.
 """
 
 from __future__ import annotations
@@ -14,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 _SAFE = re.compile(r"[^A-Za-z0-9._-]+")
-_MAX_BODY = 120_000
+_MAX_BODY = 65_536
 
 
 def _enabled() -> bool:
@@ -62,7 +65,19 @@ def append_stage(
     body: str = "",
     **meta: object,
 ) -> Path | None:
-    """Append one stage block. Returns the file path when written."""
+    """Append one stage block. Returns the file path when written. Fail-safe."""
+    try:
+        return _append_stage_unsafe(file_id, stage, body, **meta)
+    except Exception:
+        return None
+
+
+def _append_stage_unsafe(
+    file_id: str | None,
+    stage: str,
+    body: str = "",
+    **meta: object,
+) -> Path | None:
     if not _enabled():
         return None
     name = safe_file_id(file_id)
@@ -73,16 +88,25 @@ def append_stage(
     path = _path_for(folder, name)
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     lines = [f"=== {stamp} stage={stage} ==="]
+    text = body if isinstance(body, str) else json.dumps(body, ensure_ascii=False)
+    formatted = ""
+    if text:
+        formatted = _pretty(text)
+        original_size = len(formatted)
+        if original_size > _MAX_BODY:
+            formatted = formatted[:_MAX_BODY]
+            meta = {
+                **meta,
+                "truncated": True,
+                "original_size": original_size,
+                "logged_size": len(formatted),
+            }
     for key, value in meta.items():
         if value is None or value == "":
             continue
         rendered = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
         lines.append(f"{key}: {rendered}")
-    text = body if isinstance(body, str) else json.dumps(body, ensure_ascii=False)
-    if text:
-        if len(text) > _MAX_BODY:
-            text = text[:_MAX_BODY] + "\n…[truncated]"
-        formatted = _pretty(text)
+    if formatted:
         lines.append("---")
         lines.append(formatted)
     lines.append("")

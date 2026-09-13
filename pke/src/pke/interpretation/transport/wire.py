@@ -66,8 +66,9 @@ class WireEntityMention(BaseModel):
     text: str
     entity_type: str | None = None
     role: str | None = None
-    reference_kind: Literal["named", "contextual", "possessive"] = "named"
+    reference_kind: Literal["named", "contextual", "possessive", "class"] = "named"
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    known_entity_id: str | None = None
 
     @model_validator(mode="after")
     def _entity_type_kind(self) -> WireEntityMention:
@@ -315,10 +316,13 @@ class WireIngestIR(BaseModel):
     attribute: WireIrAttribute | None = None
     additional_attributes: list[WireIrAttribute] = Field(default_factory=list)
     measurement: WireIrMeasurement | None = None
+    additional_measurements: list[WireIrMeasurement] = Field(default_factory=list)
     relation: WireIrRelation | None = None
+    additional_relations: list[WireIrRelation] = Field(default_factory=list)
     obligation: WireIrObligation | None = None
     correction: WireIrCorrection | None = None
     missing_hints: list[str] = Field(default_factory=list)
+    claim_report: dict[str, Any] | None = None
 
     @field_validator("domains")
     @classmethod
@@ -437,6 +441,7 @@ class WireQueryIR(BaseModel):
     intent: Literal["query"] = "query"
     raw_input: str
     query: WireQuerySpec
+    discourse_decision: Literal["continue", "new_topic", "ambiguous", "none"] | None = None
 
 
 class WireEnvelope(BaseModel):

@@ -41,8 +41,10 @@ class ResolutionContext(BaseModel):
     allow_type_descendants: bool = True
     purpose: ResolutionPurpose = ResolutionPurpose.INGEST
     principal_entity_id: str | None = None
+    owned_entity_ids: list[str] = Field(default_factory=list)
+    """Current relation.owns targets of the actor (any type). Possessive resolution."""
     owned_vehicle_entity_ids: list[str] = Field(default_factory=list)
-    """Current vehicles owned by principal (E1.2 contextual 'meu carro')."""
+    """Current vehicles owned by principal (E1.2 contextual fallback)."""
 
     def model_post_init(self, __context: object) -> None:
         if self.personal.user_id != self.user_id:

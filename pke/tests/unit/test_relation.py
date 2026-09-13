@@ -14,7 +14,7 @@ from pke.domain import (
     new_ulid,
 )
 from pke.ontology import OntologyRegistry, core_concept_id
-from pke.ontology.relation_metadata import canonical_endpoints
+from pke.ontology.relation_metadata import RELATION_METADATA, canonical_endpoints
 from pke.query.relation_resolver import RelationScope, filter_relations, resolve_relation_query
 
 FORTALEZA = ZoneInfo("America/Fortaleza")
@@ -97,6 +97,70 @@ def test_symmetric_query_without_duplicate_rows() -> None:
         boolean_check=True,
     )
     assert answer.answer == "yes"
+
+
+def test_inverse_query_rewrites_to_stored_key() -> None:
+    from pke.ontology.relation_metadata import (
+        RelationDirectionality,
+        stored_relation_query,
+    )
+
+    stored, swapped = stored_relation_query("relation.owned_by")
+    assert stored == "relation.owns"
+    assert swapped is True
+    stored, swapped = stored_relation_query("relation.employs")
+    assert stored == "relation.employed_by"
+    assert swapped is True
+    stored, swapped = stored_relation_query("relation.owns")
+    assert stored == "relation.owns"
+    assert swapped is False
+    assert RELATION_METADATA["relation.owns"].directionality is RelationDirectionality.DIRECTED
+    assert (
+        RELATION_METADATA["relation.married_to"].directionality
+        is RelationDirectionality.SYMMETRIC
+    )
+
+
+def test_undirected_query_matches_either_endpoint() -> None:
+    from pke.ontology.relation_metadata import (
+        RelationConceptMetadata,
+        RelationDirectionality,
+        clear_learned_relation_metadata,
+        register_learned_relation_metadata,
+    )
+
+    key = "relation.learned.connected_to"
+    register_learned_relation_metadata(
+        key,
+        RelationConceptMetadata(
+            meaning="undirected connection",
+            direction="a -- b",
+            directionality=RelationDirectionality.UNDIRECTED,
+        ),
+    )
+    try:
+        rel = _relation(from_id="alpha", to_id="beta", key=key)
+        rel = rel.model_copy(update={"concept_id": "ext:relation.learned.connected_to"})
+        forward = resolve_relation_query(
+            [rel],
+            subject_id="alpha",
+            object_id="beta",
+            concept_ids={rel.concept_id},
+            scope=RelationScope.CURRENT,
+            boolean_check=True,
+        )
+        reverse = resolve_relation_query(
+            [rel],
+            subject_id="beta",
+            object_id="alpha",
+            concept_ids={rel.concept_id},
+            scope=RelationScope.CURRENT,
+            boolean_check=True,
+        )
+        assert forward.answer == "yes"
+        assert reverse.answer == "yes"
+    finally:
+        clear_learned_relation_metadata()
 
 
 def test_historical_scope_excludes_current() -> None:

@@ -27,6 +27,7 @@ from pke.query.attribute_resolver import (
 )
 from pke.query.measurement_resolver import (
     MeasurementResolutionStatus,
+    observable_value_groups,
     observation_instant,
     resolve_measurement_query,
 )
@@ -82,6 +83,11 @@ class QueryEngine:
         if spec.measurement_dimension_key:
             return self._execute_measurement(spec, graph)
         if spec.attribute_dimension_key:
+            from pke.query.intrinsic import try_intrinsic_attribute_result
+
+            intrinsic = try_intrinsic_attribute_result(spec, graph)
+            if intrinsic is not None:
+                return intrinsic
             return self._execute_attribute(spec, graph)
         if spec.relation_type_ids:
             return self._execute_relation(spec, graph)
@@ -187,6 +193,9 @@ class QueryEngine:
             mode=mode,
             value_filter=spec.attribute_value_filter,
             time_range=spec.time_range,
+            version_policy=spec.fact_version_policy,
+            sort=spec.sort,
+            limit=spec.limit,
         )
         values = [
             AttributeValueItem(
@@ -241,9 +250,7 @@ class QueryEngine:
     def _execute_attribute_snapshot(
         self, spec: ResolvedQuerySpec, graph: UserKnowledgeSnapshot
     ) -> QueryResult:
-        """All current registered attributes of the resolved entity — no invented keys."""
-        from pke.interpretation.semantic.attribute_registry import registered_dimension_keys
-
+        """All current attributes of the resolved entity — no invented keys."""
         self._assert_visible_ids(spec, graph)
         pool = list(graph.attributes)
         if spec.entity_ids:
@@ -257,8 +264,8 @@ class QueryEngine:
         )
         values: list[AttributeValueItem] = []
         assertion_ids: list[str] = []
-        allowed = registered_dimension_keys()
-        for dimension in sorted(allowed):
+        dimensions = sorted({a.dimension_key for a in pool if a.dimension_key})
+        for dimension in dimensions:
             dim_pool = [a for a in pool if a.dimension_key == dimension]
             if not dim_pool:
                 continue
@@ -354,7 +361,7 @@ class QueryEngine:
                     else None
                 ),
             )
-            for g in resolved.groups
+            for g in observable_value_groups(resolved)
         ]
         mids = [m.id for m in resolved.candidate_observations]
         if not mids:
@@ -551,6 +558,20 @@ class QueryEngine:
             )
             for match in answer.matches
         ]
+        relation_answer = answer.answer
+        if spec.object_entity_type_ids:
+            type_ids = set(spec.object_entity_type_ids)
+            items = [
+                item
+                for item in items
+                if self._entity_has_type(item.object_entity_id, type_ids, graph)
+            ]
+            if (
+                spec.relation_query_kind is RelationQueryKind.CURRENT_BOOLEAN
+                or spec.relation_query_kind is None
+            ):
+                current = [item for item in items if item.is_current]
+                relation_answer = "yes" if current else "no"
         plan = QueryPlan(
             sets=["relations", "entities"],
             filters=self._filters(spec),
@@ -567,9 +588,20 @@ class QueryEngine:
             plan=plan,
             temporal_completeness=answer.completeness,
             current_relations=items,
-            relation_answer=answer.answer,
+            relation_answer=relation_answer,
             indeterminate_relation_count=answer.indeterminate_count,
         )
+
+    def _entity_has_type(
+        self,
+        entity_id: str,
+        type_ids: set[str],
+        graph: UserKnowledgeSnapshot,
+    ) -> bool:
+        entity = graph.entities.get(entity_id)
+        if entity is None:
+            return False
+        return entity.type_id in type_ids
 
     def _expand(self, spec: ResolvedQuerySpec) -> tuple[list[str], list[str]]:
         types = self._expand_ids(spec.event_type_ids, ConceptKind.EVENT_TYPE, spec.hierarchy)
@@ -895,6 +927,7 @@ class QueryEngine:
             "state_dimension_ids": spec.state_dimension_ids,
             "state_value_ids": spec.state_value_ids,
             "relation_type_ids": spec.relation_type_ids,
+            "object_entity_type_ids": spec.object_entity_type_ids,
             "relation_scope": spec.relation_scope.value,
             "attribute_dimension_key": spec.attribute_dimension_key,
             "attribute_query_mode": (

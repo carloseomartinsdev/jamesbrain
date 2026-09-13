@@ -35,6 +35,8 @@ class ApiOperationKind(StrEnum):
 
 class ApiOperationOutcome(StrEnum):
     COMMITTED = "committed"
+    PARTIAL = "partial"
+    DEFERRED = "deferred"
     ANSWERED = "answered"
     NEEDS_CLARIFICATION = "needs_clarification"
     UNSUPPORTED = "unsupported"

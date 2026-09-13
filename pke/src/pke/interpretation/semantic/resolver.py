@@ -76,6 +76,19 @@ def _alias_matches(proposal: SemanticProposal, alias, exprs: list[str]) -> bool:
     return any(a in blob for a in alias.expressions)
 
 
+def _owns_alias_preempted_by_structured_relation(proposal, alias, primitive: PrimitiveKind) -> bool:
+    """Structured relation_expression outranks raw-text owns cues ('é meu' in the utterance)."""
+    if primitive is not PrimitiveKind.RELATION:
+        return False
+    if getattr(alias, "canonical_key", None) != "relation.owns":
+        return False
+    structured = normalize_expression(proposal.relation_expression or "")
+    if not structured:
+        return False
+    owns_tokens = {normalize_expression(e) for e in alias.expressions}
+    return structured not in owns_tokens
+
+
 def _alias_sort_key(alias) -> tuple:
     """Deterministic tie-break — registry insertion order must not decide semantics."""
     expr_key = min(alias.expressions) if alias.expressions else ""
@@ -350,7 +363,7 @@ def resolve_concepts(proposal: SemanticProposal, primitive: PrimitiveKind) -> Re
     senses = recognize_senses(proposal)
     surface = primary_surface_expression(proposal)
 
-    if primitive is PrimitiveKind.TYPE or SemanticSense.CLASSIFICATION in senses:
+    if primitive is PrimitiveKind.TYPE:
         return ResolvedConcepts(
             primitive=PrimitiveKind.TYPE,
             confidence=ResolutionConfidence.CONTEXTUAL,
@@ -493,6 +506,8 @@ def resolve_concepts(proposal: SemanticProposal, primitive: PrimitiveKind) -> Re
                 )
             continue
         if alias.primitive != primitive:
+            continue
+        if _owns_alias_preempted_by_structured_relation(proposal, alias, primitive):
             continue
         if not _alias_matches(proposal, alias, exprs):
             continue

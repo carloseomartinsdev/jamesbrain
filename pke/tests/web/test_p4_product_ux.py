@@ -73,7 +73,7 @@ def test_journey_write_query_clarification_abstain(tmp_path: Path) -> None:
     write = client.post("/api/v1/messages", json={"text": RAW_A}, headers=headers)
     assert write.status_code == 200
     assert write.json()["operation"]["outcome"] == "committed"
-    assert "Registrei" in write.json()["text"]
+    assert "Entendi" in write.json()["text"]
     cid = write.json()["conversation_id"]
 
     # J4 query

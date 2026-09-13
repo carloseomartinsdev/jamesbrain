@@ -39,6 +39,7 @@ class SystemClock:
 @dataclass
 class ProductRuntime:
     orchestrator: ConversationOrchestrator
+    knowledge: SqliteKnowledgeReadStore
     knowledge_db: Path
     product_db: Path
     debug_ui: bool
@@ -73,11 +74,24 @@ class ProductRuntime:
         engine = create_sqlite_engine(sqlite_url(knowledge_path))
         init_database(engine)
         from pke.interpretation.transport.catalog import ConceptCatalog
-        from pke.ontology.learned import hydrate_learned_relation_types
+        from pke.ontology.learned import (
+            hydrate_learned_attribute_dimensions,
+            hydrate_learned_entity_types,
+            hydrate_learned_relation_types,
+        )
         from pke.ontology.trained import apply_trained_catalog
 
         apply_trained_catalog(ontology)
         hydrate_learned_relation_types(ontology, engine)
+        hydrate_learned_entity_types(ontology, engine)
+        hydrate_learned_attribute_dimensions(ontology, engine)
+        from pke.interpretation.semantic.learned_attribute import publish_learned_attribute_dimension
+        from pke.ontology.learned import is_learned_attribute_key
+
+        for concept in ontology.concepts():
+            if is_learned_attribute_key(concept.key):
+                label = concept.presentation.label if concept.presentation is not None else None
+                publish_learned_attribute_dimension(concept.key, label=label)
         ConceptCatalog.load(ontology)
         factory = session_factory(engine)
         cached = TurnCachedInterpreter(interpreter)
@@ -118,6 +132,7 @@ class ProductRuntime:
         root = Path(web_root) if web_root else _default_web_root()
         return cls(
             orchestrator=orchestrator,
+            knowledge=knowledge,
             knowledge_db=knowledge_path,
             product_db=product_path,
             debug_ui=debug_ui,

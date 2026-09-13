@@ -356,6 +356,147 @@ def test_possessive_owned_vehicle_skips_lexeme_whitelist(
     assert EvidenceKind.OWNED_BY_PRINCIPAL in result.evidence
 
 
+def test_possessive_generic_type_resolves_owned(
+    resolver: EntityResolver, lookup: InMemoryEntityLookup
+) -> None:
+    org = _entity("u1", "Acme", "entity.organization")
+    lookup.add(org)
+    result = resolver.resolve(
+        EntityMention(
+            text="empresa",
+            type_hint=ConceptRef(key="entity.organization"),
+            reference_kind=MentionReferenceKind.POSSESSIVE,
+        ),
+        ResolutionContext(
+            user_id="u1",
+            personal=PersonalContext(user_id="u1"),
+            purpose=ResolutionPurpose.QUERY,
+            owned_entity_ids=[org.id],
+        ),
+    )
+    assert result.status is ResolutionStatus.RESOLVED
+    assert result.entity_id == org.id
+    assert result.clarification_reason is None
+
+
+def test_possessive_ingest_zero_owned_is_create(resolver: EntityResolver) -> None:
+    result = resolver.resolve(
+        EntityMention(
+            text="carro",
+            type_hint=ConceptRef(key="entity.automobile"),
+            reference_kind=MentionReferenceKind.POSSESSIVE,
+        ),
+        _ctx(purpose=ResolutionPurpose.INGEST),
+    )
+    assert result.status is ResolutionStatus.CREATE_CANDIDATE
+    assert result.create_canonical_name is None
+    assert result.create_type_id == core_concept_id("entity.automobile")
+    assert "possessive_owned_object_create" in result.notes
+
+
+def test_possessive_ingest_zero_owned_non_vehicle_is_create(resolver: EntityResolver) -> None:
+    result = resolver.resolve(
+        EntityMention(
+            text="empresa",
+            type_hint=ConceptRef(key="entity.organization"),
+            reference_kind=MentionReferenceKind.POSSESSIVE,
+        ),
+        _ctx(purpose=ResolutionPurpose.INGEST),
+    )
+    assert result.status is ResolutionStatus.CREATE_CANDIDATE
+    assert result.create_canonical_name is None
+    assert result.create_type_id == core_concept_id("entity.organization")
+
+
+def test_possessive_ingest_two_automobiles_is_ambiguous(
+    resolver: EntityResolver, lookup: InMemoryEntityLookup
+) -> None:
+    a = _entity("u1", "Corolla", "entity.automobile")
+    b = Entity(
+        id="ent:u1:civic:entity.automobile",
+        user_id="u1",
+        type_id=core_concept_id("entity.automobile"),
+        canonical_name="Civic",
+        created_at=datetime(2026, 9, 1, tzinfo=UTC),
+    )
+    lookup.add(a)
+    lookup.add(b)
+    personal = PersonalContext(user_id="u1")
+    personal.record_mention(a)
+    personal.record_mention(b)
+    result = resolver.resolve(
+        EntityMention(
+            text="carro",
+            type_hint=ConceptRef(key="entity.automobile"),
+            reference_kind=MentionReferenceKind.POSSESSIVE,
+        ),
+        ResolutionContext(
+            user_id="u1",
+            personal=personal,
+            purpose=ResolutionPurpose.INGEST,
+            owned_entity_ids=[a.id, b.id],
+            owned_vehicle_entity_ids=[a.id, b.id],
+        ),
+    )
+    assert result.status is ResolutionStatus.AMBIGUOUS
+    assert result.clarification_reason == "possessive_ambiguous"
+    assert {c.entity_id for c in result.candidates} == {a.id, b.id}
+
+
+def test_possessive_zero_owned_is_no_match(
+    resolver: EntityResolver, lookup: InMemoryEntityLookup
+) -> None:
+    org = _entity("u1", "Acme", "entity.organization")
+    lookup.add(org)
+    result = resolver.resolve(
+        EntityMention(
+            text="gato",
+            type_hint=ConceptRef(key="entity.appliance"),
+            reference_kind=MentionReferenceKind.POSSESSIVE,
+        ),
+        ResolutionContext(
+            user_id="u1",
+            personal=PersonalContext(user_id="u1"),
+            purpose=ResolutionPurpose.QUERY,
+            owned_entity_ids=[org.id],
+        ),
+    )
+    assert result.status is ResolutionStatus.UNRESOLVED
+    assert result.clarification_reason == "possessive_no_match"
+    assert result.requires_clarification is False
+
+
+def test_possessive_two_owned_same_type_is_ambiguous(
+    resolver: EntityResolver, lookup: InMemoryEntityLookup
+) -> None:
+    a = _entity("u1", "Luna", "entity.organization")
+    b = Entity(
+        id="ent:u1:nala:entity.organization",
+        user_id="u1",
+        type_id=core_concept_id("entity.organization"),
+        canonical_name="Nala",
+        created_at=datetime(2026, 9, 1, tzinfo=UTC),
+    )
+    lookup.add(a)
+    lookup.add(b)
+    result = resolver.resolve(
+        EntityMention(
+            text="empresa",
+            type_hint=ConceptRef(key="entity.organization"),
+            reference_kind=MentionReferenceKind.POSSESSIVE,
+        ),
+        ResolutionContext(
+            user_id="u1",
+            personal=PersonalContext(user_id="u1"),
+            purpose=ResolutionPurpose.QUERY,
+            owned_entity_ids=[a.id, b.id],
+        ),
+    )
+    assert result.status is ResolutionStatus.AMBIGUOUS
+    assert result.requires_clarification is True
+    assert {c.entity_id for c in result.candidates} == {a.id, b.id}
+
+
 def test_normalize_is_predictable() -> None:
     assert normalize_lexical("  Corolla. ") == "corolla"
     assert normalize_lexical("José") == "jose"

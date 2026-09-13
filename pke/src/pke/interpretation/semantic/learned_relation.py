@@ -51,7 +51,8 @@ def bind_learned_relation_types(ontology: OntologyRegistry, ir: object) -> None:
     if relation is not None:
         key = getattr(getattr(relation, "type", None), "key", None)
         _bind_one(ontology, key)
-        return
+    for extra in getattr(ir, "additional_relations", None) or []:
+        _bind_one(ontology, getattr(getattr(extra, "type", None), "key", None))
     query = getattr(ir, "query", None)
     if query is None:
         return
@@ -61,6 +62,11 @@ def bind_learned_relation_types(ontology: OntologyRegistry, ir: object) -> None:
 
 def _bind_one(ontology: OntologyRegistry, key: str | None) -> None:
     if not key:
+        return
+    from pke.ontology.relation_metadata import stored_relation_query
+
+    _stored, inverted = stored_relation_query(key)
+    if inverted:
         return
     if ensure_if_learned(ontology, key):
         publish_relation_type(key)

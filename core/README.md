@@ -9,6 +9,7 @@ Fronteira: `james/docs/JAMESCORE-ARCHITECTURE.md`.
 ## J1.1
 
 - Orchestrator, identidade, conversa James, Social, PkeClient, envelope público, health
+- **ResponsePresenter** (LLM de fala, depois do resultado estruturado; fallback determinístico)
 - **Tool Registry vazio** (`src/jamescore/tooling/`) — contratos/gateway, não as Tools
 - PKE **não** entra no Tool Registry
 - Sem Weather, Search, Scheduler, Notifications

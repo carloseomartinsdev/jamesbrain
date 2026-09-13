@@ -36,6 +36,8 @@ class KnowledgeCandidateBuilder:
         relation_mentions: list[EntityMention] = []
         if ir.relation is not None:
             relation_mentions = [ir.relation.subject, ir.relation.object]
+        for extra_r in ir.additional_relations:
+            relation_mentions.extend([extra_r.subject, extra_r.object])
         attribute_mentions: list[EntityMention] = []
         if ir.attribute is not None:
             attribute_mentions = [ir.attribute.subject]
@@ -45,6 +47,10 @@ class KnowledgeCandidateBuilder:
             measurement_mentions = [ir.measurement.subject]
             if ir.measurement.context is not None:
                 measurement_mentions.append(ir.measurement.context)
+        for extra_m in ir.additional_measurements:
+            measurement_mentions.append(extra_m.subject)
+            if extra_m.context is not None:
+                measurement_mentions.append(extra_m.context)
         for mention in [
             *ir.entities_mentioned,
             *extra,
